@@ -1,2 +1,2 @@
-cd ..
-start /separate web-ext run --firefox="C:\Program Files\Mozilla Firefox\firefox.exe" --keep-profile-changes --firefox-profile
+cd ".."
+start web-ext run -p "D:\home\firefox\debug" --keep-profile-changes --browser-console

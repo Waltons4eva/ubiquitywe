@@ -1,42 +1,116 @@
-<!DOCTYPE html>
-<html>
-
+<html xmlns="http://www.w3.org/1999/xhtml" style="cursor: auto ! important;" hasBrowserHandlers="true">
 <head>
-    <meta charset="UTF-8">
-	<link href="options.css" rel="stylesheet"></head>
+    <title>Ubiquity Settings &amp; Skins</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" media="all" href="options.css"/>
+
+    <script src="lib/jquery-2.2.4.min.js"></script>
+    <script type="application/javascript" src="core.js"></script>
+    <script type="application/javascript" src="options.js"></script>
+
+    <style>
+        .warning {
+            width: 740px;
+            padding: 5px;
+            border: 1px solid #F09B9A;
+            background-color: #FFFCBA;
+        }
+
+        .prefkeys {
+            width: 88%;
+            cursor: pointer;
+            padding: 1px 0.5em
+        }
+    </style>
 </head>
+<body dir="ltr">
+<div class="head"><span class="large">Ubiquity: </span>Settings and Skins</div>
+<div id="nav-container">
+    <ul id="nav">
+        <li><a href="https://wiki.mozilla.org/Labs/Ubiquity/Ubiquity_0.5_Author_Tutorial" target="_blank">Tutorial</a>
+        </li>
+        <li class="selected"><a href="options.html">Settings</a></li>
+        <li><a href="commands.html" target="_blank">Your Commands</a></li>
+        <li><a href="https://wiki.mozilla.org/Labs/Ubiquity/Commands_In_The_Wild" target="_blank">Get New Commands</a></li>
+        <li><a href="popup.html" target="_blank">Debug Popup</a></li>
+        <li><a href="edit.html" target="_blank">Hack Ubiquity</a></li>
+    </ul>
+</div>
 
-<body>
-	<div id="panel">
-		<textarea id="code" name="code"></textarea>
-		<div id="footer">
-			<div id="info">add and modify your custom commands. saving is done automatically.</div>
-			<div id="buttons">
-				<a href=# id="download"  >download scripts</a> - insert example commands: 
-				<a href=# id="insertnotifystub">notify</a> -
-				<a href=# id="insertsearchstub">search</a> -
-				<a href=# id="insertenhsearchstub">enhanced search</a>
-			</div>
-		</div>
-	</div>
+<br clear="all"/>
+
+<div class="page-tip">
+    <p>You can get to this page at any time using the “change-ubiquity-settings” command.</p>
+</div>
+
+<br clear="all"/>
+
+<div class="col-five">
+    <h2 class="top">Touch commands</h2>
+    <ul id="skin-list">
+        <div class="command light" id="skin_1"><label class="label" for="rad_skin_1">TBD</label></div>
+    </ul>
+</div>
+
+<div class="col-four">
+    <h2 class="top">Key Combination</h2>
+    <fieldset>
+        <legend>Invoke Ubiquity by pressing:</legend>
+        <div style="margin-left:10px;">
+            <p>
+                <input id="keyInput" class="prefkeys" type="text" value="Ctrl+Space" readonly><br/>
+                Custom key combinations are not supported in <br>Firefox Quantum
+            </p>
+            <p id="keyNotify"></p>
+        </div>
+    </fieldset>
+
+    <h2>Language Settings</h2>
+    <p>
+        Language:
+        <select id="language-select">
+        </select>
+    </p>
+
+    <h2>Miscellaneous Settings</h2>
+    <table>
+        <tr>
+            <td>Maximum number of suggestions:</td>
+            <td><input id="max-suggestions" size="5" style="text-align:center" type="text"/></td>
+        </tr>
+        <tr id="keybinding-row">
+            <td>Editor keyboard scheme:</td>
+            <td><select id="keyboard-scheme">
+                <option value="ace">Ace</option>
+                <option value="emacs">Emacs</option>
+                <option value="vim">Vim</option>
+            </select></td>
+        </tr>
+    </table>
+    <h2>Import/Export</h2>
+    <div><a href="edit.html?ubiquity-settings" target="_blank">Live-edit Ubiquity settings</a></div>
+</div>
+
+<!--br clear="all"/>
+
+<div id="editor-div" style="display:none">
+    <h2>Custom Skin Editor</h2>
+    <ul class="button-list">
+        <li>
+            <a class="button" onclick="saveCustomSkin()">Save</a>
+            <a class="button" onclick="saveAs()">Save As</a>
+            <a class="button" onclick="shareSkin()">Share</a>
+            Clicking save immediately updates Ubiquity's look.
+        </li>
+
+        <br/><br/>
+        <div class="warning">Changes you make to a custom skin may not be seen until after a browser restart. This is a
+            <a href="http://ubiquity.mozilla.com/trac/ticket/449">known bug</a>.
+        </div>
+        <br/><br/>
+
+        <li><textarea rows="30" style="width:92%" id="skin-editor"></textarea></li>
+    </ul>
+</div-->
 </body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.33.0/codemirror.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.33.0/mode/javascript/javascript.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.33.0/addon/edit/matchbrackets.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.33.0/addon/search/search.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.33.0/addon/search/searchcursor.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.33.0/addon/lint/lint.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.33.0/addon/lint/javascript-lint.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.9.5/jshint.min.js"></script>
-<!-- <script src="https://cdn.jsdelivr.net/npm/jshint-esnext@2.7.0-3/dist/jshint.js"></script> -->
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.33.0/codemirror.min.css"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.33.0/theme/lesser-dark.min.css"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.33.0/theme/ambiance.min.css"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.33.0/addon/lint/lint.min.css"/>
-
-<script src="lib/jquery-2.2.4.min.js"></script>
-<script src="core.js"></script>
-<script src="options.js"></script>
-
 </html>

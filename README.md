@@ -1,83 +1,56 @@
-# ubichr
-My humble attempt to create [Ubiquity](https://wiki.mozilla.org/Labs/Ubiquity) alternative for Chrome and Firefox Quantum browsers.
+# UbiquityWE
 
-# installation
-To install use chrome web store https://chrome.google.com/webstore/search/ubichr
+Ubiquity Addon for Firefox Quantum
 
-# how to install dev version
-To install latest commited version please follow 'Load the extension' section here https://developer.chrome.com/extensions/getstarted
+More at: https://wiki.mozilla.org/Labs/Ubiquity/Ubiquity_0.5_User_Tutorial
 
-People wanting to remove irritating 'disable developer mode popup' please follow [the neat binary hack of chrome.dll](https://stackoverflow.com/questions/30287907/how-to-get-rid-of-disable-developer-mode-extensions-pop-up/30361260)
+[DOWNLOAD]() :: [VIDEO MANUAL](https://youtu.be/zHOO-k5jpIU)
 
-# license & origins
-MIT license
+![screen](screen.png?raw=true)
 
-Most of the code is based on http://github.com/cosimo/ubiquity-opera/
+SEE ALSO: [Enso Portable](https://github.com/GChristensen/enso-portable)
 
-# adding commands
-You can add your custom commands using built-in editor (CodeMirror) or modify commands.js. The syntax is quite simple and self explanatory
+Original Ubiquity was a promising project aimed to familiarize masses with 
+natural language user interfaces. But eventually, as it was expected, it went popular 
+only within a community of handful of geeks, although, the [impressive repository](https://wiki.mozilla.org/Labs/Ubiquity/Commands_In_The_Wild) 
+of commands was created. Because "legacy" Firefox addons were able to do pretty 
+anything with the browser, there was much sense and joy in it. 
+Due to the more restrictive nature of Firefox Quantum you can do notable less currently,
+but Ubiquity is still immensely useful if you are able to write JavaScript to automate
+things you have (web)API for, to make intricate org-mode protocol capture schemes, etc., etc.     
+ 
 
-## basic command:
-```javascript
-CmdUtils.CreateCommand({
-    name: "example", 
-    description: "A short description of your command.",
-    author: "Your Name",
-    icon: "http://www.mozilla.com/favicon.ico",
-    execute: function execute(args) {
-        alert("EX:You input: " + args.text, this);
-    },
-    preview: function preview(pblock, args) {
-        pblock.innerHTML = "PV:Your input is " + args.text + ".";
-    },
-});
-```
-Use ```CmdUtils.CreateCommand()``` and provide object with ```name``` string and ```preview``` and ```execute``` functions. The ```execute``` function takes argument which is an object containing ```text``` property - a single string following command. The ```preview``` function also has ```pblock``` parameter pointing to popup div for various output.
+This is a fork of the Chrome Ubiquity port by [rostok](https://github.com/rostok/ubichr). 
+At the moment it differs from original UbiChr in the following ways:
 
-## command with some action
-```javascript
-CmdUtils.CreateCommand({
-    name: "google-search",
-    preview: "Search on Google for the given words",
-    execute: CmdUtils.SimpleUrlBasedCommand(
-        "http://www.google.com/search?client=opera&num=1&q={text}&ie=utf-8&oe=utf-8"
-    )
-});
-```
+* Works nicely in Firefox 60+ (also works in Chrome).
+* The fully functional parser of the last version of the original "legacy" Ubiquity by 
+[satyr](https://bitbucket.org/satyr/ubiquity) is implanted, so the existing "legacy" 
+commands (which are still compatible with the new Firefox functionality) could be ported more seamlessly 
+(there is no backward compatibility with the existing parserless UbiChr commands).
+* Completion by TAB key and clickable suggestions.
+* Some missing API of "legacy" Ubiquity CmdUtils (eg. renderTemplate, getHtmlSelection) is implemented.
+* Ace code editor (which has decent search functionality) is used instead of CodeMirror.
+* Settings and command list pages are resemble the ones from the original Ubiquity.
+* User command categories ("Namespaces") are available.
+* Some commands removed/renamed/added.
+* Some minor fixes.
 
-Note that execute is created using ```CmdUtils.SimpleUrlBasedCommand()``` the output function will substitute {text} and {location} template literals with actual argument and current tab url.
+Things to note:
 
-## getting outside data with async / await
-```javascript
-CmdUtils.CreateCommand({
-    name: "imdb",
-    description: "Searches for movies on IMDb",
-    icon: "http://www.imdb.com/favicon.ico",
-    preview: async function preview(pblock, {text: text}) {
-        pblock.innerHTML = "Searches for movies on IMDb";
-        var doc = await CmdUtils.get("http://www.imdb.com/find?q="+encodeURIComponent(text)+"&s=tt&ref_=fn_al_tt_mr" );
-        pblock.innerHTML = "<table>"+jQuery("table.findList", doc).html()+"</table>";
-    },
-    execute: CmdUtils.SimpleUrlBasedCommand("http://www.imdb.com/find?q={text}&s=tt&ref_=fn_al_tt_mr")
-});
-```
+* The original Ubiquity commands were sandboxed from the browser API, CmdUtils module
+was the primary interface to it. There are no such restrictions in UbiquityWE: commands
+have access to the full WebExtension API. But you still may need to add necessary permissions
+in manifest.json and rebuild the addon.
+* NounType system of the original Ubiquity parser is a powerful tool which allows to
+add dynamic things (such as the set of current tabs) to parser suggestion list. 
+Find more at [nountypes](https://bitbucket.org/satyr/ubiquity/src/f50c546669f3a66979ab7d64af4b166f7d5a488a/ubiquity/modules/?at=default)
+and [builtin commands](https://bitbucket.org/satyr/ubiquity/src/f50c546669f3a66979ab7d64af4b166f7d5a488a/ubiquity/standard-feeds/?at=default)
+of the original Ubiquity.
 
-Here the ```preview``` function is defined with ```async``` keyword. This will allow to avoid callback hell when getting data with GET request (```CmdUtils.get(url)```). Note the destructuring assignment singling out the ```text``` parameter in ```preview``` function. Note: final implementation uses one liner with ```jQuery.load()```.
+TODO:
 
-
-## search command with iframe preview
-```javascript
-CmdUtils.makeSearchCommand({
-  name: ["qwant"],
-  description: "Searches quant.com",
-  author: {name: "Your Name", email: "your-mail@example.com"},
-  icon: "https://www.qwant.com/favicon-152.png?1503916917494",
-  url: "https://www.qwant.com/?q={QUERY}&t=all",
-  prevAttrs: {zoom: 0.75, scroll: [100/*x*/, 0/*y*/], anchor: ["c_13", "c_22"]},
-});
-
-```
-The ```CmdUtils.makeSearchCommand()``` (provided by Sebres) simplifies even more common web fetching. Instead of loading part of HTML and parsing it with JQuery an iframe is created in UbiChr results area. Extra parameters allow to scale and translate it.
-
-# alternatives
-Svalorzen has forked UbiChr and created UbiShell which has more shell like UI with piping and command options. Check it out here: https://github.com/Svalorzen/UbiShell
+* Cancellable preview/execution handlers & sort out current preview show/execution order
+* Ubiquity Touch: add a popup near selection a la Oxford Dictionary one to execute predefined 
+commands with set arguments on the selection (useful for various dictionary/clipping apps 
+on touch devices)

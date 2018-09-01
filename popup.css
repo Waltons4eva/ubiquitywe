@@ -108,7 +108,7 @@ body {
     border: 0px;
 }
 
-#ubiq-result-panel {
+#ubiq-suggestion-panel {
     vertical-align: top;
     width: 100%;
     height: 505px;
@@ -118,12 +118,12 @@ body {
     color: white;
 }
 /* 
-#ubiq-result-panel.result {
+#ubiq-suggestion-panel.result {
     padding-left: 4pt;
     padding-right: 4pt;
 }
  */
-#ubiq-result-panel ul {
+#ubiq-suggestion-panel ul {
 	padding:0; 
 	margin:0;
     width: 240px; 
@@ -132,7 +132,7 @@ body {
     background-size: 257px auto;
 }
 
-#ubiq-result-panel li {
+#ubiq-suggestion-panel li {
 	color: black; 
 	list-style: none; 
 	margin: 0; 
@@ -140,28 +140,30 @@ body {
 	vertical-align: middle;
 	padding-left: 6px;
 	font-size: 12pt;
-	height: 22pt;
+	/*height: 22pt;*/
     width: 225px;
 	background-color: #a9a9a9;
 	background-repeat: repeat;
     cursor: default;
 }
-#ubiq-result-panel li img {
-    height: 20pt;
+#ubiq-suggestion-panel li img {
+    height: 16px;
+    width: 16px;
+    margin: 4px;
 }
 
-#ubiq-result-panel li.selected {
+#ubiq-suggestion-panel li.selected {
 	background-color: #d3d3d3; 
     /* background: linear-gradient(#efefef, #b0b0b0); */
     position:relative;
     width: 225px;
 }
-#ubiq-result-panel .more-commands {
+#ubiq-suggestion-panel .more-commands {
     width: 225px;
     line-height: 10px;
     text-align: center;
 }
-#ubiq-result-panel li.selected::after {
+#ubiq-suggestion-panel li.selected::after {
     position:absolute;
     top:0%;
     left:100%;
@@ -172,4 +174,20 @@ body {
     border-top: 12pt solid transparent;
     border-bottom: 12pt solid transparent;
     border-left: 6pt solid #d3d3d3;
+}
+
+.object, .argument {
+    font-weight: bold;
+}
+
+.needarg {
+    font-style: oblique;
+    font-size: 70%;
+    color: #999999;
+}
+.needarg:before {
+    content: "(";
+}
+.needarg:after {
+    content: ")";
 }

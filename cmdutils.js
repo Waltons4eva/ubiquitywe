@@ -4,6 +4,7 @@
 if (!CmdUtils) var CmdUtils = { 
     VERSION: chrome.runtime.getManifest().version,
     DEBUG: false,
+    PRODUCTION: true,
     CommandList: [],
     jQuery: jQuery,
     backgroundWindow: window,
@@ -16,58 +17,108 @@ if (!CmdUtils) var CmdUtils = {
     setResult: function setResult(message, prepend) { console.log(message); },
 };
 
+var _ = a => a;
+
+CmdUtils.log = m => console.log(m);
+
 // debug log
 CmdUtils.deblog = function () {
     if(CmdUtils.DEBUG){
         console.log.apply(console, arguments);
     }
-}
+};
+
+CmdUtils.renderTemplate = function (template, data) {
+  return TrimPath.parseTemplate(template).process(data);
+};
+
+var __globId = 0;
 
 // creates command and adds it to command array, name or names must be provided and preview execute functions
-CmdUtils.CreateCommand = function CreateCommand(args) {
-    if (Array.isArray(args.name)) {
-        args.names = args.name;
-        args.name = args.name[0];
+CmdUtils.CreateCommand = function CreateCommand(options) {
+    if (CmdUtils.PRODUCTION && options._hidden)
+        return;
+
+    if (Array.isArray(options.name)) {
+        options.names = options.name;
+        options.name = options.name[0];
     } else {
-        args.name = args.name || args.names[0];
-        args.names = args.names || [args.name];
+        options.name = options.name || options.names[0];
+        options.names = options.names || [options.name];
     }
-    if (CmdUtils.getcmd(args.name)) {
+
+    options.id = options.referenceName = options.name + __globId++;
+
+    if (CmdUtils.getcmd(options.name)) {
         // remove previously defined command with this name
-        CmdUtils.CommandList = CmdUtils.CommandList.filter( cmd => cmd.name !== args.name );
+        CmdUtils.CommandList = CmdUtils.CommandList.filter( cmd => cmd.name !== options.name );
     }
-    //console.log("command created ", args.name);
-    var to = parseFloat(args.timeout || 0);
+
+    function toNounType(obj, key) {
+        var val = obj[key];
+        if (!val) return;
+        var noun = obj[key] = NounUtils.NounType(val);
+        if (!noun.id) noun.id = options.id + "#n" + __globId++;
+    }
+
+    ASSIGN_ARGUMENTS:
+    {
+        let args = options.arguments || options.argument;
+        if (!args) {
+            options.arguments = [];
+            break ASSIGN_ARGUMENTS;
+        }
+        // handle simplified syntax
+        if (typeof args.suggest === "function")
+        // argument: noun
+            args = [{role: "object", nountype: args}];
+        else if (!Utils.isArray(args)) {
+            // arguments: {role: noun, ...}
+            // arguments: {"role label": noun, ...}
+            let a = [], re = /^[a-z]+(?=(?:[$_:\s]([^]+))?)/;
+            for (let key in args) {
+                let [role, label] = re.exec(key) || [];
+                if (role) a.push({role: role, label: label, nountype: args[key]});
+            }
+            args = a;
+        }
+        for (let arg of args) toNounType(arg, "nountype");
+        options.arguments = args;
+    }
+
+    var to = parseFloat(options.timeout || 0);
     if (to>0) {
-    	args.timeoutFunc = null;
-    	if (typeof args.preview == 'function') {
-		    args.preview_timeout = args.preview;
-			args.preview = function(b,a) {
-                if (args.preview_timeoutFunc !== null) clearTimeout(args.preview_timeoutFunc);
-                args.preview_timeoutFunc = setTimeout(function () { 
-                	args.preview_timeout(b, a); 
+    	options.timeoutFunc = null;
+    	if (typeof options.preview == 'function') {
+		    options.preview_timeout = options.preview;
+			options.preview = function(b,a) {
+                if (options.preview_timeoutFunc !== null) clearTimeout(options.preview_timeoutFunc);
+                options.preview_timeoutFunc = setTimeout(function () {
+                	options.preview_timeout(b, a);
                 }, to);
 			};
     	}
-    	if (typeof args.execute == 'function') {
-		    args.execute_timeout = args.execute;
-			args.execute = function(a) {
-                if (args.execute_timeoutFunc !== null) clearTimeout(args.execute_timeoutFunc);
-                args.execute_timeoutFunc = setTimeout(function () {
-					args.execute_timeout(a);
+    	if (typeof options.execute == 'function') {
+		    options.execute_timeout = options.execute;
+			options.execute = function(a) {
+                if (options.execute_timeoutFunc !== null) clearTimeout(options.execute_timeoutFunc);
+                options.execute_timeoutFunc = setTimeout(function () {
+					options.execute_timeout(a);
                 }, to);
 			};
     	}
     }
-    CmdUtils.CommandList.push(args);
+    CmdUtils.CommandList.push(options);
 };
 
 // create search command using url
 CmdUtils.makeSearchCommand = function makeSearchCommand(args) {
-    args.execute = function(a) {
-        var url = args.url.replace(/\{QUERY\}/g, encodeURIComponent(a.text));
+    args.arguments = [{role: "object", nountype: noun_arb_text, label: "query"}];
+    args.execute = function({object: {text}}) {
+        var url = args.url.replace(/\{QUERY\}/g, encodeURIComponent(text));
         CmdUtils.addTab(url);
-    }
+        CmdUtils.closePopup();
+    };
     if ((typeof args.preview != 'function') && args.preview != 'none') {
         args.preview = CmdUtils._searchCommandPreview;
         if (args.prevAttrs == null) {
@@ -120,7 +171,7 @@ CmdUtils._afterLoadPreview = function(ifrm) {
 }
 
 // default common preview for search commands
-CmdUtils._searchCommandPreview = function _searchCommandPreview( pblock, {text: text} ) {
+CmdUtils._searchCommandPreview = function _searchCommandPreview( pblock, {object: {text}} ) {
     var q = text;
     var code = (this.description || "Search") + " for <b> '" + (q || "...") + "'</b>";
     pblock.innerHTML = code;
@@ -202,7 +253,7 @@ CmdUtils.getLocation = function getLocation() {
 };
 
 // opens new tab with provided url
-CmdUtils.addTab = function addTab(url) {
+Utils.openUrlInBrowser = CmdUtils.addTab = function addTab(url) {
 	if (typeof browser !== 'undefined') {
 		browser.tabs.create({ "url": url });
 	} else 
@@ -235,7 +286,7 @@ CmdUtils.postNewTab
 	document.body.appendChild(form);
 	form.submit();
 	document.body.removeChild(form);
-}
+};
 
 // returns a function that opens new tab with substituted {text} and {location} 
 CmdUtils.SimpleUrlBasedCommand = function SimpleUrlBasedCommand(url) {
@@ -248,13 +299,9 @@ CmdUtils.SimpleUrlBasedCommand = function SimpleUrlBasedCommand(url) {
         finalurl = finalurl.replace('{text}', text);
         finalurl = finalurl.replace('{location}', CmdUtils.getLocation());
         CmdUtils.addTab(finalurl);
+        CmdUtils.closePopup();
     };
     return search_func;
-};
-
-// closes ubiquity popup
-CmdUtils.closePopup = function closePopup(w) {
-    if (typeof popupWindow !== "undefined") popupWindow.close();
 };
 
 // gets json with xhr
@@ -333,54 +380,93 @@ CmdUtils.loadScripts = function loadScripts(url, callback, wnd=window) {
 };
 
 // updates selectedText variable
-CmdUtils.updateSelection = function (tab_id) {
-    chrome.tabs.executeScript( tab_id, { code: "window ? window.getSelection().toString() : '';" }, function(selection) {
-        if (selection && selection.length>0) CmdUtils.selectedText = selection[0] || "";
-        CmdUtils.deblog("selectedText is ", CmdUtils.selectedText);  
-    });
+CmdUtils.updateSelection = function (tab_id, callback) {
+    try {
+        chrome.tabs.executeScript(tab_id, {code: "__ubiq_get_sel()"}, function (selection) {
+            if (selection && selection.length > 0) {
+                CmdUtils.selectedText = selection[0].text || "";
+                CmdUtils.selectedHtml = selection[0].html || "";
+            }
+            CmdUtils.deblog("selectedText is ", CmdUtils.selectedText);
+
+            if (callback)
+                callback();
+        });
+    }
+    catch (e) {
+        console.log(e);
+        if (callback)
+            callback();
+    }
+
 };
 
+CmdUtils._internalClearSelection = function() {
+    CmdUtils.selectedText = "";
+    CmdUtils.selectedHtml = "";
+}
+
 // called when tab is switched or changed, updates selectedText and activeTab
-CmdUtils.updateActiveTab = function () {
+CmdUtils.updateActiveTab = function (callback) {
     CmdUtils.active_tab = null;
     CmdUtils.selectedText = '';
-    if (chrome.tabs && chrome.tabs.getSelected)
-    chrome.tabs.getSelected(null, function(tab) {
-        if (tab.url.match('^https?://')){
-            CmdUtils.active_tab = tab;
-            CmdUtils.updateSelection(tab.id);
+    if (chrome.tabs && chrome.tabs.query)
+        try {
+            chrome.tabs.query({active: true}, function (tabs) {
+                if (tabs.length > 0) {
+                    var tab = tabs[0];
+                    if (tab.url.match('^https?://')) {
+                        CmdUtils.active_tab = tab;
+                        CmdUtils.updateSelection(tab.id, callback);
+                    }
+                    else if (callback)
+                        callback();
+                }
+                else if (callback)
+                    callback();
+            });
         }
-    });
+        catch (e) {
+            console.log(e);
+            if (callback)
+                callback();
+        }
 };
+
+CmdUtils.getSelection = () => CmdUtils.selectedText;
+CmdUtils.getHtmlSelection = () => CmdUtils.selectedHtml;
 
 // replaces current selection with string provided
 CmdUtils.setSelection = function setSelection(s) {
-    console.log("CmdUtils.setSelection"+s)
+    //console.log("CmdUtils.setSelection"+s)
     if (typeof s!=='string') s = s+'';
     s = s.replace(/(['"])/g, "\\$1");
+    s = s.replace(/\\\\/g, "\\");
     // http://jsfiddle.net/b3Fk5/2/
     var insertCode = `
     function replaceSelectedText(replacementText) {
         var sel, range;
-        if (window.getSelection) {
-            sel = window.getSelection();
-            var activeElement = document.activeElement;
-            if (activeElement.nodeName == "TEXTAREA" ||
-                (activeElement.nodeName == "INPUT" && activeElement.type.toLowerCase() == "text")) {
-                    var val = activeElement.value, start = activeElement.selectionStart, end = activeElement.selectionEnd;
-                    activeElement.value = val.slice(0, start) + replacementText + val.slice(end);
-            } else {
-                if (sel.rangeCount) {
-                    range = sel.getRangeAt(0);
-                    range.deleteContents();
-                    range.insertNode(document.createTextNode(replacementText));
-                } else {
-                    sel.deleteFromDocument();
+        sel = window.getSelection();
+        var activeElement = document.activeElement;
+        if (activeElement.nodeName == "TEXTAREA" ||
+            (activeElement.nodeName == "INPUT" && activeElement.type.toLowerCase() == "text")) {
+                var val = activeElement.value, start = activeElement.selectionStart, end = activeElement.selectionEnd;
+                activeElement.value = val.slice(0, start) + replacementText + val.slice(end);
+        } else {
+            if (sel.rangeCount) {
+                range = sel.getRangeAt(0);
+                range.deleteContents();
+
+                var el = document.createElement("div");
+                el.innerHTML = replacementText;
+                var frag = document.createDocumentFragment(), node, lastNode;
+                while ( (node = el.firstChild) ) {
+                    lastNode = frag.appendChild(node);
                 }
+                range.insertNode(frag);
+            } else {
+                sel.deleteFromDocument();
             }
-        } else if (document.selection && document.selection.createRange) {
-            range = document.selection.createRange();
-            range.text = replacementText;
         }
     }
     replaceSelectedText("`+s+`");`;
@@ -404,7 +490,7 @@ CmdUtils.getcmd = function getcmd(cmdname) {
 };
 
 // sets clipboard
-CmdUtils.setClipboard = function setClipboard (t) {
+CmdUtils.copyToClipboard = CmdUtils.setClipboard = function setClipboard (t) {
     var input = document.createElement('textarea');
     document.body.appendChild(input);
     input.value = t;
@@ -418,22 +504,35 @@ CmdUtils.unloadCustomScripts = function unloadCustomScripts() {
     CmdUtils.CommandList = CmdUtils.CommandList.filter((c)=>{
         return c['builtIn']==true;
     });
-    
-}
+};
 
-CmdUtils.loadCustomScripts = function loadCustomScripts() {
+CmdUtils.loadCustomScripts = function loadCustomScripts(callback) {
     CmdUtils.unloadCustomScripts();
     // mark built-int commands
     CmdUtils.CommandList.forEach((c)=>{c['builtIn']=true;});
 
     // load custom scripts
     chrome.storage.local.get('customscripts', function(result) {
-    	try {
-    		eval(result.customscripts || "");
-    	} catch (e) {
-    		console.error("custom scripts eval failed", e);
-    	}
+        for (let n in result.customscripts) {
+            try {
+                eval(result.customscripts[n].scripts || "");
+                for (let cc of CmdUtils.CommandList.filter((c)=>{return !c.builtIn && !c._namespace}))
+                    cc._namespace = n;
+            } catch (e) {
+                console.error("custom scripts eval failed", e);
+            }
+        }
+        if (callback)
+           callback(result.customscripts);
     });
+};
+
+CmdUtils.getPref = function(key, callback) {
+    chrome.storage.local.get(null, p => callback(p[key]));
+};
+
+CmdUtils.setPref = function(key, value, callback) {
+    chrome.storage.local.get(null, p => {p[key] = value; chrome.storage.local.set(p)});
 };
 
 // show browser notification with simple limiter 
@@ -443,11 +542,14 @@ CmdUtils.notify = function (message, title) {
     chrome.notifications.create({
         "type": "basic",
         "iconUrl": chrome.extension.getURL("res/icon-128.png"),
-        "title": title || "UbiChr",
+        "title": title || "UbiquityWE",
         "message": message
     });
     CmdUtils.lastNotification = title+"/"+message;
 };
+
+CmdUtils.getPref("parserLanguage", parserLanguage => CmdUtils.parserLanguage = parserLanguage || "en");
+CmdUtils.getPref("maxSuggestions", maxSuggestions=> CmdUtils.maxSuggestions = maxSuggestions || 5);
 
 (function ( $ ) {
     $.fn.blankify = function( url ) {

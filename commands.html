@@ -1,0 +1,80 @@
+<html xmlns="http://www.w3.org/1999/xhtml" style="cursor: auto ! important;" hasBrowserHandlers="true">
+
+<head>
+    <title>Ubiquity Commands</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" media="all" href="options.css"/>
+
+    <script src="lib/jquery-2.2.4.min.js"></script>
+    <script type="application/javascript" src="core.js"></script>
+    <script type="application/javascript" src="commands.js"></script>
+
+</head>
+<body dir="ltr">
+
+<div class="head"><span class="large">Ubiquity: </span>Wherein are listed the commands at your disposal.</div>
+<div id="nav-container">
+    <ul id="nav">
+        <li><a href="https://wiki.mozilla.org/Labs/Ubiquity/Ubiquity_0.5_Author_Tutorial" target="_blank">Tutorial</a>
+        </li>
+        <li class="selected"><a href="options.html">Settings</a></li>
+        <li><a href="commands.html" target="_blank">Your Commands</a></li>
+        <li><a href="https://wiki.mozilla.org/Labs/Ubiquity/Commands_In_The_Wild" target="_blank">Get New Commands</a></li>
+        <li><a href="popup.html" target="_blank">Debug Popup</a></li>
+        <li><a href="edit.html" target="_blank">Hack Ubiquity</a></li>
+    </ul>
+</div>
+
+<br clear="all"/>
+
+<div class="page-tip">
+    <p>You can get to this page at any time using the “list-ubiquity-commands” command.</p>
+    <p>You Have <span id="num-commands"></span> commands.
+        <!-- | <a id="show-hide-help" onclick="">Show Help</a></p> -->
+</div>
+
+<div id="cmdlist-help-div" class="ubiq-tutorial" style="display:none;font-size:100%">
+    <ul>
+        <li>All the commands that Ubiquity recognizes are listed in the right column. The black text is the command's
+            name (what you type into Ubiquity to use it). The grey text explains what the command does.
+        </li>
+        <li>The left column shows all the “feeds” that Ubiquity is subscribed to. Each feed can contain multiple
+            commands.
+        </li>
+        <li>You can view this page sorted by feeds or sorted by commands. Click any of the links next to “sort by”,
+            below.
+        </li>
+        <li>If there's a command you don't want, uncheck the box next to it. You can get the command back by re-checking
+            the box.
+        </li>
+        <li>If there's a whole command feed you don't want, click the “[unsubscribe]” link beneath the feed name. All of
+            the commands in the feed will stop working. If you change your mind, you can re-subscribe at the bottom of
+            the page.
+        </li>
+    </ul>
+</div>
+
+<table width="100%">
+    <thead>
+    <tr>
+        <th colspan="1" width="30%">Categories</th>
+        <th colspan="2" width="70%">Commands</th>
+    </tr>
+    </thead>
+
+    <tbody id="commands-and-feeds-table">
+    </tbody>
+</table>
+
+<br clear="all"/>
+
+<div id="command-feed-graveyard-div" style="display: none;">
+    <h2 id="graveyard">Unsubscribed Feeds</h2>
+    <p id="command-feed-graveyard-header">You used to be subscribed to these. If you want one back, click the
+        “[resubscribe]” link beneath it.</p>
+
+    <ul id="command-feed-graveyard"></ul>
+</div>
+
+</body>
+</html>

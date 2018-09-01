@@ -1,4 +1,4 @@
-console.log("UbiChr v"+CmdUtils.VERSION+" background script says hello");
+console.log("UbiquityWE v"+CmdUtils.VERSION+" background script says hello");
 
 // setup selection event sink
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -9,7 +9,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     switch(request.message)
     {
         case 'selection':
-            CmdUtils.selectedText = request.data || "";
+            CmdUtils.selectedText = request.data.text || "";
+            CmdUtils.selectedHtml = request.data.html || "";
         break;
 
         default:
@@ -33,3 +34,8 @@ chrome.tabs.onHighlighted.addListener( function(higInfo) {
     CmdUtils.updateActiveTab();  
 })
 
+chrome.browserAction.onClicked.addListener(function(tab) {
+   console.log('test');
+});
+
+CmdUtils.loadCustomScripts();

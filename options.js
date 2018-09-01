@@ -1,113 +1,45 @@
-// jshint esversion: 6
 
-// inserts stub (example command)
-function insertExampleStub() {
+$(onDocumentLoad);
 
-    var stubs = {
-  'insertnotifystub': // simple notify command 
-`/* This is a template command. */
-CmdUtils.CreateCommand({
-    name: "1example",
-    description: "A short description of your command.",
-    author: "Your Name",
-    icon: "http://www.mozilla.com/favicon.ico",
-    execute: function execute(args) {
-        CmdUtils.notify("Execute:Your input is: " + args.text);
-    },
-    preview: function preview(pblock, args) {
-        pblock.innerHTML = "Preview:Your input is " + args.text + ".";
-    },
-});
+function onDocumentLoad() {
 
-`
-, 'insertsearchstub': // simple search / preview command (e. g. using ajax)
-`/* This is a template command. */
-CmdUtils.CreateCommand({
-    name: "2example",
-    description: "Commence DuckGoGo search.",
-    icon: "http://www.duckduckgo.com/favicon.ico",
-    execute: function execute(args) {   
-        CmdUtils.addTab("https://duckduckgo.com/?q=" + encodeURIComponent(args.text));
-    },
-    preview: function preview(pblock, args) {
-        var url = "https://duckduckgo.com/html?q=" + encodeURIComponent(args.text);
-        CmdUtils.ajaxGet(url, function(data) {
-            pblock.innerHTML = jQuery("#links", data).html(); 
-        });
-    },
-});
+  if (CmdUtils.PRODUCTION)
+      jQuery("#keybinding-row").remove();
 
-`
-, 'insertenhsearchstub': // enhanced search / preview command
-`/* This is a template command. */
-CmdUtils.makeSearchCommand({
-  name: ["3example"],
-  description: "Searches quant.com",
-  author: {name: "Your Name", email: "your-mail@example.com"},
-  icon: "https://www.qwant.com/favicon-152.png?1503916917494",
-  url: "https://www.qwant.com/?q={QUERY}&t=all",
-  prevAttrs: {zoom: 0.75, scroll: [100/*x*/, 0/*y*/], anchor: ["c_13", "c_22"]},
-});
+  CmdUtils.getPref("parserLanguage", parserLanguage => {
 
-`
-    };
+      var $langSelect = $("#language-select");
+      for (let code in NLParser.ParserRegistry) {
+          let $opt = $("<option>", {val: code, text: NLParser.ParserRegistry[code].name});
+          $opt[0].selected = code === parserLanguage;
+          $langSelect.append($opt);
+      }
 
-    var stub = stubs[this.id];
-    editor.replaceRange(stub, editor.getCursor());
-
-    //editor.setValue( stub + editor.getValue() );
-    saveScripts();
-    return false;
-}
-
-// evaluates and saves scripts from editor
-function saveScripts() {
-    var customscripts = editor.getValue();
-    // save
-    if (typeof chrome !== 'undefined' && chrome.storage) 
-        chrome.storage.local.set({'customscripts': customscripts});
-    
-    // eval
-    try {
-        $("#info").html("evaluated!");
-        eval(customscripts);
-        CmdUtils.unloadCustomScripts(); 
-        CmdUtils.loadCustomScripts(); 
-    } catch (e) {
-        $("#info").html("<span style='background-color:red'>"+e.message+"</span>");
-    }
-    
-    // download link
-    var a = document.getElementById("download");
-    var file = new Blob([customscripts], {type: "text/plain"});
-    a.href = URL.createObjectURL(file);
-    a.download = "custom.js";
-}
-
-// initializes editor
-editor = CodeMirror.fromTextArea( document.getElementById("code"), {
-    mode: "javascript",
-    theme: "ambiance",
-    lineWrapping: true,
-    lineNumbers: true,
-    styleActiveLine: true,
-    matchBrackets: true,
-    gutters: ["CodeMirror-lint-markers"],
-    lint:true,
-    autofocus:true,
-});
-
-editor.on("blur", saveScripts);
-editor.on("change", saveScripts);
-
-$("#insertnotifystub").click( insertExampleStub );
-$("#insertsearchstub").click( insertExampleStub );
-$("#insertenhsearchstub").click( insertExampleStub );
-
-// load scrtips
-if (typeof chrome !== 'undefined' && chrome.storage) {
-    chrome.storage.local.get('customscripts', function(result) {
-        editor.setValue(result.customscripts || "");
-        saveScripts();
+      $langSelect.change(() => {
+        let lang = $langSelect.find(":selected").val();
+        CmdUtils.parserLanguage = lang;
+        CmdUtils.setPref("parserLanguage", lang);
+      });
     });
+
+    CmdUtils.getPref("keyboardScheme", keyboardScheme => {
+        var keyboardSchemeElt = $("#keyboard-scheme");
+        keyboardSchemeElt.val(keyboardScheme || "ace");
+
+        keyboardSchemeElt.change(() => {
+            let scheme = keyboardSchemeElt.find(":selected").val();
+            CmdUtils.setPref("keyboardScheme", scheme);
+        });
+    });
+
+  CmdUtils.getPref("maxSuggestions", maxSuggestions => {
+      jQuery("#max-suggestions").change(function changeMaxSuggestions() {
+          CmdUtils.maxSuggestions = parseInt(maxSuggestions);
+          CmdUtils.setPref("maxSuggestions", this.value);
+      }).val(maxSuggestions || 5);
+  });
+};
+
+function changeLanguageSettings() {
+  UbiquitySetup.languageCode = jQuery("#language-select").val();
 }

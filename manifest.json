@@ -1,20 +1,42 @@
 {
-    "name": "UbiChr - Ubiquity for Chrome",
-    "short_name": "UbiChr",
-    "homepage_url": "https://github.com/rostok/ubichr",
-    "author": "rostok",
-    "version": "0.1.0.9",
-    "description": "Revived Ubiquity for Chrome",
+    "name": "Ubiquity WebExtension",
+    "short_name": "UbiquityWE",
+    "homepage_url": "https://github.com/GChristensen/ubichr",
+    "author": "rostok, gchristnsn",
+    "version": "0.2.0.0",
+    "description": "WebExtension port of Ubiquity",
     "content_security_policy": "script-src 'self' 'unsafe-eval' https://maps.googleapis.com https://cdnjs.cloudflare.com; object-src 'self'",
+     "applications": {
+       "gecko": {
+         "id": "ubiquitywe@firefox",
+         "strict_min_version": "57.0"
+       }
+     },
     "manifest_version": 2,
     "background": {
-        "scripts": ["lib/jquery-2.2.4.min.js", "utils.js", "cmdutils.js", "commands.js", "background.js"],
+        "scripts": [
+          "lib/jquery-2.2.4.min.js", 
+          "lib/template.js", 
+          "utils.js",
+          "cmdutils.js",
+          "parser/contextutils.js",
+          "parser/nounutils.js",
+          "parser/nountypes.js",
+          "parser/suggestion_memory.js",
+          "parser/parser.js",
+          "commands/builtin.js", 
+          "commands/translate.js",
+          "commands/lingvo.js",
+          "commands/javcheck.js",
+          "commands/feedsub.js",
+          "commands/resurrect.js",
+          "background.js"],
         "persistent":true
     },
     "browser_action": {
-        "default_title": "UbiChr",
+        "default_title": "Ubiquity WebExtension",
         "default_popup": "popup.html",
-        "default_icon": "res/icon-128.png"
+        "default_icon": "res/icon-24.png"
     },
     "options_ui": {
         "page": "options.html",
@@ -36,8 +58,7 @@
     }],
     "icons": { "128" : "res/icon-128.png" },
     "permissions": [
-        "http://*/",
-        "https://*/",
+        "<all_urls>",
         "activeTab", 
         "tabs", 
         "clipboardRead", 
