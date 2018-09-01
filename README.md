@@ -36,7 +36,7 @@ commands (which are still compatible with the new Firefox functionality) could b
 * Some commands removed/renamed/added.
 * Some minor fixes.
 
-###Notes
+Notes
 
 * The original Ubiquity commands were sandboxed from the browser API, CmdUtils module
 was the primary interface to it. There are no such restrictions in UbiquityWE: commands
@@ -48,7 +48,7 @@ Find more at [nountypes](https://bitbucket.org/satyr/ubiquity/src/f50c546669f3a6
 and [builtin commands](https://bitbucket.org/satyr/ubiquity/src/f50c546669f3a66979ab7d64af4b166f7d5a488a/ubiquity/standard-feeds/?at=default)
 of the original Ubiquity.
 
-###TODO
+TODO
 
 * Cancellable preview/execution handlers & sort out current preview show/execution order
 * Ubiquity Touch: add a popup near selection a la Oxford Dictionary one to execute predefined 
