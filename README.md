@@ -1,4 +1,4 @@
-# UbiquityWE
+# UbiquityWE <sup>EXPERIMENTAL</sup>
 
 Ubiquity Addon for Firefox Quantum
 
