@@ -20,8 +20,10 @@ but Ubiquity is still immensely useful if you are able to write JavaScript to au
 things you have (web)API for, to make intricate org-mode protocol capture schemes, etc., etc.     
  
 
-This is a fork of the Chrome Ubiquity port by [rostok](https://github.com/rostok/ubichr). 
-At the moment it differs from original UbiChr in the following ways:
+Unfortunately, almost all codebase of the original ubiquity is not functional in 
+Firefox Quantum and there were several attempts to resurrect it. This is a fork of 
+the Chrome Ubiquity addon (UbiChr) by [rostok](https://github.com/rostok/ubichr) which lacked parser. 
+At the moment UbiquityWE differs from the original UbiChr in the following ways:
 
 * Works nicely in Firefox 60+ (also works in Chrome).
 * The fully functional parser of the last version of the original "legacy" Ubiquity by 
