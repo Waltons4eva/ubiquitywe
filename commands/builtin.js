@@ -317,6 +317,21 @@ CmdUtils.CreateCommand({
 });
 
 CmdUtils.CreateCommand({
+    name: "dark flow",
+    argument: [{role: "object", nountype: noun_arb_text, label: "URL"}],
+    description: "Follow URL in Dark Flow",
+    homepage: "https://github.com/GChristensen/dark-flow#readme",
+    icon: "https://github.com/GChristensen/dark-flow/blob/master/firefox/icons/icon-32.png?raw=true",
+    builtIn: true,
+    hidden: true,
+    execute: function execute({object: {text}}) {
+        browser.runtime.sendMessage("dark-flow@firefox", {message: "dark-flow:follow-url", url: text}, null);
+        CmdUtils.closePopup();
+    },
+    preview: "Follow URL in Dark Flow"
+});
+
+CmdUtils.CreateCommand({
     names: ["google"],
     _namespace: "Search",
     description: "Search on Google for the given words",
