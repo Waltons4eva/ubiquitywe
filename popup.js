@@ -127,7 +127,7 @@ function ubiq_execute() {
 }
 
 function ubiq_help() {
-    var html = '<p>Type the name of a command and press Enter to execute it, or <b>help</b> for assistance.</p>';
+    var html = '<div style="padding: 5px"><p>Type the name of a command and press Enter to execute it, or <b>help</b> for assistance.</p>';
     html += "<p>commands loaded:<BR>";
     html += CmdUtils.CommandList.map((c)=>{
         return "<span fakeattr='"+c.name+"' href=# title='"+c.description+"'>"+(c.builtIn ? c.name : "<u>"+c.name+"</u>")+"</span>";
@@ -136,7 +136,7 @@ function ubiq_help() {
     html += "<u>Keys:</u><br>";
     html += "Ctrl-C - copy preview to clipboard<br>";
     html += "up/down - cycle through commands suggestions<br>";
-    html += "F5 - reload the extension";
+    html += "F5 - reload the extension</div>";
     return html;
 }
 

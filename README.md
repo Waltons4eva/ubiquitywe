@@ -4,7 +4,7 @@ Ubiquity Addon for Firefox Quantum
 
 More at: https://wiki.mozilla.org/Labs/Ubiquity/Ubiquity_0.5_User_Tutorial
 
-[DOWNLOAD (Firefox Add-On)](https://github.com/GChristensen/ubichr/releases/download/v0.2.0.8/ubiquity_webeextension.xpi) :: [VIDEO MANUAL](https://youtu.be/zHOO-k5jpIU)
+[DOWNLOAD (Firefox Add-On)](https://github.com/GChristensen/ubichr/releases/download/v0.2.0.10/ubiquity_webeextension.xpi) :: [VIDEO MANUAL](https://youtu.be/zHOO-k5jpIU)
 
 ![screen](screen.png?raw=true)
 
