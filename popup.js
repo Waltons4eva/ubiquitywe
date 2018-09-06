@@ -170,7 +170,7 @@ function ubiq_decorate_icon(icon) {
     if (!icon) {
         icon = 'res/spacer.png';
     }
-    icon = '<img src="' + icon + '" border="0" alt="" onerror="_ubiq_image_error(this);" align="absmiddle"> ';
+    icon = '<img src="' + icon + '" border="0" alt="" align="absmiddle"> ';
     return icon;
 }
 
@@ -371,5 +371,4 @@ $(window).on('load', function() {
 });
 
 $(window).on('unload', function() {
-  console.log("unloading...")
 });

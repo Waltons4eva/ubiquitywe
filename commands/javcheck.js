@@ -87,12 +87,12 @@
                                     title.style.color = "#80ccff";
                                     title.href = title.href;
 
-                                    /*var link_t = jrow.find("td:nth-child(2) i.fa-download").get(0);
+                                    var link_t = jrow.find("td:nth-child(2) i.fa-download").get(0);
                                     link_t.innerHTML = "T";
                                     link_t.parentElement.href = link_t.parentElement.href;
 
                                     var link_m = jrow.find("td:nth-child(2) i.fa-magnet").get(0);
-                                    link_m.innerHTML = "U";*/
+                                    link_m.innerHTML = "U";
 
                                     var size = jrow.find("td:nth-child(3)").get(0);
                                     size.style.whiteSpace = "nowrap";
@@ -167,12 +167,15 @@
                                     title.style.color = "#ff8533";
                                     title.href = title.href;
 
-                                    /*var link_t = jrow.find("td:nth-child(2) .icon-floppy").get(0);
-                                    link_t.innerHTML = "T";
-                                    link_t.parentElement.href = link_t.parentElement.href;
+                                    var link_t = jrow.find("td:nth-child(2) .icon-floppy");
+                                    link_t.get(0).innerHTML = "T";
+                                    link_t.get(0).parentElement.href = link_t.get(0).parentElement.href;
+                                    link_t.css("display", "inline");
+                                    link_t.css("margin-left", "5px");
 
-                                    var link_m = jrow.find("td:nth-child(2) .icon-magnet").get(0);
-                                    link_m.innerHTML = "U";*/
+                                    var link_m = jrow.find("td:nth-child(2) .icon-magnet");
+                                    link_m.get(0).innerHTML = "U";
+                                    link_m.css("display", "inline");
 
                                    jrow.find("td:nth-child(4)").css("color", "green");
                                    jrow.find("td:nth-child(5)").css("color", "red");

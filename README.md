@@ -4,7 +4,7 @@ Ubiquity Addon for Firefox Quantum
 
 More at: https://wiki.mozilla.org/Labs/Ubiquity/Ubiquity_0.5_User_Tutorial
 
-[DOWNLOAD (Firefox Add-On)](https://github.com/GChristensen/ubichr/releases/download/v0.2.0.0/ubiquity_webeextension.xpi?raw=true) :: [VIDEO MANUAL](https://youtu.be/zHOO-k5jpIU)
+[DOWNLOAD (Firefox Add-On)](https://github.com/GChristensen/ubichr/releases/download/v0.2.0.5/ubiquity_webeextension.xpi?raw=true) :: [VIDEO MANUAL](https://youtu.be/zHOO-k5jpIU)
 
 ![screen](screen.png?raw=true)
 
@@ -54,3 +54,4 @@ TODO
 * Ubiquity Touch: add a popup near selection a la Oxford Dictionary one to execute predefined 
 commands with set arguments on the selection (useful for various dictionary/clipping apps 
 on touch devices)
+* Implement permanent suggestion statistics (SuggestionMemory)

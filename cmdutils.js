@@ -4,7 +4,7 @@
 if (!CmdUtils) var CmdUtils = { 
     VERSION: chrome.runtime.getManifest().version,
     DEBUG: false,
-    PRODUCTION: true,
+    PRODUCTION: false,
     CommandList: [],
     jQuery: jQuery,
     backgroundWindow: window,
