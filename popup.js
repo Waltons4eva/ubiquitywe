@@ -47,6 +47,7 @@ function ubiq_set_preview(v, prepend) {
     prepend = prepend === true; 
     var el = ubiq_preview_el();
     if (!el) return;
+    v = (v.indexOf("<") >= 0 || v.indexOf(">") >= 0)? v: '<div id="ubiq-help-wrapper">' + v + '</div>';
     el.innerHTML = v + (prepend ? "<hr/>" + el.innerHTML : "");
     //if (v!="") ubiq_set_suggestions("");
 }
@@ -127,7 +128,7 @@ function ubiq_execute() {
 }
 
 function ubiq_help() {
-    var html = '<div style="padding: 5px"><p>Type the name of a command and press Enter to execute it, or <b>help</b> for assistance.</p>';
+    var html = '<div id="ubiq-help-wrapper"><p>Type the name of a command and press Enter to execute it, or <b>help</b> for assistance.</p>';
     html += "<p>commands loaded:<BR>";
     html += CmdUtils.CommandList.map((c)=>{
         return "<span fakeattr='"+c.name+"' href=# title='"+c.description+"'>"+(c.builtIn ? c.name : "<u>"+c.name+"</u>")+"</span>";
@@ -371,4 +372,6 @@ $(window).on('load', function() {
 });
 
 $(window).on('unload', function() {
+    CmdUtils.selectedText = "";
+    CmdUtils.selectedHtml = "";
 });

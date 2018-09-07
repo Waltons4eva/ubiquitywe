@@ -38,10 +38,10 @@ CmdUtils.CreateCommand({
 CmdUtils.CreateCommand({
     names: ["reload-ubiquity"],
     _namespace: "Ubiquity",
-    description: "Reloads Ubiquity extension",
+    description: "Reloads Ubiquity extension.",
     icon: "res/icon-24.png",
     builtIn: true,
-    preview: "reloads Ubiquity extension",
+    preview: "Reloads Ubiquity extension.",
     execute: ()=>{
         chrome.runtime.reload();
     }
@@ -49,36 +49,36 @@ CmdUtils.CreateCommand({
 
 CmdUtils.CreateCommand({
     names: ["debug-popup"],
-    description: "Open popup in window",
+    description: "Debug the popup window in a separate tab.",
     _namespace: "Ubiquity",
     _hidden: true,
     builtIn: true,
     icon: "res/icon-24.png",
-    preview: "lists all avaiable commands",
+    preview: "Debug the popup window in a separate tab.",
     execute: CmdUtils.SimpleUrlBasedCommand("popup.html")
 });
 
 CmdUtils.CreateCommand({
     name: "replace-selection",
     _namespace: "Browser",
-    description: "replaces current selection with entered text",
+    description: "Replaces current selection with entered text.",
+    preview: "eplaces current selection with entered text.",
     icon: "res/icon-24.png",
     builtIn: true,
     arguments: [{role: "object", nountype: noun_arb_text, label: "text"}],
     execute: function execute({object: {text}}) {
         CmdUtils.setSelection(text);
         CmdUtils.closePopup();
-    },
-    preview: "replace selected text with args",
+    }
 });
 
 CmdUtils.CreateCommand({
     name: "new-tab",
     _namespace: "Browser",
-    description: "Open a new tab (or window) with the specified URL",
+    description: "Open a new tab (or window) with the specified URL.",
     icon: "res/icon-24.png",
     builtIn: true,
-    preview: "Open a new tab (or window) with the specified URL",
+    preview: "Open a new tab (or window) with the specified URL.",
     arguments: [{role: "object", nountype: noun_arb_text, label: "text"}],
     execute: function ({object: {text}}) {
         if (!text.match('^https?://')) text = "http://"+text;
@@ -90,10 +90,10 @@ CmdUtils.CreateCommand({
 CmdUtils.CreateCommand({
     name: "close",
     _namespace: "Browser",
-    description: "Close the current tab",
+    description: "Close the current tab.",
     icon: "res/icon-24.png",
     builtIn: true,
-    preview: "Close the current tab",
+    preview: "Close the current tab.",
     execute: function (directObj) {
         CmdUtils.closeTab();
         CmdUtils.closePopup();
@@ -103,10 +103,10 @@ CmdUtils.CreateCommand({
 CmdUtils.CreateCommand({
     name: "print",
     _namespace: "Browser",
-    description: "Print the current page",
+    description: "Print the current page.",
     icon: "res/icon-24.png",
     builtIn: true,
-    preview: "Print the current page",
+    preview: "Print the current page.",
     execute: function (directObj) {
         chrome.tabs.executeScript( { code:"window.print();" } );
         CmdUtils.closePopup();
@@ -240,10 +240,9 @@ CmdUtils.CreateCommand({
 CmdUtils.CreateCommand({
     name: "calc",
     _namespace: "Utility",
-    description: desc = "Evals math expressions",
+    description: desc = "Evaluates math expressions.",
     icon: "https://png.icons8.com/metro/50/000000/calculator.png",
     builtIn: true,
-    require: "https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.20.1/math.min.js",
     arguments: [{role: "object", nountype: noun_arb_text, label: "text"}],
     preview: pr = function preview(previewBlock, {object: {text}}) {
         if (text.trim()!='') {
@@ -319,7 +318,7 @@ CmdUtils.CreateCommand({
 CmdUtils.CreateCommand({
     name: "dark flow",
     argument: [{role: "object", nountype: noun_arb_text, label: "URL"}],
-    description: "Follow URL in Dark Flow",
+    description: "Follow the URL in Dark Flow.",
     homepage: "https://github.com/GChristensen/dark-flow#readme",
     icon: "https://github.com/GChristensen/dark-flow/blob/master/firefox/icons/icon-32.png?raw=true",
     builtIn: true,
@@ -328,19 +327,19 @@ CmdUtils.CreateCommand({
         browser.runtime.sendMessage("dark-flow@firefox", {message: "dark-flow:follow-url", url: text}, null);
         CmdUtils.closePopup();
     },
-    preview: "Follow URL in Dark Flow"
+    preview: "Follow the URL in Dark Flow"
 });
 
 CmdUtils.CreateCommand({
     names: ["google"],
     _namespace: "Search",
-    description: "Search on Google for the given words",
+    description: "Search by using Google for the given words.",
     icon: "http://www.google.com/favicon.ico",
     builtIn: true,
     arguments: [{role: "object", nountype: noun_arb_text, label: "text"}],
     preview: async function define_preview(pblock, {object: {text}}) {
         text = text.trim();
-        pblock.innerHTML = "Search on Google for " + text;
+        pblock.innerHTML = "Search Google for: " + text;
         if (text!="") {
             var doc = await CmdUtils.get("https://www.google.com/search?q="+encodeURIComponent(text) );
             doc = jQuery("div#rso", doc)
@@ -359,7 +358,7 @@ CmdUtils.CreateCommand({
 CmdUtils.CreateCommand({
     name: "maps",
     _namespace: "Search",
-    description: "Shows a location on the map",
+    description: "Shows a location on the map.",
     icon: "http://www.google.com/favicon.ico",
     builtIn: true,
     timeout: 500,
@@ -449,7 +448,7 @@ CmdUtils.CreateCommand({
 CmdUtils.CreateCommand({
     name: "wikipedia",
     _namespace: "Search",
-    description: "Search Wikipedia for the given words",
+    description: "Search Wikipedia for the given words.",
     icon: "http://en.wikipedia.org/favicon.ico",
     builtIn: true,
     arguments: [{role: "object", nountype: noun_arb_text, label: "text"}],
