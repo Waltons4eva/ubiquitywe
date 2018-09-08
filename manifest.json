@@ -17,7 +17,7 @@
         "scripts": [
           "lib/jquery.min.js", 
           "lib/template.js",
-          "lib/mathjs.min.js",
+          "lib/math_parser.js",
           "utils.js",
           "cmdutils.js",
           "parser/contextutils.js",

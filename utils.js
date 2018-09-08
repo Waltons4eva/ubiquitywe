@@ -192,7 +192,7 @@ Utils.regexp = function(pattern, flags) {
 Utils.extend = function(target) {
     for (let i = 1, l = arguments.length; i < l; ++i) {
         let obj = arguments[i];
-        for (let key of keys(obj)) {
+        for (let key of Object.keys(obj)) {
             let g, s;
             (g = Object.getOwnPropertyDescriptor(obj, key).get) && Object.defineProperty(target, key, {get: g});
             (s = Object.getOwnPropertyDescriptor(obj, key).set) && Object.defineProperty(target, key, {set: s});

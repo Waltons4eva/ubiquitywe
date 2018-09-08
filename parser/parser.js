@@ -797,10 +797,9 @@ NLParser = {};
                     try {
                         suggestions = noun.suggest(text, html, callback, selectionIndices);
                     } catch (e) {
-                        console.log(e);
                         console.log(
                             'Exception occured while getting suggestions for "' +
-                            this._verb.name + '" with noun "' + (noun.name || noun.id) + '".');
+                            this._verb.name + '" with noun "' + (noun.name || noun.id) + '": ' + e.message);
                         return false;
                     }
                     suggestions = this._handleSuggestions(argName, suggestions);

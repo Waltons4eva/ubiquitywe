@@ -30,7 +30,7 @@ function L(pattern, substitute1, substitute2) {
 }
 
 function H(arg) {
-    return arg;
+    return Utils.escapeHtml(arg);
 }
 
 CmdUtils.log = m => console.log(m);

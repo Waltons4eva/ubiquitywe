@@ -222,34 +222,71 @@ CmdUtils.CreateCommand({
     },
 });
 
-CmdUtils.CreateCommand({
-    name: "calc",
-    _namespace: "Utility",
-    description: desc = "Evaluates math expressions.",
-    icon: "https://png.icons8.com/metro/50/000000/calculator.png",
-    builtIn: true,
-    arguments: [{role: "object", nountype: noun_arb_text, label: "text"}],
-    preview: pr = function preview(previewBlock, {object: {text}}) {
-        if (text.trim()!='') {
-            var m = new math.parser();
-            text = text.replace(/,/g,".");
-            text = text.replace(/ /g,"");
-            previewBlock.innerHTML = m.eval(text);
-            //CmdUtils.ajaxGet("http://api.mathjs.org/v1/?expr="+encodeURIComponent(args.text), (r)=>{ previewBlock.innerHTML = r; });
+// CmdUtils.CreateCommand({
+//     name: "calc",
+//     _namespace: "Utility",
+//     description: desc = "Evaluates math expressions.",
+//     icon: "https://png.icons8.com/metro/50/000000/calculator.png",
+//     builtIn: true,
+//     arguments: [{role: "object", nountype: noun_arb_text, label: "text"}],
+//     preview: pr = function preview(previewBlock, {object: {text}}) {
+//         if (text.trim()!='') {
+//             var m = new math.parser();
+//             text = text.replace(/,/g,".");
+//             text = text.replace(/ /g,"");
+//             previewBlock.innerHTML = m.eval(text);
+//             //CmdUtils.ajaxGet("http://api.mathjs.org/v1/?expr="+encodeURIComponent(args.text), (r)=>{ previewBlock.innerHTML = r; });
+//         }
+//         else
+//             previewBlock.innerHTML = desc;
+//     },
+//     execute: function ({object: {text}}) {
+//         if (text.trim()!='') {
+//             var m = new math.parser();
+//             text = text.replace(",",".");
+//             text = text.replace(" ","");
+//             text = m.eval(text);
+//             CmdUtils.setSelection(text);
+//         }
+//     }
+// });
+
+const noun_calc = {
+    label: "expression",
+    suggest: function (txt, htm, cb, si) {
+        if (!this._mathlike.test(txt)) return []
+        try {
+            var result = Parser.evaluate(txt)
+                , score = result === txt ? .3 : 1
         }
-        else
-            previewBlock.innerHTML = desc;
+        catch (e) {
+            console.log(e.message);
+            result = e.message
+            score  = .1
+        }
+        return [NounUtils.makeSugg(txt, htm, result, score, si)];
     },
-    execute: function ({object: {text}}) {
-        if (text.trim()!='') {
-            var m = new math.parser();
-            text = text.replace(",",".");
-            text = text.replace(" ","");
-            text = m.eval(text);
-            CmdUtils.setSelection(text);
-        }
-    }
+    _mathlike: /^[\w.+\-*\/^%(, )|]+$/,
+};
+
+CmdUtils.CreateCommand({
+    name: "calculate",
+    description:
+        'Calculates using\
+         <a href="http://silentmatt.com/javascript-expression-evaluator/">\
+         JavaScript Expression Evaluator</a>.',
+    help: "Try: <code>22/7, 3^4^5, sin(sqrt(log(PI)))</code>",
+    icon: "chrome://ubiquity/skin/icons/calculator.png",
+    _namespace: "Utility",
+    builtIn: true,
+    author: "satyr",
+    license: "Public domain",
+    argument: noun_calc,
+    preview: function (pb, {object: {data, score}}) {
+        pb.innerHTML = data? (score < .3 ? "<em style='color: red'>" : "<strong>") + data: "";
+    },
 });
+
 
 var bitly_api_user = "ubiquityopera";
 var bitly_api_key = "R_59da9e09c96797371d258f102a690eab";

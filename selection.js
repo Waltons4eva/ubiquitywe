@@ -1,10 +1,13 @@
 // this will send message to background and set CmdUtils.selectedText
 function __ubiq_get_sel() {
     var sel = window.getSelection();
-    var cc = sel.getRangeAt(0).cloneContents();
-    var div = document.createElement('div');
-    div.appendChild(cc);
-    return {text: sel.toString(), html: div.innerHTML};
+    var ran = sel.getRangeAt(0);
+    var cc = ran? ran.cloneContents(): null;
+    if (cc) {
+        var div = document.createElement('div');
+        div.appendChild(cc);
+    }
+    return {text: sel.toString(), html: cc? div.innerHTML: undefined};
 }
 
 var __ubiq_send_sel = function(event) {
