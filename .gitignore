@@ -4,3 +4,4 @@ web-ext-artifacts
 .web-extension-id
 scripts/sign.bat
 commands/sovsport.js
+res/flags.js

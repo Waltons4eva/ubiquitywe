@@ -109,9 +109,9 @@
             /*---------------------------------------------------------------------------*/
             preview: function (pblock, input) {
                 var target = get_target(input);
-                var instrument = input.instrument.summary;
+                var instrument = input.instrument? input.instrument.summary: "";
 
-                if (instrument == "")
+                if (instrument === "")
                     instrument = (function () {
                         for (first in resurrect_archiveServices)
                             break;
@@ -127,7 +127,7 @@
             /*---------------------------------------------------------------------------*/
             execute: function (input) {
                 var target = get_target(input);
-                var instrument = input.instrument.summary;
+                var instrument = input.instrument? input.instrument.summary: "";
 
                 if (instrument == "")
                     instrument = (function () {

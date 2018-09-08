@@ -120,7 +120,8 @@
                             }
                         }
 
-                        td.innerHTML = "sukebei.nyaa.si: " + (elt ? "<br>" + elt.outerHTML : "NO");
+                        if (td)
+                            td.innerHTML = "sukebei.nyaa.si: " + (elt ? "<br>" + elt.outerHTML : "NO");
                     }
 
                     self._sukesiRequest = null;
@@ -205,7 +206,8 @@
                             }
                         }
 
-                        td.innerHTML = "sukebei.pantsu.cat: " + (elt ? "<br>" + elt.outerHTML : "NO");
+                        if (td)
+                            td.innerHTML = "sukebei.pantsu.cat: " + (elt ? "<br>" + elt.outerHTML : "NO");
 
                     }
 

@@ -1,7 +1,7 @@
 // this will send message to background and set CmdUtils.selectedText
 function __ubiq_get_sel() {
     var sel = window.getSelection();
-    var ran = sel.getRangeAt(0);
+    var ran = sel.rangeCount? sel.getRangeAt(0): null;
     var cc = ran? ran.cloneContents(): null;
     if (cc) {
         var div = document.createElement('div');

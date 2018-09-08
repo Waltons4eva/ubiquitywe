@@ -9,6 +9,7 @@
 
 var ubiq_selected_command = 0;
 var ubiq_selected_sent;
+var ubiq_suggestions;
 
 var ubiq_nl_parser;
 
@@ -34,17 +35,17 @@ function ubiq_preview_el() {
 
 function ubiq_preview_set_visible(v) {
     document.getElementById('ubiq-command-panel').style.display = v ? '' : 'none';
-    if (!v)
-        ubiq_suggestion_el().classList.add("result");
-    else
-        ubiq_suggestion_el().classList.remove("result");
+    // if (!v)
+    //     ubiq_suggestion_el().classList.add("result");
+    // else
+    //     ubiq_suggestion_el().classList.remove("result");
 }
 
 
 // sets preview panel, prepend allows to add new contnet to the top separated by HR
 function ubiq_set_preview(v, prepend) {
     v = v || "";
-    prepend = prepend === true; 
+    prepend = prepend === true;
     var el = ubiq_preview_el();
     if (!el) return;
     v = (v.indexOf("<") >= 0 || v.indexOf(">") >= 0)? v: '<div id="ubiq-help-wrapper">' + v + '</div>';
@@ -57,9 +58,9 @@ function ubiq_suggestion_el() {
 }
 
 // sets result panel, prepend allows to add new contnet to the top separated by HR
-function ubiq_set_suggestions(v, prepend) {
-    v = v || "";
-    prepend = prepend === true; 
+function ubiq_set_suggestions(v, prepend, hide) {
+    v = v || (hide? "": "<ul/>");
+    prepend = prepend === true;
     var el = ubiq_suggestion_el();
     if (!el) return;
     el.innerHTML = v + (prepend ? "<hr/>" + el.innerHTML : "");
@@ -130,17 +131,21 @@ function ubiq_execute() {
 }
 
 function ubiq_help() {
-    var html = '<div id="ubiq-help-wrapper"><p>Type the name of a command and press Enter to execute it, or <b>help</b> for assistance.</p>';
-    html += "<p>commands loaded:<BR>";
+    var html = "<div id='ubiq-help-wrapper'><p>Type the name of a command and press Enter to execute it. "
+        + "Use <b>help</b> command for assistance.</p>";
+    html += "<div class='ubiq-help-heading'>Available commands</div>";
     html += CmdUtils.CommandList.map((c)=>{
-        return "<span fakeattr='"+c.name+"' href=# title='"+c.description+"'>"+(c.builtIn ? c.name : "<u>"+c.name+"</u>")+"</span>";
+        return "<span fakeattr='"+c.name+"' href='#' title='"+c.description+"'>"
+            + (c.builtIn ? c.name : "<u>"+c.name+"</u>")+"</span>";
     }).sort().join(", ");
     html += "<p>";
-    html += "<u>Keys:</u><br>";
+    html += "<div class='ubiq-help-heading'>Keys</div>";
     html += "Ctrl-C - copy preview to clipboard<br>";
     html += "up/down - cycle through commands suggestions<br>";
     html += "F5 - reload the extension</div>";
-    return html;
+
+    ubiq_set_preview(html);
+    ubiq_preview_set_visible(true);
 }
 
 function ubiq_focus() {
@@ -165,9 +170,59 @@ function ubiq_command() {
     return cmd.value;
 }
 
+// TODO: refactor evil side effects
+function ubiq_ensure_command_in_range() {
+    let in_range = false;
+    // Don't navigate outside boundaries of the list of matches
+    if (ubiq_suggestions && ubiq_selected_command >= ubiq_suggestions.length) {
+        ubiq_selected_command = ubiq_suggestions.length - 1;
+    }
+    else if (ubiq_suggestions && ubiq_selected_command < 0) {
+        ubiq_selected_command = 0;
+    }
+    else if (ubiq_suggestions)
+        in_range = true;
+
+    return in_range;
+}
+
+// TODO: refactor evil side effects
+function get_next_comand_index(asc) {
+    let index = ubiq_selected_command + (asc? 1: -1);
+
+    // Don't navigate outside boundaries of the list of matches
+    if (ubiq_suggestions && index >= ubiq_suggestions.length) {
+        index = ubiq_suggestions.length - 1;
+    }
+    else if (index < 0) {
+        index = 0;
+    }
+    else if (!ubiq_suggestions)
+        return -1;
+
+    return index;
+}
+
+function ubiq_select_command(index) {
+    ubiq_ensure_command_in_range();
+    if (ubiq_selected_command != index) {
+        let previous_command = ubiq_selected_command;
+        ubiq_selected_command = index;
+
+        jQuery("#suggestion-item-" + previous_command).parent().removeClass("selected");
+        var elt = jQuery(`#suggestion-item-${index}`);
+        elt.parent().addClass('selected');
+
+        ubiq_selected_sent = ubiq_suggestions[ubiq_selected_command];
+        ubiq_autocomplete();
+        ubiq_set_tip(ubiq_selected_sent._verb.cmd.description);
+        ubiq_show_preview(ubiq_selected_sent);
+    }
+}
+
 function _ubiq_image_error(elm) { 
     elm.src = 'res/spacer.png';
-};
+}
 
 function ubiq_decorate_icon(icon) {
     if (!icon) {
@@ -205,24 +260,21 @@ function ubiq_show_matching_commands(text) {
     var query = ubiq_nl_parser.newQuery(text, null, CmdUtils.maxSuggestions, true);
 
     query.onResults = () => {
-        // Don't navigate outside boundaries of the list of matches
-        if (ubiq_selected_command >= query.suggestionList.length) {
-            ubiq_selected_command = query.suggestionList.length - 1;
-        } else if (ubiq_selected_command < 0) {
-            ubiq_selected_command = 0;
-        }
+        ubiq_suggestions = query.suggestionList;
+
+        ubiq_ensure_command_in_range();
 
         // We have matches, show a list
-        if (query.suggestionList.length > 0) {
+        if (ubiq_suggestions.length > 0) {
             var suggestions_div = document.createElement('div');
             var suggestions_list = document.createElement('ul');
 
-            ubiq_set_tip(query.suggestionList[ubiq_selected_command]._verb.cmd.description );
-            ubiq_show_preview(query.suggestionList[ubiq_selected_command]);
+            ubiq_set_tip(ubiq_suggestions[ubiq_selected_command]._verb.cmd.description );
+            ubiq_show_preview(ubiq_suggestions[ubiq_selected_command]);
 
-            for (let i in query.suggestionList) {
+            for (let i in ubiq_suggestions) {
                 var is_selected = (i == ubiq_selected_command);
-                var s = query.suggestionList[i];
+                var s = ubiq_suggestions[i];
                 var li = document.createElement('LI');
                 li.innerHTML = `<div id="suggestion-item-${i}"><table cellspacing="1" cellpadding="1">
                         <tr><td>${ubiq_decorate_icon(s.icon)}</td><td>${s.displayHtml}</td></tr></table></div>`;
@@ -235,19 +287,9 @@ function ubiq_show_matching_commands(text) {
 
             suggestions_div.appendChild(suggestions_list);
             ubiq_suggestion_el().innerHTML = suggestions_div.innerHTML; // shouldn't clear the preview
-            for (let i in query.suggestionList)
+            for (let i in ubiq_suggestions)
                 jQuery(`#suggestion-item-${i}`).click((e) => {
-                    jQuery("#suggestion-item-" + ubiq_selected_command).parent().removeClass("selected");
-                    var elt = jQuery(`#suggestion-item-${i}`);
-                    elt.parent().addClass('selected');
-                    var ord = elt.prop("id").split("-");
-                    ubiq_selected_command = parseInt(ord[ord.length - 1]);
-                    ubiq_selected_sent = query.suggestionList[ubiq_selected_command];
-                    ubiq_autocomplete();
-                    console.log(ubiq_selected_sent._verb.cmd.description );
-                    ubiq_set_tip(ubiq_selected_sent._verb.cmd.description );
-                    ubiq_show_preview(ubiq_selected_sent);
-
+                    ubiq_select_command(i);
                 });
             ubiq_preview_set_visible(true);
         } else {
@@ -255,9 +297,9 @@ function ubiq_show_matching_commands(text) {
             ubiq_selected_command = -1;
             ubiq_selected_sent = null;
             ubiq_clear();
-            ubiq_set_suggestions(ubiq_help());
-            if (text.length)
-                ubiq_set_suggestions('no commands found for <b>' + ubiq_html_encode(text) + '</b>', true);
+            ubiq_help();
+            //if (text.length)
+            //    ubiq_set_suggestions('no commands found for <b>' + ubiq_html_encode(text) + '</b>', true);
         }
     };
 
@@ -298,30 +340,44 @@ function ubiq_keydown_handler(evt) {
         var el = ubiq_preview_el();
         if (!el) return;
         CmdUtils.setClipboard( el.innerText );
+        return;
     }
 
     // Cursor up
     if (kc == 38) {
-        ubiq_selected_command--;
-        lcmd = "";
         evt.preventDefault();
+        lcmd = "";
+        ubiq_select_command(get_next_comand_index(false));
+        return;
     }
     // Cursor Down
     else if (kc == 40) {
-        ubiq_selected_command++;
-        lcmd = "";
         evt.preventDefault();
+        lcmd = "";
+        ubiq_select_command(get_next_comand_index(true));
+        return;
     }
-    if (lcmd==ubiq_command()) return;
-    ubiq_show_matching_commands();
-    lcmd=ubiq_command();
+
+    lcmd = ubiq_command();
 }
 
 function ubiq_keyup_handler(evt) {
-    if (lcmd==ubiq_command()) return;
+    if (!evt) return;
+    var kc = evt.keyCode;
+    if (lcmd == ubiq_command()) return;
+
+    // Cursor up
+    if (kc == 38) {
+        return;
+    }
+    // Cursor Down
+    else if (kc == 40) {
+        return;
+    }
+
     ubiq_save_input();
     ubiq_show_matching_commands();
-    lcmd=ubiq_command();
+    lcmd = ubiq_command();
 }
 
 function ubiq_save_input() {
@@ -343,7 +399,8 @@ function ubiq_load_input(callback) {
 $(window).on('load', function() {
         if (typeof CmdUtils !== 'undefined' && typeof Utils !== 'undefined' && typeof backgroundPage !== 'undefined' ) {
         CmdUtils.setPreview = ubiq_set_preview;
-        CmdUtils.setResult = ubiq_set_suggestions;
+        CmdUtils.setSuggestions = ubiq_set_suggestions;
+        CmdUtils.setPreviewVisible = ubiq_preview_set_visible;
         CmdUtils.popupWindow = window;
 
         ubiq_nl_parser = NLParser.makeParserForLanguage(CmdUtils.parserLanguage, CmdUtils.CommandList);
@@ -368,7 +425,7 @@ $(window).on('load', function() {
             "type": "basic",
             "iconUrl": chrome.extension.getURL("res/icon-128.png"),
             "title": "UbiquityWE",
-            "message": "there is something wrong, try restarting UbiquityWE"
+            "message": "There is something wrong, try restarting UbiquityWE"
         });
     }
 });

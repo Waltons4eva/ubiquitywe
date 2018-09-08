@@ -347,36 +347,52 @@ for (let ntl of [noun_type_lang_google, noun_type_lang_wikipedia]) {
   ',
         author: "satyr",
         execute: function translate_execute({object, goal, source}) {
-            var from = source.data || ""
-                , to = goal.data
+            let from = "en", to = "en";
+
+            if (source && source.data)
+                from = source.data;
+
+            if (goal && goal.data)
+                to = goal.data;
+
             if (object.text && object.text.length <= MS_TRANSLATOR_LIMIT)
                 translate(object, from, to, CmdUtils.setSelection.bind(CmdUtils))
             else
                 CmdUtils.injectJs(
                     "http://labs.microsofttranslator.com/bookmarklet/default.aspx?f=js" +
-                    "&from=" + (from || "en") +
-                    "&to=" + (to || "en"))
+                    "&from=" + from  +
+                    "&to=" + to)
             CmdUtils.closePopup();
         },
         preview: function translate_preview(pblock, {object, goal, source}) {
-            var limitExceeded = object.text.length > MS_TRANSLATOR_LIMIT
+            let limitExceeded = object.text && object.text.length > MS_TRANSLATOR_LIMIT;
+
             if (!object.text || limitExceeded) {
                 let ph = _(`\
-              Loads <a href="http://www.microsofttranslator.com">Bing Translator</a>\
-              toolbar.\
-            `)
+                      Loads <a href="http://www.microsofttranslator.com">Bing Translator</a>\
+                      toolbar.\
+                    `);
                 if (limitExceeded)
                     ph += '<p><em class="error">' +
                         _("The text you selected exceeds the API limit.") +
-                        '</em>'
-                pblock.innerHTML = ph
+                        '</em>';
+                pblock.innerHTML = ph;
                 return
             }
-            var name = goal.text
-                , phtml = _("Translates the selected text:")
-            pblock.innerHTML = phtml + " ..."
+
+            let phtml = _("Translates the selected text: ");
+            pblock.innerHTML = phtml + " ...";
+
+            let from = "en", to = "en";
+
+            if (source && source.data)
+                from = source.data;
+
+            if (goal && goal.data)
+                to = goal.data;
+
             translate(
-                object, source.data || "", goal.data,
+                object, from, to,
                 CmdUtils.previewCallback(pblock, function show(html) {
                     pblock.innerHTML = phtml + "<br><br>" + html
                 })
@@ -427,7 +443,7 @@ for (let ntl of [noun_type_lang_google, noun_type_lang_wikipedia]) {
         },
         preview: function gtranslate_preview(pb, {object, goal}) {
             pb.innerHTML =
-                _("Translates <code>${url}</code> to <strong>${language}</strong>.", {
+                _("Translates <code>page</code> to <strong>selected language</strong>.", {
                     url: Utils.escapeHtml(object.text),
                     language: goal.text || "English",
                 })

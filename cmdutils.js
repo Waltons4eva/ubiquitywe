@@ -3,7 +3,7 @@
 
 if (!CmdUtils) var CmdUtils = { 
     VERSION: chrome.runtime.getManifest().version,
-    DEBUG: false,
+    DEBUG: undefined,
     PRODUCTION: false,
     CommandList: [],
     jQuery: jQuery,
@@ -13,8 +13,9 @@ if (!CmdUtils) var CmdUtils = {
     active_tab: null,   // tab that is currently active, updated via background.js 
     selectedText: "",   // currently selected text, update via content script selection.js
     selectedHTML: "",   // currently selected text, update via content script selection.js
-    setPreview: function setPreview(message, prepend) { console.log(message); },
-    setResult: function setResult(message, prepend) { console.log(message); },
+    setPreview: function(message, prepend) { console.log(message); },
+    setSuggestions: function(message, prepend) { console.log(message); },
+    setPreviewVisible: function() { },
 };
 
 var _ = a => a;
@@ -50,9 +51,6 @@ var __globId = 0;
 
 // creates command and adds it to command array, name or names must be provided and preview execute functions
 CmdUtils.CreateCommand = function CreateCommand(options) {
-    if (CmdUtils.PRODUCTION && options._hidden)
-        return;
-
     if (Array.isArray(options.name)) {
         options.names = options.name;
         options.name = options.name[0];
@@ -182,7 +180,7 @@ CmdUtils._afterLoadPreview = function(ifrm) {
     // restore focus:
     wnd.focus();
     wnd.removeEventListener("blur", CmdUtils._restoreFocusToInput, { capture: true });
-}
+};
 
 CmdUtils.tabs = {
     search(text, maxResults, callback) {
@@ -517,9 +515,6 @@ CmdUtils.notify = function (message, title) {
     CmdUtils.lastNotification = title+"/"+message;
 };
 
-CmdUtils.getPref("parserLanguage", parserLanguage => CmdUtils.parserLanguage = parserLanguage || "en");
-CmdUtils.getPref("maxSuggestions", maxSuggestions=> CmdUtils.maxSuggestions = maxSuggestions || 5);
-
 // === {{{ CmdUtils.absUrl(data, baseUrl) }}} ===
 // Fixes relative URLs in {{{data}}} (e.g. as returned by Ajax calls).
 // Useful for displaying fetched content in command previews.
@@ -573,6 +568,7 @@ CmdUtils.absUrl = function (data, baseUrl) {
 CmdUtils.previewCallback = function(pblock, callback, abortCallback) {
     var previewChanged = false;
     function onPreviewChange() {
+        console.log("aborted");
         pblock.removeEventListener("preview-change", onPreviewChange, false);
         previewChanged = true;
         if (abortCallback) abortCallback();
@@ -581,7 +577,7 @@ CmdUtils.previewCallback = function(pblock, callback, abortCallback) {
 
     return function wrappedCallback() {
         if (previewChanged) return null;
-
+        console.log("applied");
         pblock.removeEventListener("preview-change", onPreviewChange, false);
         return callback.apply(this, arguments);
     };
@@ -666,7 +662,7 @@ CmdUtils.makeSearchCommand.execute = function searchExecute({object: {text}}) {
     CmdUtils.closePopup();
 };
 CmdUtils.makeSearchCommand.preview = function searchPreview(pblock, {object: {text}}) {
-    if (!text) return void this.previewDefault(pblock);
+    if (!text) return this.previewDefault(pblock);
 
     function put() {
         pblock.innerHTML =
@@ -905,3 +901,4 @@ function url_domain(data) {
         });
     };
 }( jQuery ));
+

@@ -3,8 +3,15 @@ $(onDocumentLoad);
 
 function onDocumentLoad() {
 
-  if (CmdUtils.PRODUCTION)
-      jQuery("#keybinding-row").remove();
+    CmdUtils.getPref("debugMode", debugMode => {
+        jQuery("#debug-mode").change(function changeDebugMode() {
+            CmdUtils.DEBUG = !!this.checked;
+            CmdUtils.setPref("debugMode", CmdUtils.DEBUG);
+        }).prop('checked', debugMode);
+
+        // if (!CmdUtils.DEBUG)
+        //     jQuery("#keybinding-row").remove();
+    });
 
   CmdUtils.getPref("parserLanguage", parserLanguage => {
 
@@ -32,13 +39,13 @@ function onDocumentLoad() {
         });
     });
 
-  CmdUtils.getPref("maxSuggestions", maxSuggestions => {
-      jQuery("#max-suggestions").change(function changeMaxSuggestions() {
-          CmdUtils.maxSuggestions = parseInt(maxSuggestions);
-          CmdUtils.setPref("maxSuggestions", this.value);
-      }).val(maxSuggestions || 5);
-  });
-};
+    CmdUtils.getPref("maxSuggestions", maxSuggestions => {
+        jQuery("#max-suggestions").change(function changeMaxSuggestions() {
+            CmdUtils.maxSuggestions = parseInt(maxSuggestions);
+            CmdUtils.setPref("maxSuggestions", this.value);
+        }).val(maxSuggestions || 5);
+     });
+}
 
 function changeLanguageSettings() {
   UbiquitySetup.languageCode = jQuery("#language-select").val();

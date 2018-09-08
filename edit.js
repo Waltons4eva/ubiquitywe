@@ -39,7 +39,7 @@ CmdUtils.makeSearchCommand({
         container  : ".cssSelector", // result item container
         title      : ".cssSelector", // result item title
         thumbnail  : ".cssSelector", // result item thumbnail
-        body       : ".cssSelector", // result item summary
+        //body       : ".cssSelector", // result item summary
         maxResults : 10,
     },
 });

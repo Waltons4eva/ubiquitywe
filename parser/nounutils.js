@@ -153,7 +153,7 @@ var NounUtils = {};
         var match = text.match(this._regexp);
         if (!match) return [];
         // ToDo: how to score global match
-        var score = "index" in match ? matchScore(match) : 1;
+        var score = "index" in match ? NounUtils.matchScore(match) : 1;
         return [NounUtils.makeSugg(text, html, match, score, selectionIndices)];
     };
 
@@ -166,7 +166,7 @@ var NounUtils = {};
     const SCORE_LENGTH = 0.25;
     const SCORE_INDEX = 1 - SCORE_BASE - SCORE_LENGTH;
 
-    CmdUtils.matchScore = NounUtils.matchScore = function(match) {
+    CmdUtils.matchScore = NounUtils.matchScore = function matchScore(match) {
         var inLen = match.input.length;
         return (SCORE_BASE +
             SCORE_LENGTH * Math.sqrt(match[0].length / inLen) +
@@ -191,7 +191,7 @@ var NounUtils = {};
   // {{{selectionIndices}}} is an optional array containing the start and end
   // indices of selection within {{{text}}}.
 
-    CmdUtils.makeSugg = NounUtils.makeSugg = function (text, html, data, score, selectionIndices) {
+    CmdUtils.makeSugg = NounUtils.makeSugg = function makeSugg(text, html, data, score, selectionIndices) {
         if (text == null && html == null && arguments.length < 3)
         // all inputs empty!  There is no suggestion to be made.
             return null;
@@ -251,7 +251,7 @@ var NounUtils = {};
   // {{{key}}} is an optional string to specify the target property
   // to match with. Defaults to {{{"text"}}}.
 
-    CmdUtils.grepSuggs = NounUtils.grepSuggs = function (input, suggs, key) {
+    CmdUtils.grepSuggs = NounUtils.grepSuggs = function grepSuggs(input, suggs, key) {
         if (!input) return [];
         if (key == null)
             key = "text";
@@ -262,7 +262,7 @@ var NounUtils = {};
         for (let sugg of suggs) {
             if ((match = re.exec(sugg[key]))) {
                 var new_sugg = Object.assign({}, sugg);
-                new_sugg.score = matchScore(match);
+                new_sugg.score = NounUtils.matchScore(match);
                 result.push(new_sugg);
             }
         }

@@ -281,7 +281,12 @@ CmdUtils.CreateCommand({
                 "<p class='error'>" + _("Error searching Wikipedia") + "</p>";
         }
 
-        var langCode = args.format.data || "en";
+
+
+        var langCode = "en";
+        if (args.format && args.format.data)
+            lancCode = args.format.data;
+
         var apiUrl = "http://" + langCode + ".wikipedia.org/w/api.php";
 
         CmdUtils.previewAjax(previewBlock, {

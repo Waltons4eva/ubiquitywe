@@ -25,14 +25,11 @@ CmdUtils.CreateCommand({
 
 CmdUtils.CreateCommand({
     names: ["edit-ubiquity-commands", "hack-ubiquity"],
-    icon: "res/code_editor.png",
+    icon: "res/plugin_edit.png",
     _namespace: "Ubiquity",
     builtIn: true,
     description: "Takes you to the Ubiquity command <a href=edit.html target=_blank>editor page</a>.",
-    execute: function () {
-        CmdUtils.addTab("edit.html");
-        CmdUtils.closePopup();
-    }
+
 });
 
 CmdUtils.CreateCommand({

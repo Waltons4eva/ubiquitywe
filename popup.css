@@ -183,7 +183,7 @@ body {
 
 .needarg {
     font-style: oblique;
-    font-size: 70%;
+    font-size: 80%;
     color: #999999;
 }
 .needarg:before {
@@ -196,4 +196,9 @@ body {
 #ubiq-help-wrapper {
  padding-left: 5px;
  padding-right: 5px;
+}
+
+.ubiq-help-heading {
+    padding-bottom: 10px;
+    font-weight: bold;
 }

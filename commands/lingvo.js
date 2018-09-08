@@ -65,6 +65,9 @@
             },
             /*---------------------------------------------------------------------------*/
             preview: function (pblock, args) {
+                if (!args.object.text)
+                    return;
+
                 this.previewBlock = pblock;
 
                 function norm(arg) {
@@ -94,10 +97,7 @@
                 return jQuery.ajax({
                     type: "POST",
                     headers: {
-                        "Authorization":
-                            (CmdUtils.PRODUCTION
-                                ?"Basic NGNmNTVlNzUtNzg2MS00ZWE1LWIzNWItNjNlMTAyZTM5YmRlOmM3NTg3MDY2Y2MyMDQxY2E4NTQ0MDZhOTQyYTcxMTk2"
-                                :"Basic ZGQxMzE5MmItZmFiNy00ZmFiLTkwNWUtYzc0ZDhlYTU5MGYxOjg1MjRjMDVkNTZkZDQ3NDhhMTM4NTg0MDFjNTRiMWM2")
+                        "Authorization": "Basic " + CmdUtils.lingvoApiKey
                     },
                     url: abbyyServiceAPI + "/api/v1.1/authenticate"
                 }).then(data => {
@@ -173,7 +173,7 @@
                     }
                 };
 
-                self.oldRequest = jQuery.get(options);
+                CmdUtils.previewAjax(self.previewBlock, options);
             },
             /*---------------------------------------------------------------------------*/
             _onTranslated: function (words, jsonResponse, requestUrl) {
