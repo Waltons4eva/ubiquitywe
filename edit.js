@@ -167,7 +167,7 @@ if (typeof chrome !== 'undefined' && chrome.storage) {
             $("#script-namespaces").prop("disabled", "disabled");
             if (result) {
                 editor.setValue(JSON.stringify(result, null, 2), -1);
-                alert("Here be dragons!");
+                //alert("Here be dragons!");
             }
         });
     else

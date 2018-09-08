@@ -166,7 +166,7 @@ var NounUtils = {};
     const SCORE_LENGTH = 0.25;
     const SCORE_INDEX = 1 - SCORE_BASE - SCORE_LENGTH;
 
-    function matchScore(match) {
+    CmdUtils.matchScore = NounUtils.matchScore = function(match) {
         var inLen = match.input.length;
         return (SCORE_BASE +
             SCORE_LENGTH * Math.sqrt(match[0].length / inLen) +
@@ -251,7 +251,7 @@ var NounUtils = {};
   // {{{key}}} is an optional string to specify the target property
   // to match with. Defaults to {{{"text"}}}.
 
-    NounUtils.grepSuggs = function (input, suggs, key) {
+    CmdUtils.grepSuggs = NounUtils.grepSuggs = function (input, suggs, key) {
         if (!input) return [];
         if (key == null)
             key = "text";

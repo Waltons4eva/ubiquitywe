@@ -184,6 +184,24 @@ CmdUtils._afterLoadPreview = function(ifrm) {
     wnd.removeEventListener("blur", CmdUtils._restoreFocusToInput, { capture: true });
 }
 
+CmdUtils.tabs = {
+    search(text, maxResults, callback) {
+        let matcher = new RegExp(text, "i");
+
+        chrome.tabs.query({}, tabs => {
+            let results = [];
+            for (let tab of tabs) {
+                let match = matcher.exec(tab.title) || matcher.exec(tab.url);
+                if (!match) continue;
+                tab.match = match;
+                results.push(tab);
+                if (maxResults && results.length >= maxResults) break;
+            }
+            callback(results);
+        });
+    }
+};
+
 // closes current tab
 CmdUtils.closeTab = function closeTab() {
 	chrome.tabs.query({active:true,currentWindow:true},function(tabs){
@@ -205,7 +223,7 @@ CmdUtils.getLocation = function getLocation() {
 // opens new tab with provided url
 Utils.openUrlInBrowser = CmdUtils.addTab = function addTab(url) {
 	if (typeof browser !== 'undefined') {
-		browser.tabs.create({ "url": url });
+		chrome.tabs.create({ "url": url });
 	} else 
 	if (typeof chrome !== 'undefined' && typeof chrome.tabs !== 'undefined') {
 		chrome.tabs.create({ "url": url });

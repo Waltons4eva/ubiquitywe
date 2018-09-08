@@ -25,7 +25,7 @@ CmdUtils.CreateCommand({
 
 CmdUtils.CreateCommand({
     names: ["edit-ubiquity-commands", "hack-ubiquity"],
-    icon: "res/icon-24.png",
+    icon: "res/code_editor.png",
     _namespace: "Ubiquity",
     builtIn: true,
     description: "Takes you to the Ubiquity command <a href=edit.html target=_blank>editor page</a>.",
@@ -73,17 +73,59 @@ CmdUtils.CreateCommand({
 });
 
 CmdUtils.CreateCommand({
-    name: "close",
+    name: "switch-to-tab",
+    argument: [{role: "object", nountype: noun_type_tab, label: "tab title or URL"}],
+    description: "Switches to the tab whose title or URL matches the input.",
+    timeout: 100,
     _namespace: "Browser",
-    description: "Close the current tab.",
-    icon: "res/icon-24.png",
+    icon: "res/tab_go.png",
     builtIn: true,
-    preview: "Close the current tab.",
-    execute: function (directObj) {
-        CmdUtils.closeTab();
+    execute: function execute({object}) {
+        if (object && object.data)
+            chrome.tabs.update(object.data.id, {active: true});
+
         CmdUtils.closePopup();
     }
 });
+
+CmdUtils.CreateCommand({
+    name: "close-tab",
+    argument: [{role: "object", nountype: noun_type_tab, label: "tab title or URL"}],
+    description: "Closes the tab whose title or URL matches the input or the current tab if no tab matches.",
+    timeout: 100,
+    _namespace: "Browser",
+    icon: "res/tab_delete.png",
+    builtIn: true,
+    execute: function execute({object}) {
+        if (!object || !object.data)
+            CmdUtils.closeTab();
+        else
+            chrome.tabs.remove(object.data.id);
+
+        CmdUtils.closePopup();
+    }
+});
+
+CmdUtils.CreateCommand({
+    name: "close-all-tabs-with",
+    argument: [{role: "object", nountype: noun_arb_text, label: "tab title or URL"}],
+    description: "Closes all open tabs that have the given word in common.",
+    timeout: 100,
+    _namespace: "Browser",
+    icon: "res/tab_delete.png",
+    builtIn: true,
+    execute: function execute({object: {text}}) {
+        if (text) {
+            CmdUtils.tabs.search(text, null, tabs => {
+                for(let tab of tabs)
+                    chrome.tabs.remove(tab.id);
+            });
+        }
+
+        CmdUtils.closePopup();
+    }
+});
+
 
 CmdUtils.CreateCommand({
     name: "print",
@@ -234,7 +276,7 @@ const noun_calc = {
             result = e.message
             score  = .1
         }
-        return [NounUtils.makeSugg(txt, htm, result, score, si)];
+        return [CmdUtils.makeSugg(txt, htm, result, score, si)];
     },
     _mathlike: /^[\w.+\-*\/^%(, )|]+$/,
 };
@@ -316,7 +358,7 @@ CmdUtils.CreateCommand({
     builtIn: true,
     _hidden: true,
     execute: function execute({object: {text}}) {
-        browser.runtime.sendMessage("dark-flow@firefox", {message: "dark-flow:follow-url", url: text}, null);
+        chrome.runtime.sendMessage("dark-flow@firefox", {message: "dark-flow:follow-url", url: text}, null);
         CmdUtils.closePopup();
     },
     preview: "Follow the URL in Dark Flow"

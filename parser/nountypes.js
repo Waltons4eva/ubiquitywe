@@ -219,18 +219,20 @@ var noun_type_email = {
     }
 };
 
-// === {{{ noun_type_tab }}} ===
-// Suggests currently opened tabs.
-// * {{{text, html}}} : tab title or URL
-// * {{{data}}} : {{{Utils}}}{{{.BrowserTab}}} instance
+var noun_type_tab = {
+    label: "title or URL",
+    noExternalCalls: true,
+    suggest: function nt_tab_suggest(text, html, cb, selectedIndices) {
+        let fakeReq = {readyState: 2};
 
-/// TODO ...
-//var noun_type_tab = {...
+        CmdUtils.tabs.search(text, CmdUtils.maxSuggestions, tabs => {
+            fakeReq.readyState = 4;
+            cb(tabs.map(tab =>
+                CmdUtils.makeSugg(
+                    tab.title || tab.url,
+                    null, tab, CmdUtils.matchScore(tab.match), selectedIndices)));
+        });
 
-// === {{{ noun_type_search_engine }}} ===
-// **//FIXME//**
-// * {{{text, html}}} : name of the engine
-// * {{{data}}} : engine object (see {{{nsIBrowserSearchService}}})
-
-/// TODO ...
-// var noun_type_search_engine = {...
+        return [fakeReq];
+    },
+};

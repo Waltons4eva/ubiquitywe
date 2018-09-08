@@ -38,7 +38,7 @@ chrome.browserAction.onClicked.addListener(function(tab) {
    console.log('test');
 });
 
-browser.runtime.onInstalled.addListener(function () {
+chrome.runtime.onInstalled.addListener(function () {
     CmdUtils.getPref("customscripts", customscripts => {
         if (!customscripts)
             CmdUtils.setPref("customscripts", {});
