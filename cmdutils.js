@@ -345,6 +345,19 @@ CmdUtils.loadScripts = function loadScripts(url, callback, wnd=window) {
     }
 };
 
+CmdUtils.loadCSS = function(doc, id, file) {
+    if (!doc.getElementById(id)) {
+        let head = doc.getElementsByTagName('head')[0];
+        let link = doc.createElement('link');
+        link.id = id;
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = file;
+        link.media = 'all';
+        head.appendChild(link);
+    }
+}
+
 // updates selectedText variable
 CmdUtils.updateSelection = function (tab_id, callback) {
     try {
@@ -568,7 +581,6 @@ CmdUtils.absUrl = function (data, baseUrl) {
 CmdUtils.previewCallback = function(pblock, callback, abortCallback) {
     var previewChanged = false;
     function onPreviewChange() {
-        console.log("aborted");
         pblock.removeEventListener("preview-change", onPreviewChange, false);
         previewChanged = true;
         if (abortCallback) abortCallback();
@@ -577,7 +589,7 @@ CmdUtils.previewCallback = function(pblock, callback, abortCallback) {
 
     return function wrappedCallback() {
         if (previewChanged) return null;
-        console.log("applied");
+
         pblock.removeEventListener("preview-change", onPreviewChange, false);
         return callback.apply(this, arguments);
     };

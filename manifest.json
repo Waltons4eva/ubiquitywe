@@ -32,7 +32,7 @@
           "commands/javcheck.js",
           "commands/feedsub.js",
           "commands/resurrect.js",
-          "commands/sovsport.js",
+          "commands/soviet.js",
           "background.js"],
         "persistent":true
     },

@@ -419,6 +419,11 @@ $(window).on('load', function() {
         document.addEventListener('keyup', function (e) {
             ubiq_keyup_handler(e);
         }, false);
+
+        CmdUtils.getPref("debugMode", debugMode => {
+            if (debugMode)
+                CmdUtils.loadCSS(document, "__soviet__", "res/soviet.css")
+        });
     } else {
         chrome.tabs.create({ "url": "chrome://extensions" });
         chrome.notifications.create({

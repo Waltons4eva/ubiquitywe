@@ -28,10 +28,10 @@ At the moment UbiquityWE differs from the original UbiChr in the following ways:
 * Works nicely in Firefox 60+ (also works in Chrome).
 * The fully functional parser of the last version of the original "legacy" Ubiquity by 
 [satyr](https://bitbucket.org/satyr/ubiquity) is implanted, so the existing "legacy" 
-commands (which are still compatible with the new Firefox functionality) could be ported more seamlessly 
+commands (which are still compatible with the new Firefox functionality) could be ported seamlessly 
 (there is no backward compatibility with the existing parserless UbiChr commands).
 * Completion by TAB key and clickable suggestions.
-* ported makeSearchCommand from the original Ubiquity
+* Ported makeSearchCommand from the original Ubiquity, so Google search output looks clean now.
 * Some missing API of "legacy" Ubiquity CmdUtils (eg. renderTemplate, getHtmlSelection) is implemented.
 * Ace code editor (which has decent search functionality) is used instead of CodeMirror.
 * Settings and command list pages are resemble the ones from the original Ubiquity.
@@ -46,10 +46,8 @@ was the primary interface to it. There are no such restrictions in UbiquityWE: c
 have access to the full WebExtension API. But you still may need to add necessary permissions
 in manifest.json and rebuild the addon.
 * NounType system of the original Ubiquity parser is a powerful tool which allows to
-add dynamic things (such as the set of current tabs) to parser suggestion list. 
-Find more at [nountypes](https://bitbucket.org/satyr/ubiquity/src/f50c546669f3a66979ab7d64af4b166f7d5a488a/ubiquity/modules/?at=default)
-and [builtin commands](https://bitbucket.org/satyr/ubiquity/src/f50c546669f3a66979ab7d64af4b166f7d5a488a/ubiquity/standard-feeds/?at=default)
-of the original Ubiquity.
+add dynamic things (such as the set of current tabs) to parser suggestion list.
+See noun_type_tabs for an example.
 
 TODO
 
