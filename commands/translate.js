@@ -244,7 +244,10 @@ for (let ntl of [noun_type_lang_google, noun_type_lang_wikipedia]) {
     ntl.noSelection = true;
 }
 
-
+{
+    noun_type_lang_wikipedia.default.push(
+        CmdUtils.makeSugg("English", null, "en"));
+}
 
 (function () {
 
@@ -294,7 +297,7 @@ for (let ntl of [noun_type_lang_google, noun_type_lang_wikipedia]) {
     function translate(target, from, to, back) {
         if (!to) return void
             msTranslator("Detect", {text: target.text}, function detected(code) {
-                translate(target, from, {name: "English", code: "en"}, back)
+                translate(target, from, "en", back)
             })
         var {html} = target
         // bitbucket#29: The API doesn't like apostrophes HTML-escaped.
@@ -351,7 +354,7 @@ for (let ntl of [noun_type_lang_google, noun_type_lang_wikipedia]) {
             else
                 CmdUtils.injectJs(
                     "http://labs.microsofttranslator.com/bookmarklet/default.aspx?f=js" +
-                    "&from=" + from +
+                    "&from=" + (from || "en") +
                     "&to=" + (to || "en"))
             CmdUtils.closePopup();
         },
@@ -374,9 +377,9 @@ for (let ntl of [noun_type_lang_google, noun_type_lang_wikipedia]) {
             pblock.innerHTML = phtml + " ..."
             translate(
                 object, source.data || "", goal.data,
-                //CmdUtils.previewCallback(pblock, function show(html) {
-                (html) => pblock.innerHTML = phtml + "<br><br>" + html
-                //})
+                CmdUtils.previewCallback(pblock, function show(html) {
+                    pblock.innerHTML = phtml + "<br><br>" + html
+                })
             )
         }
     });

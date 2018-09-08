@@ -463,15 +463,16 @@ CmdUtils.loadCustomScripts = function loadCustomScripts(callback) {
 
     // load custom scripts
     chrome.storage.local.get('customscripts', function(result) {
-        for (let n in result.customscripts) {
-            try {
-                eval(result.customscripts[n].scripts || "");
-                for (let cc of CmdUtils.CommandList.filter((c)=>{return !c.builtIn && !c._namespace}))
-                    cc._namespace = n;
-            } catch (e) {
-                console.error("custom scripts eval failed", e);
+        if (result.customscripts)
+            for (let n in result.customscripts) {
+                try {
+                    eval(result.customscripts[n].scripts || "");
+                    for (let cc of CmdUtils.CommandList.filter((c)=>{return !c.builtIn && !c._namespace}))
+                        cc._namespace = n;
+                } catch (e) {
+                    console.error("custom scripts eval failed", e);
+                }
             }
-        }
         if (callback)
            callback(result.customscripts);
     });

@@ -31,6 +31,7 @@ At the moment UbiquityWE differs from the original UbiChr in the following ways:
 commands (which are still compatible with the new Firefox functionality) could be ported more seamlessly 
 (there is no backward compatibility with the existing parserless UbiChr commands).
 * Completion by TAB key and clickable suggestions.
+* ported makeSearchCommand from the original Ubiquity
 * Some missing API of "legacy" Ubiquity CmdUtils (eg. renderTemplate, getHtmlSelection) is implemented.
 * Ace code editor (which has decent search functionality) is used instead of CodeMirror.
 * Settings and command list pages are resemble the ones from the original Ubiquity.
@@ -52,8 +53,7 @@ of the original Ubiquity.
 
 TODO
 
-* Cancellable preview/execution handlers & sort out current preview show/execution order
-* Ubiquity Touch: add a popup near selection a la Oxford Dictionary one to execute predefined 
+* Ubiquity Touch: add a popup near the page text selection a la Oxford Dictionary one to execute predefined 
 commands with set arguments on the selection (useful for various dictionary/clipping apps 
 on touch devices)
 * Implement permanent suggestion statistics (SuggestionMemory)

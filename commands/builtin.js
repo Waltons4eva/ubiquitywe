@@ -16,7 +16,7 @@ CmdUtils.CreateCommand({
 CmdUtils.CreateCommand({
     names: ["list-ubiquity-commands", "command-list", "help"],
     description: "Opens Ubiquity command list page",
-    icon: "res/icon-24.png",
+    icon: "res/list_table.png",
     _namespace: "Ubiquity",
     builtIn: true,
     preview: "Lists all available commands",
@@ -231,7 +231,6 @@ const noun_calc = {
                 , score = result === txt ? .3 : 1
         }
         catch (e) {
-            console.log(e.message);
             result = e.message
             score  = .1
         }

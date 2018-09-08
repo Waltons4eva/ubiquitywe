@@ -81,6 +81,7 @@ body {
     /* overflow-y: auto; */
     /* zoom overflow dirty fix */
     overflow-y: hidden;
+    padding-top: 5px;
 }
 
 #ubiq-command-preview a {
@@ -193,5 +194,6 @@ body {
 }
 
 #ubiq-help-wrapper {
- padding: 5px;
+ padding-left: 5px;
+ padding-right: 5px;
 }

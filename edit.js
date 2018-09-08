@@ -8,53 +8,40 @@ var scriptNamespace = window.location.search? decodeURI(window.location.search.s
 function insertExampleStub() {
 
     var stubs = {
-  'insertnotifystub': // simple notify command 
+  'insertcommandstub':
 `/* This is a template command. */
 CmdUtils.CreateCommand({
-    name: "1example",
-    argument: [{role: "object", nountype: noun_arb_text, label: "words"}],
+    name: "my-command",
+    argument: [{role: "object", nountype: noun_arb_text, label: "text"}],
     description: "A short description of your command.",
     author: "Your Name",
     icon: "res/icon-24.png",
     execute: function execute({object: {text}}) {
-        CmdUtils.notify("Execute:Your input is: " + text);
+        CmdUtils.notify("Your input is: " + text);
         CmdUtils.closePopup();
     },
     preview: function preview(pblock, {object: {text}}) {
-        pblock.innerHTML = "Preview:Your input is " + text + ".";
+        pblock.innerHTML = "Your input is " + text + ".";
     },
 });
 
 `
 , 'insertsearchstub': // simple search / preview command (e. g. using ajax)
 `/* This is a template command. */
-CmdUtils.CreateCommand({
-    name: "2example",
-    argument: [{role: "object", nountype: noun_arb_text, label: "words"}],
-    description: "Commence DuckGoGo search.",
-    icon: "http://www.duckduckgo.com/favicon.ico",
-    execute: function execute({object: {text}}) {   
-        CmdUtils.addTab("https://duckduckgo.com/?q=" + encodeURIComponent(text));
-        CmdUtils.closePopup();
-    },
-    preview: function preview(pblock, {object: {text}}) {
-        var url = "https://duckduckgo.com/html?q=" + encodeURIComponent(text);
-        CmdUtils.ajaxGet(url, function(data) {
-            pblock.innerHTML = jQuery("#links", data).html(); 
-        });
-    },
-});
-
-`
-, 'insertenhsearchstub': // enhanced search / preview command
-`/* This is a template command. */
 CmdUtils.makeSearchCommand({
-  name: ["3example"],
-  description: "Searches quant.com",
-  author: {name: "Your Name", email: "your-mail@example.com"},
-  icon: "https://www.qwant.com/favicon-152.png?1503916917494",
-  url: "https://www.qwant.com/?q={QUERY}&t=all",
-  prevAttrs: {zoom: 0.75, scroll: [100/*x*/, 0/*y*/], anchor: ["c_13", "c_22"]},
+    name: "my-search-command",
+    url: "http://www.example.com/find?q=%s",
+    defaultUrl: "http://www.example.com",
+    arguments: [{role: "object", nountype: noun_arb_text, label: "query"}],
+    timeout: 1000,
+    icon: "res/icon-24.png",
+    parser: {
+        container  : ".cssSelector", // result item container
+        title      : ".cssSelector", // result item title
+        thumbnail  : ".cssSelector", // result item thumbnail
+        body       : ".cssSelector", // result item summary
+        maxResults : 10,
+    },
 });
 
 `
@@ -170,9 +157,8 @@ $("#delete-namespace").click(() => {
         }
 });
 
-$("#insertnotifystub").click( insertExampleStub );
+$("#insertcommandstub").click( insertExampleStub );
 $("#insertsearchstub").click( insertExampleStub );
-$("#insertenhsearchstub").click( insertExampleStub );
 
 // load scrtips
 if (typeof chrome !== 'undefined' && chrome.storage) {

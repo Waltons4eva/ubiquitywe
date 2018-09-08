@@ -191,7 +191,7 @@ var NounUtils = {};
   // {{{selectionIndices}}} is an optional array containing the start and end
   // indices of selection within {{{text}}}.
 
-    NounUtils.makeSugg = function (text, html, data, score, selectionIndices) {
+    CmdUtils.makeSugg = NounUtils.makeSugg = function (text, html, data, score, selectionIndices) {
         if (text == null && html == null && arguments.length < 3)
         // all inputs empty!  There is no suggestion to be made.
             return null;

@@ -56,8 +56,7 @@ CmdUtils.makeSearchCommand({
     url: ("http://www.youtube.com/results?search_type=search_videos" +
         "&search=Search&search_sort=relevance&search_query={QUERY}"),
     icon: "res/youtube.png",
-    description: ("Searches <a href='http://www.youtube.com'>YouTube</a> " +
-        "for videos matching your words. Previews the top results."),
+    description: ("Searches YouTube for videos matching your words. Previews the top results."),
     _namespace: "Search",
     builtIn: true,
     arguments: [{role: "object", nountype: noun_arb_text, label: "query"}],
