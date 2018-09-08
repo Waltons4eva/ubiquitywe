@@ -3,7 +3,7 @@ CmdUtils.makeSearchCommand({
     url: "http://www.google.com/search?q=%s",
     _namespace: "Search",
     builtIn: true,
-    icon: "chrome://ubiquity/skin/icons/google.ico",
+    icon: "res/google.png",
     description: "Searches Google for your words.",
     arguments: [{role: "object", nountype: noun_arb_text, label: "query"}],
     timeout: 1000,
@@ -25,7 +25,7 @@ CmdUtils.makeSearchCommand({
     builtIn: true,
     arguments: [{role: "object", nountype: noun_arb_text, label: "query"}],
     timeout: 1000,
-    icon: "chrome://ubiquity/skin/icons/bing.ico",
+    icon: "res/bing.png",
     parser: {
         container: ".b_algo",
         title: "h2 > a",
@@ -42,7 +42,7 @@ CmdUtils.makeSearchCommand({
     builtIn: true,
     arguments: [{role: "object", nountype: noun_arb_text, label: "query"}],
     timeout: 1000,
-    icon: "chrome://ubiquity/skin/icons/imdb.ico",
+    icon: "res/imdb.png",
     parser: {
         container  : ".findResult",
         title      : ".result_text",
@@ -55,7 +55,7 @@ CmdUtils.makeSearchCommand({
     names: ["YouTube"],
     url: ("http://www.youtube.com/results?search_type=search_videos" +
         "&search=Search&search_sort=relevance&search_query={QUERY}"),
-    icon: "chrome://ubiquity/skin/icons/youtube.ico",
+    icon: "res/youtube.png",
     description: ("Searches <a href='http://www.youtube.com'>YouTube</a> " +
         "for videos matching your words. Previews the top results."),
     _namespace: "Search",
@@ -115,7 +115,7 @@ CmdUtils.makeSearchCommand({
     contributor: "satyr",
     homepage: "http://www.jimmy2k.it/getimagescommand",
     license: "MPL",
-    icon: "chrome://ubiquity/skin/icons/google.ico",
+    icon: "res/google.png",
     description: "Browse pictures from Google Images.",
     url: "https://www.google.com/search?tbm=isch&q={QUERY}",
     preview: function gi_preview(pblock, {object: {text: q}}) {
@@ -256,7 +256,7 @@ CmdUtils.CreateCommand({
     author: {name: "Blair McBride", email: "blair@theunfocused.net"},
     contributors: ["Viktor Pyatkovka"],
     license: "MPL",
-    icon: "chrome://ubiquity/skin/icons/wikipedia.ico",
+    icon: "res/wikipedia.ico",
     description: "Searches Wikipedia for your words, in a given language.",
     preview: function wikipedia_preview(previewBlock, args) {
         var searchText = Utils.trim(args.object.text);
@@ -361,7 +361,7 @@ CmdUtils.CreateCommand({
     name: "maps",
     _namespace: "Search",
     description: "Shows a location on the map.",
-    icon: "http://www.google.com/favicon.ico",
+    icon: "res/google.png",
     builtIn: true,
     timeout: 500,
     requirePopup: "https://maps.googleapis.com/maps/api/js?sensor=false",

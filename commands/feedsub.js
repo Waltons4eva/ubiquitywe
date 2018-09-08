@@ -1,7 +1,7 @@
 CmdUtils.CreateCommand({
     names: ["feedsub"],
     _namespace: "Syndication",
-    description: "Subscribe to a RSS feed using Feedly. The command uses url opened in the current tab. " +
+    description: "Subscribe to a RSS feed using Feedly.<br>The command uses the URL opened in the current tab. " +
                  "Direct feed links, Instagram, Tumblr, Twitter and Youtube are supported.",
     icon: "res/icon-24.png",
     builtIn: true,

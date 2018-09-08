@@ -322,7 +322,7 @@ for (let ntl of [noun_type_lang_google, noun_type_lang_wikipedia]) {
         name: "translate",
         _namespace: "Translation",
         description: "Translates from one language to another.",
-        icon: "https://translator.microsoft.com/favicon.ico",
+        icon: "res/translate_bing.ico",
         arguments: ((noun) => ({
             object: noun_arb_text,
             source: noun,
@@ -406,7 +406,7 @@ for (let ntl of [noun_type_lang_google, noun_type_lang_wikipedia]) {
     Translates a whole page to the specified language using\
     <a href="http://translate.google.com">Google Translate</a>.\
   ',
-        icon: "http://translate.google.com/favicon.ico",
+        icon: "res/translate_google.ico",
         author: "satyr",
         builtIn: true,
         arguments: {

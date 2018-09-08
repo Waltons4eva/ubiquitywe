@@ -222,35 +222,6 @@ CmdUtils.CreateCommand({
     },
 });
 
-// CmdUtils.CreateCommand({
-//     name: "calc",
-//     _namespace: "Utility",
-//     description: desc = "Evaluates math expressions.",
-//     icon: "https://png.icons8.com/metro/50/000000/calculator.png",
-//     builtIn: true,
-//     arguments: [{role: "object", nountype: noun_arb_text, label: "text"}],
-//     preview: pr = function preview(previewBlock, {object: {text}}) {
-//         if (text.trim()!='') {
-//             var m = new math.parser();
-//             text = text.replace(/,/g,".");
-//             text = text.replace(/ /g,"");
-//             previewBlock.innerHTML = m.eval(text);
-//             //CmdUtils.ajaxGet("http://api.mathjs.org/v1/?expr="+encodeURIComponent(args.text), (r)=>{ previewBlock.innerHTML = r; });
-//         }
-//         else
-//             previewBlock.innerHTML = desc;
-//     },
-//     execute: function ({object: {text}}) {
-//         if (text.trim()!='') {
-//             var m = new math.parser();
-//             text = text.replace(",",".");
-//             text = text.replace(" ","");
-//             text = m.eval(text);
-//             CmdUtils.setSelection(text);
-//         }
-//     }
-// });
-
 const noun_calc = {
     label: "expression",
     suggest: function (txt, htm, cb, si) {
@@ -276,7 +247,7 @@ CmdUtils.CreateCommand({
          <a href="http://silentmatt.com/javascript-expression-evaluator/">\
          JavaScript Expression Evaluator</a>.',
     help: "Try: <code>22/7, 3^4^5, sin(sqrt(log(PI)))</code>",
-    icon: "chrome://ubiquity/skin/icons/calculator.png",
+    icon: "res/calculator.png",
     _namespace: "Utility",
     builtIn: true,
     author: "satyr",
@@ -293,7 +264,7 @@ var bitly_api_key = "R_59da9e09c96797371d258f102a690eab";
 CmdUtils.CreateCommand({
     names: ["shorten-url", "bitly"],
     _namespace: "Utility",
-    icon: "https://dl6fh5ptkejqa.cloudfront.net/0482a3c938673192a591f2845b9eb275.png",
+    icon: "res/bitly.png",
     builtIn: true,
     description: "Shorten your URLs with the least possible keystrokes",
     homepage: "http://bit.ly",
@@ -342,7 +313,7 @@ CmdUtils.CreateCommand({
     argument: [{role: "object", nountype: noun_arb_text, label: "URL"}],
     description: "Follow the URL in Dark Flow.",
     homepage: "https://github.com/GChristensen/dark-flow#readme",
-    icon: "https://github.com/GChristensen/dark-flow/blob/master/firefox/icons/icon-32.png?raw=true",
+    icon: "res/dark-flow.png",
     builtIn: true,
     _hidden: true,
     execute: function execute({object: {text}}) {
