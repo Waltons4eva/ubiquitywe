@@ -104,8 +104,10 @@ function ubiq_show_preview(sent, args) {
                 CmdUtils.popupWindow.jQuery("#ubiq-command-preview").css("overflow-y", "auto");
                 try {
                     sent.preview(ubiq_preview_el());
+                    // trying to cope wit CmdUtils.previewAjax
+                    ubiq_preview_el().dispatchEvent(new Event("preview-change"));
                 } catch (e) {
-                    CmdUtils.notify(e.toString(), "preview function error")
+                    CmdUtils.notify(e.toString(), "preview function error");
                     if (CmdUtils.backgroundWindow && CmdUtils.backgroundWindow.error) {
                         CmdUtils.backgroundWindow.error(e.stack);
                     }
@@ -118,7 +120,7 @@ function ubiq_show_preview(sent, args) {
             if (typeof cmd_struct.requirePopup !== 'undefined')
                 CmdUtils.loadScripts( cmd_struct.requirePopup, ()=>{ pfunc(); }, window );
             else
-                pfunc();
+            pfunc();
     }
 }
 

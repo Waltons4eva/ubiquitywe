@@ -6,6 +6,10 @@ if (!Utils) var Utils = {};
 
 const TO_STRING = Object.prototype.toString;
 
+Utils.log = console.log;
+
+Utils.trim = String.trim;
+
 // === {{{ Utils.paramsToString(params, prefix = "?") }}} ===
 // Takes the given object containing keys and values into a query string
 // suitable for inclusion in an HTTP GET or POST request.
@@ -76,6 +80,22 @@ Utils.hashFnv32a = function (input) {
     }
 
     return hval >>> 0;
+};
+
+Utils.parseHtml = function (htmlText, callback) {
+    var doc = document.implementation.createHTMLDocument("")
+        , doc_elt = doc.documentElement
+        , first_elt;
+
+    doc_elt.innerHTML = htmlText;
+    first_elt = doc_elt.firstElementChild;
+
+    if (doc_elt.childElementCount === 1
+        && first_elt.localName.toLowerCase() === "html") {
+        doc.replaceChild(first_elt, doc_elt);
+    }
+
+    callback(doc);
 };
 
 
@@ -163,4 +183,57 @@ Utils.regexp = function(pattern, flags) {
     } catch (e) {
         return RegExp(regexp.quote(pattern), flags);
     }
+};
+
+// === {{{ Utils.extend(target, object1, [objectN ...]) }}} ===
+// Extends {{{target}}} by copying properties from the rest of arguments.
+// Deals with getters/setters properly. Returns {{{target}}}.
+
+Utils.extend = function(target) {
+    for (let i = 1, l = arguments.length; i < l; ++i) {
+        let obj = arguments[i];
+        for (let key of keys(obj)) {
+            let g, s;
+            (g = Object.getOwnPropertyDescriptor(obj, key).get) && Object.defineProperty(target, key, {get: g});
+            (s = Object.getOwnPropertyDescriptor(obj, key).set) && Object.defineProperty(target, key, {set: s});
+            g || s || (target[key] = obj[key]);
+        }
+    }
+    return target;
+};
+
+// === {{{ Utils.seq(lead_or_count, end, step = 1) }}} ===
+// Creates an iterator of simple number sequence.
+// {{{
+// [i for (i in seq(1, 3))]     // [1, 2, 3]
+// [i for (i in seq(3))]        // [0, 1, 2]
+// [i for (i in seq(4, 2, -1))] // [4, 3, 2]
+// seq(-7).slice(2, -2)         // [4, 3, 2]
+// }}}
+
+Utils.seq = Sequence;
+function Sequence(lead, end, step) {
+    if (end == null && lead)
+        [lead, end, step] = lead < 0 ? [~lead, 0, -1] : [0, ~-lead];
+    return new Proxy({
+        __proto__: Sequence.prototype,
+        lead: +lead, end: +end, step: +step || 1,
+    }, Sequence.handler);
 }
+Sequence.prototype[Symbol.iterator] = function* seq_iter() {
+    var {lead: i, end, step} = this;
+    if (step < 0)
+        for (; i >= end; i += step) yield i;
+    else
+        for (; i <= end; i += step) yield i;
+};
+Sequence.handler = {
+    * enumerate(target) { yield* target },
+};
+Utils.extend(Sequence.prototype, {
+    get length() { return (this.end - this.lead) / this.step + 1 | 0 },
+    toJSON() { return [...this] },
+    toString: function seq_toString() { return (
+        "[object Sequence(" + this.lead + "," + this.end + "," + this.step + ")]"
+    ) },
+});

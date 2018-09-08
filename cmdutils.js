@@ -19,6 +19,20 @@ if (!CmdUtils) var CmdUtils = {
 
 var _ = a => a;
 
+// stub for original ubiquity string formatter
+function L(pattern, substitute1, substitute2) {
+    if (substitute1)
+        pattern = pattern.replace("%S", substitute1);
+    if (substitute2)
+        pattern = pattern.replace("%S", substitute2);
+
+    return pattern;
+}
+
+function H(arg) {
+    return arg;
+}
+
 CmdUtils.log = m => console.log(m);
 
 // debug log
@@ -108,24 +122,24 @@ CmdUtils.CreateCommand = function CreateCommand(options) {
 			};
     	}
     }
+    options.previewDefault = CmdUtils.CreateCommand.previewDefault;
     CmdUtils.CommandList.push(options);
 };
 
-// create search command using url
-CmdUtils.makeSearchCommand = function makeSearchCommand(args) {
-    args.arguments = [{role: "object", nountype: noun_arb_text, label: "query"}];
-    args.execute = function({object: {text}}) {
-        var url = args.url.replace(/\{QUERY\}/g, encodeURIComponent(text));
-        CmdUtils.addTab(url);
-        CmdUtils.closePopup();
-    };
-    if ((typeof args.preview != 'function') && args.preview != 'none') {
-        args.preview = CmdUtils._searchCommandPreview;
-        if (args.prevAttrs == null) {
-            args.prevAttrs = {zoom: 0.85};
-        }
+CmdUtils.CreateCommand.previewDefault = function previewDefault(pb) {
+    var html = "";
+    if ("previewHtml" in this) html = this.previewHtml;
+    else {
+        if ("description" in this)
+            html += '<div class="description">' + this.description + '</div>';
+        if ("help" in this)
+            html += '<p class="help">' + this.help + '</p>';
+        if (!html) html = L(
+            "Execute the %S command.",
+            '<strong class="name">' + Utils.escapeHtml(this.name) + "</strong>");
+        html = '<div class="default">' + html + '</div>';
     }
-    CmdUtils.CreateCommand(args);
+    return (pb || 0).innerHTML = html;
 };
 
 // helper to avoid stealing focus in preview
@@ -168,70 +182,6 @@ CmdUtils._afterLoadPreview = function(ifrm) {
     // restore focus:
     wnd.focus();
     wnd.removeEventListener("blur", CmdUtils._restoreFocusToInput, { capture: true });
-}
-
-// default common preview for search commands
-CmdUtils._searchCommandPreview = function _searchCommandPreview( pblock, {object: {text}} ) {
-    var q = text;
-    var code = (this.description || "Search") + " for <b> '" + (q || "...") + "'</b>";
-    pblock.innerHTML = code;
-    if (q == null || q == '') {
-      return;
-    }
-    if (!this.prevAttrs) this.prevAttrs = {};
-    var url = (this.prevAttrs.url || this.url).replace(/\{QUERY\}/g, q);
-    // hash-anchor:
-    var hashanch = null;
-    if (this.prevAttrs.anchor != null) {
-      var hashanch = this.prevAttrs.anchor;
-      if (!Array.isArray(hashanch)) {
-        hashanch = this.prevAttrs.anchor = [hashanch];
-      }
-      url += '#'+hashanch[0];
-    }
-    var zoom = this.prevAttrs.zoom || 0.85;
-    //pblock.style.overflow = 'hidden'; 
-    var doc = pblock.ownerDocument;
-    var wnd = doc.defaultView || doc.parentWindow;
-    if (wnd._ubi_prevTO != null) {
-      wnd.clearTimeout(wnd._ubi_prevTO);
-      wnd._ubi_prevTO = null;
-    }
-    var to = 300;
-    var self = this;
-    // show it:
-    wnd._ubi_prevTO = wnd.setTimeout(function () {
-      // avoid stealing focus (and re-scroll):
-      wnd.removeEventListener("blur", CmdUtils._restoreFocusToInput, { capture: true });
-      wnd.addEventListener("blur", CmdUtils._restoreFocusToInput, { capture: true });
-      wnd._ubiq_recent_cmd = self;
-      // parent block in order to handle scroll ("cross origin" issue) and to provide zoom
-      pblock.innerHTML = 
-    '<div id="ubiq-preview-div" style="--zoom:'+ zoom +'">'+ code +'</div>';
-      pblock = pblock.lastChild;
-      // scrollTo in frame cross origin not allowed in some browsers - scroll later inside parent div:
-      var scrollOffs = [0, 0];
-      if (self.prevAttrs.scroll) {
-        scrollOffs = self.prevAttrs.scroll;
-      }
-      pblock.innerHTML =
-     '<iframe id="ubiq-preview-frm"' +
-       ' sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-top-navigation"' +
-       ' style="--scrollX:'+ scrollOffs[0] +'px; --scrollY:'+ scrollOffs[1] +'px; background-color:'+self.prevAttrs.backgroundColor+'; "'+
-       ' src="' + url + '"/>';
-      var ifrm = pblock.lastChild;
-      ifrm.onload = function() { 
-        (CmdUtils._afterLoadPreview.bind(self))(pblock.lastChild); 
-      };
-      // zoom overflow dirty fix
-      CmdUtils.popupWindow.jQuery("#ubiq-command-preview").css("overflow-y", "hidden"); 
-      if (scrollOffs[0] || scrollOffs[1]) {
-        wnd.setTimeout(function() {
-          pblock.scrollLeft = scrollOffs[0];
-          pblock.scrollTop = scrollOffs[1];
-        }, 10);
-      }
-    }, to);
 }
 
 // closes current tab
@@ -404,7 +354,7 @@ CmdUtils.updateSelection = function (tab_id, callback) {
 CmdUtils._internalClearSelection = function() {
     CmdUtils.selectedText = "";
     CmdUtils.selectedHtml = "";
-}
+};
 
 // called when tab is switched or changed, updates selectedText and activeTab
 CmdUtils.updateActiveTab = function (callback) {
@@ -550,6 +500,347 @@ CmdUtils.notify = function (message, title) {
 
 CmdUtils.getPref("parserLanguage", parserLanguage => CmdUtils.parserLanguage = parserLanguage || "en");
 CmdUtils.getPref("maxSuggestions", maxSuggestions=> CmdUtils.maxSuggestions = maxSuggestions || 5);
+
+// === {{{ CmdUtils.absUrl(data, baseUrl) }}} ===
+// Fixes relative URLs in {{{data}}} (e.g. as returned by Ajax calls).
+// Useful for displaying fetched content in command previews.
+//
+// {{{data}}} is the data containing relative URLs, which can be
+// an HTML string or a jQuery/DOM object.
+//
+// {{{baseUrl}}} is the URL used for base
+// (that is to say; the URL that the relative paths are relative to).
+
+CmdUtils.absUrl = function (data, baseUrl) {
+    let uri = function(opts) {
+        let url = opts.uri;
+        let base = opts.base;
+
+        if (url && url.startsWith("//"))
+            url = "http:" + url;
+
+        let contains_scheme = url && /^[^:]+:/.test(url);
+
+        if (base && base.endsWith("/"))
+            base = base.substring(0, base.length - 2);
+
+        if (url && !contains_scheme && !url.startsWith("/"))
+            url = "/" + url;
+
+        return {spec: contains_scheme? url: base + url};
+    };
+    switch (typeof data) {
+        case "string": return data.replace(
+            /<[^>]+>/g,
+            tag => tag.replace(
+                /\b(href|src|action)=(?![\"\']?[a-z]+:\/\/)([\"\']?)([^\s>\"\']+)\2/i,
+                (_, a, q, path) =>
+                    a + "=" + q + uri({uri: path, base: baseUrl}).spec + q))
+        case "object": {
+            let $data = jQuery(data);
+            for (let name of ["href", "src", "action"]) {
+                let sl = "*[" + name + "]", fn = function absUrl_each() {
+                    var {spec} = uri({uri: this.getAttribute(name), base: baseUrl});
+                    this.setAttribute(name, spec);
+                };
+                $data.filter(sl).each(fn).end().find(sl).each(fn);
+            }
+            return data;
+        }
+    }
+    return null;
+};
+
+CmdUtils.previewCallback = function(pblock, callback, abortCallback) {
+    var previewChanged = false;
+    function onPreviewChange() {
+        pblock.removeEventListener("preview-change", onPreviewChange, false);
+        previewChanged = true;
+        if (abortCallback) abortCallback();
+    }
+    pblock.addEventListener("preview-change", onPreviewChange, false);
+
+    return function wrappedCallback() {
+        if (previewChanged) return null;
+
+        pblock.removeEventListener("preview-change", onPreviewChange, false);
+        return callback.apply(this, arguments);
+    };
+};
+
+CmdUtils.previewAjax = function(pblock, options) {
+    var xhr;
+    function abort() { if (xhr) xhr.abort() }
+
+    var newOptions = {__proto__: options};
+    for (var key in options) if (typeof options[key] === "function")
+        newOptions[key] = CmdUtils.previewCallback(pblock, options[key], abort);
+
+    // see scripts/jquery_setup.js
+    var wrappedXhr = newOptions.xhr || jQuery.ajaxSettings.xhr;
+    newOptions.xhr = function backgroundXhr() {
+        var newXhr = wrappedXhr.apply(this, arguments);
+        newXhr.mozBackgroundRequest = true;
+        return newXhr;
+    };
+
+    return xhr = jQuery.ajax(newOptions);
+};
+
+CmdUtils.makeSearchCommand = function(options) {
+    if (!("url" in options)) options.url = options.parser.url;
+    var [baseUrl, domain] = /^\w+:\/\/([^?#/]+)/.exec(options.url) || [""];
+    var [name] = [].concat(options.names || options.name);
+    if (!name) name = options.name = domain;
+    var htmlName = Utils.escapeHtml(name);
+    if (!("icon" in options)) options.icon = baseUrl + "/favicon.ico";
+    if (!("description" in options))
+        options.description = L(
+            "Searches %S for your words.",
+            "defaultUrl" in options ? htmlName.link(options.defaultUrl) : htmlName);
+    if (!("arguments" in options || "argument" in options))
+        options.argument = noun_arb_text;
+    if (!("execute" in options)) options.execute = CmdUtils.makeSearchCommand.execute;
+    if (!("preview" in options)) {
+        options.preview = CmdUtils.makeSearchCommand.preview;
+        if ("parser" in options) {
+            let {parser} = options;
+            function fallback(n3w, old) {
+                if (n3w in parser || !(old in parser)) return;
+                Utils.reportWarning(
+                    "makeSearchCommand: parser." + old + " is deprecated. " +
+                    "Use parser." + n3w + " instead.", 2);
+                parser[n3w] = parser[old];
+            }
+            fallback("body", "preview");
+            fallback("baseUrl", "baseurl");
+            if (!("baseUrl" in parser)) parser.baseUrl = baseUrl;
+            if ("type" in parser) parser.type = parser.type.toLowerCase();
+            parser.keys = ["title", "body", "href", "thumbnail"].filter((k) => k in parser);
+            if ("log" in parser && typeof parser.log !== "function")
+                parser.log = CmdUtils.makeSearchCommand.log;
+        }
+    }
+    return CmdUtils.CreateCommand(options);
+};
+
+CmdUtils.makeSearchCommand.log = function searchLog(it, type) {
+    Utils.log("SearchCommand: " + type + " =", it);
+};
+CmdUtils.makeSearchCommand.query = function searchQuery(target, query, charset) {
+    var re = /%s|{QUERY}/g, fn = encodeURIComponent;
+    if (charset) {
+        //query = Utils.convertFromUnicode(charset, query);
+        fn = escape;
+    }
+    return typeof target == "object"
+        ? Object.keys(target).map(key => fn(key) + "=" + fn(target[key])).join("&")
+        : target && target.replace(re, fn(query));
+};
+CmdUtils.makeSearchCommand.execute = function searchExecute({object: {text}}) {
+    if (!text && "defaultUrl" in this)
+        Utils.openUrlInBrowser(this.defaultUrl);
+    else
+        Utils.openUrlInBrowser(
+            CmdUtils.makeSearchCommand.query(this.url, text, this.charset),
+            CmdUtils.makeSearchCommand.query(this.postData, text, this.charset))
+    CmdUtils.closePopup();
+};
+CmdUtils.makeSearchCommand.preview = function searchPreview(pblock, {object: {text}}) {
+    if (!text) return void this.previewDefault(pblock);
+
+    function put() {
+        pblock.innerHTML =
+            "<div class='search-command'>" + Array.join(arguments, "") + "</div>";
+    }
+    var {parser, global} = this, queryHtml =
+        "<strong class='query'>" + Utils.escapeHtml(text) + "</strong>";
+    put(L("Searches %S for: %S", Utils.escapeHtml(this.name), queryHtml),
+        !parser ? "" :
+            "<p class='loading'>" + L("Loading results...") + "</p>");
+    if (!parser) return;
+
+    var {type, keys} = parser;
+    var params = {
+        url: CmdUtils.makeSearchCommand.query(parser.url || this.url, text, this.charset),
+        dataType: parser.type || "text",
+        success: searchParse,
+        error: function searchError(xhr) {
+            put("<em class='error'>", xhr.status, " ", xhr.statusText, "</em>");
+        },
+    };
+    var pdata = parser.postData || this.postData;
+    if (pdata) {
+        params.type = "POST";
+        params.data = CmdUtils.makeSearchCommand.query(pdata, text, this.charset);
+    }
+    CmdUtils.previewAjax(pblock, params);
+    function searchParse(data) {
+        if (!data) {
+            put("<em class='error'>" + L("Error parsing search results.") + "</em>");
+            return;
+        }
+        if (parser.log) parser.log(data, "data");
+        switch (type) {
+            case "json": return parseJson(data);
+            case "xml" : return parseDocument(data);
+            default: return Utils.parseHtml(data, parseDocument);
+        }
+    }
+    function parseJson(data) {
+        // TODO: Deal with key names that include dots.
+        function dig(dat, key) {
+            var path = parser[key];
+            if (path.call) return path.call(dat, dat);
+            for (let p of path && path.split(".")) dat = dat[p] || 0;
+            return dat;
+        }
+        var results = [];
+        if ("container" in parser)
+            for (let dat of dig(data, "container")) {
+                let res = {};
+                for (let key of keys) res[key] = dig(dat, key);
+                results.push(res);
+            }
+        else {
+            let vals = keys.map(k => dig(data, k));
+            for (let j in vals[0])
+                results.push(keys.reduce((r, k, i) => (r[k] = vals[i][j], r), {}));
+        }
+        onParsed(results);
+    };
+    function parseDocument(doc) {
+        var $ = jQuery, results = [], $doc = $(doc);
+        function find($_, key) {
+            var path = parser[key];
+            return !path ? $() : path.call ? path.call($_, $_) : $_.find(path);
+        }
+        if ("container" in parser)
+            find($doc, "container").each(function eachContainer() {
+                var res = {}, $this = $(this);
+                for (let k of keys) res[k] = find($this, k);
+                results.push(res);
+            });
+        else {
+            let qs = keys.map(k => find($doc, k));
+            for (let j of Utils.seq(qs[0].length))
+                results.push(keys.reduce((r, k, i) => (r[k] = qs[i].eq(j), r), {}));
+        }
+        function pluck() { return this.innerHTML || this.textContent }
+        function toCont(key) {
+            for (let r of results) r[key] = r[key].map(pluck).get().join(" ");
+        }
+        function toAttr(key, lnm, anm) {
+            for (let res of results) {
+                let $_ = res[key], atr = ($_.is(lnm) ? $_ : $_.find(lnm)).attr(anm);
+                res[key] = atr && Utils.escapeHtml(atr);
+            }
+        }
+        "thumbnail" in parser && toAttr("thumbnail", "img", "src");
+        "body" in parser && toCont("body");
+        if (!("href" in parser)) for (let r of results) r.href = r.title;
+        toAttr("href", "a", "href");
+        toCont("title");
+        onParsed(results);
+    }
+    function onParsed(results) {
+        if (parser.log) parser.log(results, "results");
+        for (let k of parser.plain || [])
+            for (let r of results) r[k] = r[k] && Utils.escapeHtml(r[k]);
+        var list = "", i = 0, max = parser.maxResults || 4;
+        for (let {title, href, body, thumbnail} of results) if (title) {
+            if (href) {
+                // no keyboard support in existing preview
+                //let key = i < 35 ? (i+1).toString(36) : "-";
+                //title = ("<kbd>" + key + "</kbd> <a href='" + href +
+                let key = i + 1;
+                title = (key + ". <a href='" + href +
+                    "' accesskey='" + key + "'>" + title + "</a>");
+            }
+            list += "<dt class='title'>" + title + "</dt>";
+            if (thumbnail)
+                list += "<dd class='thumbnail'><img src='" + thumbnail + "'/></dd>";
+            if (body)
+                list += "<dd class='body'>" + body + "</dd>";
+            if (++i >= max) break;
+        }
+
+        put(list
+            ? ("<span class='found'>" +
+                L("Results for %S:", queryHtml) +
+                "</span><dl class='list'>" + list + "</dl>")
+            : ("<span class='empty'>" +
+                L("No results for %S.", queryHtml) +
+                "</span>"));
+        CmdUtils.absUrl(pblock, parser.baseUrl);
+    }
+};
+
+// === {{{ CmdUtils.previewList(block, htmls, [callback], [css]) }}} ===
+// Creates a simple clickable list in the preview block and
+// returns the list element.
+// * Activating {{{accesskey="0"}}} rotates the accesskeys
+//   in case the list is longer than the number of available keys.
+// * The buttons are disabled upon activation to prevent duplicate calls.
+//   To re-enable them, make {{{callback}}} return {{{true}}}.
+//
+// {{{block}}} is the DOM element the list will be placed into.
+//
+// {{{htmls}}} is the array/dictionary of HTML string to be listed.
+//
+// {{{callback(id, ev)}}} is the function called
+// when one of the list item becomes focused.
+// *{{{id}}} : one of the keys of {{{htmls}}}
+// *{{{ev}}} : the event object
+//
+// {{{css}}} is an optional CSS string inserted along with the list.
+
+// function previewList(block, htmls, callback, css) {
+//     var {escapeHtml} = Utils, list = "", num = 0, CU = this;
+//     for (let key in htmls) {
+//         let k = ++num < 36 ? num.toString(36) : "-";
+//         list += ('<li><label for="' + num + '"><input type="button" id="' + num +
+//             '" class="button" value="' + k + '" accesskey="' + k +
+//             '" key="' + escapeHtml(key) + '"/>' + htmls[key] +
+//             '</label></li>');
+//     }
+//     block.innerHTML = (
+//         '<ol id="preview-list">' +
+//         '<style>' + previewList.CSS + (css || "") + '</style>' +
+//         '<input type="button" class="button" id="keyshifter"' +
+//         ' value="0" accesskey="0"/>' + list + '</ol>');
+//     var ol = block.firstChild, start = 0;
+//     callback && ol.addEventListener("click", function onPreviewListClick(ev) {
+//         var {target} = ev;
+//         if (target.type !== "button") return;
+//         ev.preventDefault();
+//         if (target.id === "keyshifter") {
+//             if (num < 36) return;
+//             let buttons = Array.slice(this.getElementsByClassName("button"), 1);
+//             start = (start + 35) % buttons.length;
+//             buttons = buttons.splice(start).concat(buttons);
+//             for (let i = 0, b; b = buttons[i];)
+//                 b.value = b.accessKey = ++i < 36 ? i.toString(36) : "-";
+//             return;
+//         }
+//         target.disabled = true;
+//         if (callback.call(this, target.getAttribute("key"), ev))
+//             Utils.setTimeout(function reenableButton() { target.disabled = false });
+//     }, false);
+//     return ol;
+// }
+// previewList.CSS = "\
+//   #preview-list {margin: 0; padding-left: 1.5em; list-style-type: none}\
+//   #preview-list > li {position: relative; min-height: 3ex}\
+//   #preview-list > li:hover {outline: 1px solid; -moz-outline-radius: 8px}\
+//   #preview-list label {display: block; cursor: pointer}\
+//   #preview-list .button {\
+//     position: absolute; left: -1.5em; height: 3ex;\
+//     padding: 0; border-width: 1px;\
+//     font: bold 108% monospace; text-transform: uppercase}\
+//   #keyshifter {position:absolute; top:-9999px}\
+// "
+
 
 (function ( $ ) {
     $.fn.blankify = function( url ) {
