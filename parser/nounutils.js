@@ -87,7 +87,7 @@ var NounUtils = {};
         if (defaults) {
             // [[a], [b, c], ...] => [a].concat([b, c], ...) => [a, b, c, ...]
             this.default =
-                Array.concat.apply(0, defaults.map(d => this.suggest(d)));
+                Array.prototype.concat.apply(0, defaults.map(d => this.suggest(d)));
         }
     };
 
