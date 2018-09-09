@@ -29,10 +29,11 @@
           "commands/translate.js",
           "commands/search.js",
           "commands/lingvo.js",
-          "commands/javcheck.js",
           "commands/feedsub.js",
           "commands/resurrect.js",
-          "commands/soviet.js",
+          "commands/more/nyaa.js",
+          "commands/more/soviet.js",
+          "commands/more/dark-flow.js",
           "background.js"],
         "persistent":true
     },

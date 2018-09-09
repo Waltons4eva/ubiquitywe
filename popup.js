@@ -405,6 +405,17 @@ $(window).on('load', function() {
 
         ubiq_nl_parser = NLParser.makeParserForLanguage(CmdUtils.parserLanguage, CmdUtils.CommandList);
 
+        for (cmd of CmdUtils.CommandList) {
+            try {
+                if (cmd.init) {
+                    cmd.init(document);
+                }
+            }
+            catch (e) {
+                console.log(e.message);
+            }
+        }
+
          CmdUtils.updateActiveTab(() => {
              ubiq_load_input(() => {
                  ubiq_show_matching_commands();
@@ -419,11 +430,6 @@ $(window).on('load', function() {
         document.addEventListener('keyup', function (e) {
             ubiq_keyup_handler(e);
         }, false);
-
-        CmdUtils.getPref("debugMode", debugMode => {
-            if (debugMode)
-                CmdUtils.loadCSS(document, "__soviet__", "res/soviet.css")
-        });
     } else {
         chrome.tabs.create({ "url": "chrome://extensions" });
         chrome.notifications.create({
