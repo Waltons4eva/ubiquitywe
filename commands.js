@@ -1,4 +1,5 @@
 var {escapeHtml} = Utils;
+var commandCategoryCount = 0;
 
 function setupHelp(clickee, help) {
     var toggler = jQuery(clickee).click(function toggleHelp() {
@@ -96,6 +97,19 @@ function compareByName(a, b) {
 
 function fillTableRowForCmd(row, cmd, className) {
     var {name, names} = cmd;
+
+    var checkBoxCell = $('<td><input type="checkbox"/></td>');
+    (checkBoxCell.find("input")
+        .val(cmd.id)
+        .bind("change", (e) => {
+            cmd.disabled = !e.target.checked;
+            if (cmd.disabled)
+                CmdUtils.disableCommand(cmd);
+            else
+                CmdUtils.enableCommand(cmd);
+        })
+        [cmd.disabled ? "removeAttr" : "attr"]("checked", "checked"));
+
     var cmdElement = jQuery(
         '<td class="command">' +
         (!("icon" in cmd) ? "" :
@@ -121,7 +135,7 @@ function fillTableRowForCmd(row, cmd, className) {
     }
 
     if (className) {
-        //checkBoxCell.addClass(className);
+        checkBoxCell.addClass(className);
         cmdElement.addClass(className);
     }
 
@@ -134,7 +148,7 @@ function fillTableRowForCmd(row, cmd, className) {
         }
     }
 
-    return row.append(cmdElement);
+    return row.append(checkBoxCell, cmdElement);
 }
 
 function insertNamespace(namespace, subtext, commands, table) {
@@ -158,6 +172,7 @@ function insertNamespace(namespace, subtext, commands, table) {
     else
         aRow.append("<td class=\"topcell command\">&nbsp</td>");
 
+    commandCategoryCount += 1;
 }
 
 function buildTable(customscripts) {
@@ -204,10 +219,12 @@ function buildTable(customscripts) {
 //    if (defaultCommands.length > 0)
     insertNamespace("Other Commands", '<a href="edit.html" target="_blank">Open in editor</a>',
         defaultCommands, table);
+
+    jQuery("#num-cats").text(commandCategoryCount);
 }
 
 jQuery(function onReady() {
-    //setupHelp("#show-hide-help", "#cmdlist-help-div");
+    setupHelp("#show-hide-help", "#cmdlist-help-div");
     CmdUtils.loadCustomScripts(customscripts => {
         buildTable(customscripts);
     });

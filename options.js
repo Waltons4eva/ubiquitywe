@@ -7,7 +7,14 @@ function onDocumentLoad() {
         jQuery("#debug-mode").change(function changeDebugMode() {
             CmdUtils.DEBUG = !!this.checked;
             CmdUtils.setPref("debugMode", CmdUtils.DEBUG);
+            if (CmdUtils.DEBUG)
+                jQuery(".imp-exp").show();
+            else
+                jQuery(".imp-exp").hide();
         }).prop('checked', debugMode);
+
+        if (CmdUtils.DEBUG)
+            jQuery(".imp-exp").show();
 
         // if (!CmdUtils.DEBUG)
         //     jQuery("#keybinding-row").remove();

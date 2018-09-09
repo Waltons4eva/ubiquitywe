@@ -36,7 +36,7 @@ commands (which are still compatible with the new Firefox functionality) could b
 * Ace code editor (which has decent search functionality) is used instead of CodeMirror.
 * Settings and command list pages are resemble the ones from the original Ubiquity.
 * User command categories ("Namespaces") are available.
-* Some commands removed/renamed/added.
+* Some commands removed/renamed/added, some are available only in debug mode (could be changed in settings).
 * Some minor fixes.
 
 Notes

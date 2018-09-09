@@ -4,8 +4,8 @@
 if (!CmdUtils) var CmdUtils = { 
     VERSION: chrome.runtime.getManifest().version,
     DEBUG: undefined,
-    PRODUCTION: false,
     CommandList: [],
+    DisabledCommands: {},
     jQuery: jQuery,
     backgroundWindow: window,
     popupWindow: null,
@@ -513,6 +513,20 @@ CmdUtils.getPref = function(key, callback) {
 
 CmdUtils.setPref = function(key, value, callback) {
     chrome.storage.local.get(null, p => {p[key] = value; chrome.storage.local.set(p)});
+};
+
+CmdUtils.enableCommand = function(cmd) {
+    if (cmd.name in CmdUtils.DisabledCommands) {
+        delete CmdUtils.DisabledCommands[cmd.name];
+        CmdUtils.setPref("disabledCommands", CmdUtils.DisabledCommands);
+    }
+};
+
+CmdUtils.disableCommand = function(cmd) {
+    if (!(cmd.name in CmdUtils.DisabledCommands)) {
+        CmdUtils.DisabledCommands[cmd.name] = true;
+        CmdUtils.setPref("disabledCommands", CmdUtils.DisabledCommands);
+    }
 };
 
 // show browser notification with simple limiter 

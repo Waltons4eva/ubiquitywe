@@ -61,7 +61,13 @@ function saveScripts() {
     var customscripts = editor.getValue();
 
     if (scriptNamespace === UBIQUITY_SETTINGS) {
-        chrome.storage.local.set(JSON.parse(customscripts));
+        let settings;
+        try {
+            settings = JSON.parse(customscripts)
+        }
+        catch (e) {}
+        if (settings)
+            chrome.storage.local.set(settings);
     }
     else {
         // save

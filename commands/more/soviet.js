@@ -10,10 +10,10 @@ CmdUtils.CreateCommand(
             {role: "format", nountype: ["premier", "first", "england"], label: "division", default: "premier"}],
         /*---------------------------------------------------------------------------*/
         description: "Get latest information about sport events.",
-        help: `Syntax: sovsport {table} of {sport} in {division}<br>
-            Available {table}s: position, schedule<br>
-            Available {sports}s: football, formula1<br>
-            Available {division}s: premier, first, england
+        help: `Syntax: sovsport <b>table</b> of <b>sport</b> in <b>division</b><br>
+            Available <b>table</b>s: position, schedule<br>
+            Available <b>sports</b>s: football, formula1<br>
+            Available <b>division</b>s: premier, first, england
         `,
         timeout: 1000,
         builtIn: true,

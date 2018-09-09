@@ -9,7 +9,15 @@ CmdUtils.getPref("customscripts", customscripts => {
 CmdUtils.getPref("debugMode", debugMode => {
     CmdUtils.DEBUG = !!debugMode;
     CmdUtils.CommandList = CmdUtils.CommandList.filter(cmd => CmdUtils.DEBUG || !cmd._hidden);
+    CmdUtils.getPref("disabledCommands", disabledCommands => {
+        if (disabledCommands)
+            for (let cmd of CmdUtils.CommandList) {
+                if (cmd.name in disabledCommands)
+                    cmd.disabled = true;
+            }
+    });
 });
+
 
 CmdUtils.getPref("parserLanguage", parserLanguage => CmdUtils.parserLanguage = parserLanguage || "en");
 CmdUtils.getPref("parserLanguage", parserLanguage => CmdUtils.parserLanguage = parserLanguage || "en");
