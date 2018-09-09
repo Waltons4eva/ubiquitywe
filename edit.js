@@ -59,23 +59,30 @@ CmdUtils.makeSearchCommand({
 // evaluates and saves scripts from editor
 function saveScripts() {
     var customscripts = editor.getValue();
-
     if (scriptNamespace === UBIQUITY_SETTINGS) {
         let settings;
         try {
             settings = JSON.parse(customscripts)
         }
-        catch (e) {}
+        catch (e) {
+            console.log(e);
+            return;
+        }
+
+        console.log(settings);
         if (settings)
-            chrome.storage.local.set(settings);
+            chrome.storage.local.set(settinяs);
+        else
+            chrome.storage.local.clear();
     }
     else {
         // save
         if (typeof chrome !== 'undefined' && chrome.storage) {
-            chrome.storage.local.get('customscripts', function (result) {
-                result.customscripts[scriptNamespace] = {scripts: customscripts};
-                chrome.storage.local.set(result);
-                console.log(result);
+            CmdUtils.getPref("customscripts", all_scripts => {
+                if (!all_scripts)
+                    all_scripts = {};
+                all_scripts[scriptNamespace] = {scripts: customscripts};
+                CmdUtils.setPref("customscripts", all_scripts);
             });
         }
 
@@ -110,11 +117,21 @@ editor.setPrintMarginColumn (120);
 editor.on("blur", saveScripts);
 editor.on("change", saveScripts);
 
+function setNamespaceScripts(all_scripts, namespace) {
+    let namespace_scripts = all_scripts[namespace];
+    if (namespace_scripts)
+        editor.setValue(namespace_scripts.scripts || "", -1);
+    else
+        editor.setValue("");
+}
+
 $("#script-namespaces").change(() => {
     saveScripts();
-    chrome.storage.local.get('customscripts', function(result) {
+    CmdUtils.getPref("customscripts", all_scripts => {
+        if (!all_scripts)
+            all_scripts = {};
         scriptNamespace = $("#script-namespaces").val();
-        editor.setValue(result.customscripts[scriptNamespace].scripts || "", -1);
+        setNamespaceScripts(all_scripts, scriptNamespace);
     });
 });
 
@@ -124,15 +141,16 @@ $("#create-namespace").click(() => {
 
     let name = prompt("Name: ");
     if (name) {
-        chrome.storage.local.get('customscripts', function(result) {
+
+        CmdUtils.getPref("customscripts", all_scripts => {
             ADD_NAME: {
                 saveScripts();
 
-                for (let n in result.customscripts) {
+                for (let n in all_scripts) {
                     if (n.toLowerCase() == name.toLowerCase()) {
                         scriptNamespace = n;
                         $("#script-namespaces").val(n);
-                        editor.setValue(result.customscripts[scriptNamespace].scripts || "", -1);
+                        setNamespaceScripts(all_scripts, scriptNamespace)
                         break ADD_NAME;
                     }
                 }
@@ -152,13 +170,13 @@ $("#create-namespace").click(() => {
 $("#delete-namespace").click(() => {
     if (scriptNamespace !== "default" && scriptNamespace !== UBIQUITY_SETTINGS)
         if (confirm("Are you sure?")) {
-            chrome.storage.local.get('customscripts', function(result) {
-                delete result.customscripts[scriptNamespace];
-                chrome.storage.local.set(result);
+            CmdUtils.getPref("customscripts", all_scripts => {
+                delete all_scripts[scriptNamespace];
+                CmdUtils.setPref("customscripts", all_scripts, );
                 $('option:selected', $("#script-namespaces")).remove();
 
                 scriptNamespace = $("#script-namespaces").val();
-                editor.setValue(result.customscripts[scriptNamespace].scripts || "", -1);
+                setNamespaceScripts(all_scripts, scriptNamespace);
             });
         }
 });
@@ -177,8 +195,8 @@ if (typeof chrome !== 'undefined' && chrome.storage) {
             }
         });
     else
-        chrome.storage.local.get('customscripts', function(result) {
-            var sorted = Object.keys(result.customscripts).sort(function (a, b) {
+        CmdUtils.getPref("customscripts", all_scripts => {
+            var sorted = Object.keys(all_scripts).sort(function (a, b) {
                 if (a.toLocaleLowerCase() < b.toLocaleLowerCase())
                     return -1;
                 if (a.toLocaleLowerCase() > b.toLocaleLowerCase())
@@ -192,7 +210,7 @@ if (typeof chrome !== 'undefined' && chrome.storage) {
                         .text(n));
             $("#script-namespaces").val(scriptNamespace);
 
-            editor.setValue(result.customscripts[scriptNamespace].scripts || "", -1);
+            setNamespaceScripts(all_scripts, scriptNamespace);
             saveScripts();
         });
 }

@@ -16,7 +16,7 @@
 
     CmdUtils.CreateCommand(
         {
-            names: ["nyaa"],
+            names: ["nyaa", "javcheck"],
             /*---------------------------------------------------------------------------*/
             builtIn: true,
             _namespace: "More Commands",

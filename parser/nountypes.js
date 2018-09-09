@@ -49,7 +49,7 @@ var noun_arb_text = {
   noExternalCalls: true,
   cacheTime: -1,
   suggest: function nat_suggest(text, html, callback, selectionIndices) {
-    return [NounUtils.makeSugg(text, html, null, 0.3, selectionIndices)];
+    return [CmdUtils.makeSugg(text, html, null, 0.3, selectionIndices)];
   },
   // hack to import feed-specific globals into this module
   // see feed-parts/header/initial.js
@@ -70,9 +70,9 @@ var noun_type_number = {
     cacheTime: -1,
     suggest: function nt_number_suggest(text) {
         var num = +text;
-        return isNaN(num) ? [] : [NounUtils.makeSugg(text, null, num)];
+        return isNaN(num) ? [] : [CmdUtils.makeSugg(text, null, num)];
     },
-    default: NounUtils.makeSugg("1", null, 1, 0.5),
+    default: CmdUtils.makeSugg("1", null, 1, 0.5),
 };
 
 // === {{{ noun_type_percentage }}} ===
@@ -84,7 +84,7 @@ var noun_type_percentage = {
   label: "percentage",
   noExternalCalls: true,
   cacheTime: -1,
-  default: NounUtils.makeSugg("100%", null, 1, 0.3),
+  default: CmdUtils.makeSugg("100%", null, 1, 0.3),
   suggest: function nt_percentage_suggest(text, html) {
     var number = parseFloat(text);
     if (isNaN(number)) return [];
@@ -93,13 +93,13 @@ var noun_type_percentage = {
     var nopercent = text.indexOf("%") < 0;
     if (nopercent) score *= 0.9;
 
-    var suggs = [NounUtils.makeSugg(number + "%", null, number / 100, score)];
+    var suggs = [CmdUtils.makeSugg(number + "%", null, number / 100, score)];
     // if the number's 10 or less and there's no
     // % sign, also try interpreting it as a proportion instead of a
     // percent and offer it as a suggestion as well, but with a lower
     // score.
     if (nopercent && number <= 10)
-      suggs.push(NounUtils.makeSugg(
+      suggs.push(CmdUtils.makeSugg(
         number * 100 + "%", null, number, score * 0.9));
     return suggs;
   },
@@ -139,7 +139,7 @@ var noun_type_date = {
     return [this._sugg(date, score)];
   },
   _sugg: (date, score) =>
-    NounUtils.makeSugg(date.toString("yyyy-MM-dd"), null, date, score),
+    CmdUtils.makeSugg(date.toString("yyyy-MM-dd"), null, date, score),
 };
 
 var noun_type_time = {
@@ -161,7 +161,7 @@ var noun_type_time = {
     return [this._sugg(date, score)];
   },
   _sugg: (date, score) =>
-    NounUtils.makeSugg(date.toString("hh:mm:ss tt"), null, date, score),
+    CmdUtils.makeSugg(date.toString("hh:mm:ss tt"), null, date, score),
 };
 
 var noun_type_date_time = {
@@ -183,7 +183,7 @@ var noun_type_date_time = {
     return [this._sugg(date, score)];
   },
   _sugg: (date, score) =>
-    NounUtils.makeSugg(date.toString("yyyy-MM-dd hh:mm tt"), null, date,
+    CmdUtils.makeSugg(date.toString("yyyy-MM-dd hh:mm tt"), null, date,
                       score),
 };
 
@@ -205,7 +205,7 @@ var noun_type_email = {
         ')*|(?:\\"(?:\\\\[^\\r\\n]|[^\\\\\\"])*\\"))$'),
     suggest: function nt_email_suggest(text, html, cb, selectionIndices) {
         if (this._username.test(text))
-            return [NounUtils.makeSugg(text, html, null, 0.3, selectionIndices)];
+            return [CmdUtils.makeSugg(text, html, null, 0.3, selectionIndices)];
 
         var match = text.match(this._email);
         if (!match) return [];
@@ -215,7 +215,7 @@ var noun_type_email = {
         // has less than two letters, penalize
         var score = /\.(?:\d+|[a-z]{2,})$/i.test(domain) ? 1 : 0.8;
 
-        return [NounUtils.makeSugg(text, html, null, score, selectionIndices)];
+        return [CmdUtils.makeSugg(text, html, null, score, selectionIndices)];
     }
 };
 

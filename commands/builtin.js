@@ -29,7 +29,10 @@ CmdUtils.CreateCommand({
     _namespace: "Ubiquity",
     builtIn: true,
     description: "Takes you to the Ubiquity command <a href=edit.html target=_blank>editor page</a>.",
-
+    execute: function () {
+        CmdUtils.addTab("edit.html");
+        CmdUtils.closePopup();
+    }
 });
 
 CmdUtils.CreateCommand({

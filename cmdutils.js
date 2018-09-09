@@ -512,7 +512,7 @@ CmdUtils.getPref = function(key, callback) {
 };
 
 CmdUtils.setPref = function(key, value, callback) {
-    chrome.storage.local.get(null, p => {p[key] = value; chrome.storage.local.set(p)});
+    chrome.storage.local.set({[key]: value});
 };
 
 CmdUtils.enableCommand = function(cmd) {

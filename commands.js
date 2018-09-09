@@ -170,7 +170,7 @@ function insertNamespace(namespace, subtext, commands, table) {
         });
     }
     else
-        aRow.append("<td class=\"topcell command\">&nbsp</td>");
+        aRow.append("<td class=\"topcell command\">&nbsp</td><td class=\"topcell command\">&nbsp</td>");
 
     commandCategoryCount += 1;
 }

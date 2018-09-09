@@ -23,7 +23,6 @@ CmdUtils.CreateCommand(
         icon: "commands/more/soviet.png",
         /*---------------------------------------------------------------------------*/
         init: function (doc) {
-            console.log("init");
             CmdUtils.getPref("debugMode", debugMode => {
                 if (debugMode)
                     CmdUtils.loadCSS(doc, "__soviet__", "commands/more/soviet.css")
