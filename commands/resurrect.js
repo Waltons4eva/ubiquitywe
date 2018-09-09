@@ -84,7 +84,7 @@
                     label: "archiving service"
                 }],
             /*---------------------------------------------------------------------------*/
-            description: "Try to resurrect a dead page using Internet archiving services",
+            description: "Resurrect a dead page using Internet archiving services.",
             /*---------------------------------------------------------------------------*/
             help: "Type <b>resurrect</b> to resurrect a selection or a current page, "
             + "type <b>resurrect URL</b> to resurrect the specified URL.<br/>"

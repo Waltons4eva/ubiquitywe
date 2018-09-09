@@ -6,6 +6,7 @@ CmdUtils.CreateCommand({
     icon: "commands/more/dark-flow.png",
     builtIn: true,
     _hidden: true,
+    _namespace: "More Commands",
     execute: function execute({object: {text}}) {
         chrome.runtime.sendMessage("dark-flow@firefox", {message: "dark-flow:follow-url", url: text}, null);
         CmdUtils.closePopup();

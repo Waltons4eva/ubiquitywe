@@ -3,7 +3,7 @@
 
 CmdUtils.CreateCommand({
     name: "change-ubiquity-settings",
-    icon: "res/icon-24.png",
+    icon: "res/settings.png",
     builtIn: true,
     _namespace: "Ubiquity", // do not set this field in custom commands
     description: "Takes you to the Ubiquity command <a href=options.html target=_blank>settings page</a>.",
@@ -14,7 +14,7 @@ CmdUtils.CreateCommand({
 });
 
 CmdUtils.CreateCommand({
-    names: ["list-ubiquity-commands", "command-list", "help"],
+    names: ["list-ubiquity-commands", "command-list"],
     description: "Opens Ubiquity command list page",
     icon: "res/list_table.png",
     _namespace: "Ubiquity",
@@ -36,7 +36,7 @@ CmdUtils.CreateCommand({
     names: ["reload-ubiquity"],
     _namespace: "Ubiquity",
     description: "Reloads Ubiquity extension.",
-    icon: "res/icon-24.png",
+    icon: "res/arrow_refresh.png",
     builtIn: true,
     preview: "Reloads Ubiquity extension.",
     execute: ()=>{
@@ -50,23 +50,9 @@ CmdUtils.CreateCommand({
     _namespace: "Ubiquity",
     _hidden: true,
     builtIn: true,
-    icon: "res/icon-24.png",
+    icon: "res/debug.png",
     preview: "Debug the popup window in a separate tab.",
     execute: CmdUtils.SimpleUrlBasedCommand("popup.html")
-});
-
-CmdUtils.CreateCommand({
-    name: "replace-selection",
-    _namespace: "Browser",
-    description: "Replaces current selection with entered text.",
-    preview: "eplaces current selection with entered text.",
-    icon: "res/icon-24.png",
-    builtIn: true,
-    arguments: [{role: "object", nountype: noun_arb_text, label: "text"}],
-    execute: function execute({object: {text}}) {
-        CmdUtils.setSelection(text);
-        CmdUtils.closePopup();
-    }
 });
 
 CmdUtils.CreateCommand({
@@ -128,7 +114,7 @@ CmdUtils.CreateCommand({
     name: "print",
     _namespace: "Browser",
     description: "Print the current page.",
-    icon: "res/icon-24.png",
+    icon: "res/print.gif",
     builtIn: true,
     preview: "Print the current page.",
     execute: function (directObj) {
@@ -142,7 +128,7 @@ CmdUtils.CreateCommand({
     _namespace: "Browser",
     description: "Inverts all colors on current page. Based on <a target=_blank href=https://stackoverflow.com/questions/4766201/javascript-invert-color-on-all-elements-of-a-page>this</a>.",
     builtIn: true,
-    icon: "res/icon-24.png",
+    icon: "res/invert.png",
     execute: function execute(){
         chrome.tabs.executeScript({code:`
         javascript: (
@@ -189,7 +175,7 @@ CmdUtils.CreateCommand({
     names: ["base64decode","b64d","atob"],
     _namespace: "Utility",
     description: "base64decode",
-    icon: "res/icon-24.png",
+    icon: "res/encoding.png",
     builtIn: true,
     author: {
         name: "rostok",
@@ -209,7 +195,7 @@ CmdUtils.CreateCommand({
     _namespace: "Utility",
     description: "base64encode",
     builtIn: true,
-    icon: "res/icon-24.png",
+    icon: "res/encoding.png",
     author: {
         name: "rostok",
     },
@@ -227,7 +213,7 @@ CmdUtils.CreateCommand({
     names: ["urldecode"],
     _namespace: "Utility",
     description: "urldecode",
-    icon: "res/icon-24.png",
+    icon: "res/encoding.png",
     builtIn: true,
     author: {
         name: "rostok",
@@ -246,7 +232,7 @@ CmdUtils.CreateCommand({
     names: ["urlencode"],
     _namespace: "Utility",
     description: "urlencode",
-    icon: "res/icon-24.png",
+    icon: "res/encoding.png",
     builtIn: true,
     author: {
         name: "rostok",

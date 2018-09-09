@@ -5,14 +5,20 @@ CmdUtils.CreateCommand(
     {
         names: ["soviet"],
         /*---------------------------------------------------------------------------*/
-        argument: [{role: "object", nountype: ["results", "schedule", "stats"], label: "data"},
-            {role: "modifier", nountype: ["football", "formula1"], label: "sport"},
-            {role: "format", nountype: noun_arb_text, label: "division"}],
+        argument: [{role: "object", nountype: ["position", "schedule"], label: "table", default: "position"},
+            {role: "modifier", nountype: ["football", "formula1"], label: "sport", default: "formula1"},
+            {role: "format", nountype: ["premier", "first", "england"], label: "division", default: "premier"}],
         /*---------------------------------------------------------------------------*/
-        description: "Get latest info from sovsport.ru",
+        description: "Get latest information about sport events.",
+        help: `Syntax: sovsport {table} of {sport} in {division}<br>
+            Available {table}s: position, schedule<br>
+            Available {sports}s: football, formula1<br>
+            Available {division}s: premier, first, england
+        `,
         timeout: 1000,
         builtIn: true,
         _hidden: true,
+        _namespace: "More Commands",
         /*---------------------------------------------------------------------------*/
         icon: "commands/more/soviet.png",
         /*---------------------------------------------------------------------------*/
@@ -49,16 +55,22 @@ CmdUtils.CreateCommand(
             });
         },
         _get_data: function (pblock, type, sport, division) {
+            let url = rootURL;
             switch (sport.toLowerCase()) {
                 case "football":
+                    url += "football/"
                     if (type) {
-                        division = division ? division : "premier";
-                        let url = rootURL + footballURL + division;
-                        //let url = "http://www.sovsport.ru/football/russia/premier-item/2146_2_20165";
+                        if (division === "england")
+                            url += "world/england";
+                        else if (division === "premier")
+                            url += "russia/premier";
+                        else
+                            url += "russia/first";
+                        console.log(url);
                         this._get_url(pblock, url, function (tables) {
                             if (tables.length > 0) {
                                 switch (type.toLowerCase()) {
-                                    case "results":
+                                    case "position":
                                         pblock.innerHTML = tables[0].outerHTML;
                                         break;
                                     case "schedule":
@@ -73,11 +85,11 @@ CmdUtils.CreateCommand(
                     break;
 
                 case "formula1":
-                    let url = rootURL + "formula1";
+                    url += "formula1";
                     this._get_url(pblock, url, function (tables) {
                         if (tables.length > 0) {
                             switch (type.toLowerCase()) {
-                                case "stats":
+                                case "position":
                                     pblock.innerHTML = tables[1].outerHTML;
                                     break;
                                 case "schedule":

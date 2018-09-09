@@ -183,6 +183,9 @@ function buildTable(customscripts) {
     insertBuiltinNamespace("Syndication");
     insertBuiltinNamespace("Translation");
 
+    if (CmdUtils.DEBUG)
+        insertBuiltinNamespace("More Commands");
+
     builtinCommands = CmdUtils.CommandList.filter((c) => c.builtIn && !c._namespace).sort(compareByName);
     if (builtinCommands.length > 0)
         insertNamespace("Builtin Commands", BUILTIN_AUTHOR, builtinCommands, table);
