@@ -133,15 +133,15 @@ function ubiq_execute() {
 function ubiq_help() {
     var html = "<div id='ubiq-help-wrapper'><p>Type the name of a command and press Enter to execute it. "
         + "Use <b>help</b> command for assistance.</p>";
-    html += "<div class='ubiq-help-heading'>Available commands</div>";
-    html += CmdUtils.CommandList.map((c)=>{
-        return "<span fakeattr='"+c.name+"' href='#' title='"+c.description+"'>"
-            + (c.builtIn ? c.name : "<u>"+c.name+"</u>")+"</span>";
-    }).sort().join(", ");
+    // html += "<div class='ubiq-help-heading'>Available commands</div>";
+    // html += CmdUtils.CommandList.map((c)=>{
+    //     return "<span fakeattr='"+c.name+"' href='#' title='"+c.description+"'>"
+    //         + (c.builtIn ? c.name : "<u>"+c.name+"</u>")+"</span>";
+    // }).sort().join(", ");
     html += "<p>";
     html += "<div class='ubiq-help-heading'>Keys</div>";
     html += "Ctrl-C - copy preview to clipboard<br>";
-    html += "up/down - cycle through commands suggestions<br>";
+    html += "&#8593;/&#8595; - cycle through commands suggestions<br>";
     html += "F5 - reload the extension</div>";
 
     ubiq_set_preview(html);

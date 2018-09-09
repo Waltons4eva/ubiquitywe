@@ -31,7 +31,7 @@ body {
 
 #ubiq_input {
     border: 0px; 
-    border-bottom: 1px outset gray;
+    /*border-bottom: 1px outset gray;*/
     width: 100%;
     height: 100%;
     margin: 0px;
@@ -145,7 +145,7 @@ body {
     width: 225px;
 	background-color: #a9a9a9;
 	background-repeat: repeat;
-    cursor: default;
+    cursor: pointer;
 }
 #ubiq-suggestion-panel li img {
     height: 16px;

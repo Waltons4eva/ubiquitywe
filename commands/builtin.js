@@ -14,7 +14,7 @@ CmdUtils.CreateCommand({
 });
 
 CmdUtils.CreateCommand({
-    names: ["list-ubiquity-commands", "command-list"],
+    names: ["list-ubiquity-commands", "command-list", "help"],
     description: "Opens Ubiquity command list page",
     icon: "res/list_table.png",
     _namespace: "Ubiquity",
