@@ -3,7 +3,7 @@
 
 // (C) 2011 g/christensen (gchristnsn@gmail.com)
 
-(function() {
+{
 
     var resurrect_commandIcon = "res/resurrect.gif";
 
@@ -147,4 +147,4 @@
                 CmdUtils.closePopup();
             }
         });
-})();
+}

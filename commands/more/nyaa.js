@@ -1,5 +1,4 @@
-(function () {
-
+{
     let tableTemplate =
         "<table border='0' cellpadding='2' cellspacing='2' style='width: 100%'>"
         + "  <tbody>"
@@ -19,7 +18,7 @@
             names: ["nyaa", "sukebei"],
             /*---------------------------------------------------------------------------*/
             builtIn: true,
-            _namespace: "More Commands",
+            _namespace: NS_MORE_COMMANDS,
             /*---------------------------------------------------------------------------*/
             _hidden: true,
             /*---------------------------------------------------------------------------*/
@@ -238,4 +237,4 @@
             }
         });
 
-})();
+}

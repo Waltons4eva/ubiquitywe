@@ -18,7 +18,7 @@ CmdUtils.CreateCommand(
         timeout: 1000,
         builtIn: true,
         _hidden: true,
-        _namespace: "More Commands",
+        _namespace: NS_MORE_COMMANDS,
         /*---------------------------------------------------------------------------*/
         icon: "commands/more/soviet.png",
         /*---------------------------------------------------------------------------*/

@@ -1,8 +1,9 @@
 // CmdUtils
 
-if (!CmdUtils) var CmdUtils = { 
+if (!CmdUtils) var CmdUtils = {
     VERSION: chrome.runtime.getManifest().version,
     DEBUG: undefined,
+    MORE_COMMANDS: false,
     CommandList: [],
     DisabledCommands: {},
     jQuery: jQuery,
@@ -349,7 +350,7 @@ CmdUtils.loadCSS = function(doc, id, file) {
         link.media = 'all';
         head.appendChild(link);
     }
-}
+};
 
 // updates selectedText variable
 CmdUtils.updateSelection = function (tab_id, callback) {

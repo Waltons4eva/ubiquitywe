@@ -1,8 +1,13 @@
+const NS_MORE_COMMANDS = "More Commands";
+
 if (!Utils) var Utils = {};
 
 const TO_STRING = Object.prototype.toString;
 
+
 Utils.log = console.log;
+
+Utils.jsLog = (o) => console.log(JSON.stringify(o));
 
 Utils.trim = String.trim;
 

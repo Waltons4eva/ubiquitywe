@@ -198,7 +198,7 @@ function buildTable(customscripts) {
     insertBuiltinNamespace("Syndication");
     insertBuiltinNamespace("Translation");
 
-    if (CmdUtils.DEBUG)
+    if (CmdUtils.MORE_COMMANDS)
         insertBuiltinNamespace("More Commands");
 
     builtinCommands = CmdUtils.CommandList.filter((c) => c.builtIn && !c._namespace).sort(compareByName);

@@ -341,6 +341,15 @@ function ubiq_keydown_handler(evt) {
             return;
         }
 
+        if (input.trim().toLowerCase() === "enable more commands") {
+            Utils.setPref("enableMoreCommands", true, () => chrome.runtime.reload());
+            return;
+        }
+        else if (input.trim().toLowerCase() === "not enable more commands") {
+            Utils.setPref("enableMoreCommands", false, () => chrome.runtime.reload());
+            return;
+        }
+
         ubiq_execute();
         return;
     }

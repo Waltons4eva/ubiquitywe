@@ -6,16 +6,29 @@ Utils.getPref("customscripts", customscripts => {
         Utils.setPref("customscripts", {}, () => CmdUtils.loadCustomScripts());;
 });
 
-Utils.getPref("debugMode", debugMode => {
-    CmdUtils.DEBUG = !!debugMode;
-    CmdUtils.CommandList = CmdUtils.CommandList.filter(cmd => CmdUtils.DEBUG || !cmd._hidden);
-    Utils.getPref("disabledCommands", disabledCommands => {
-        if (disabledCommands)
-            for (let cmd of CmdUtils.CommandList) {
-                if (cmd.name in disabledCommands)
-                    cmd.disabled = true;
-            }
+Utils.getPref("enableMoreCommands", enableMoreCommands => {
+
+    if (enableMoreCommands) {
+        for (let cmd of CmdUtils.CommandList)
+            if (cmd.builtIn && cmd._namespace === NS_MORE_COMMANDS)
+                cmd._hidden = false;
+        CmdUtils.MORE_COMMANDS = true;
+    }
+    else
+        CmdUtils.CommandList = CmdUtils.CommandList.filter(cmd => !(cmd.builtIn && cmd._namespace === NS_MORE_COMMANDS));
+
+    Utils.getPref("debugMode", debugMode => {
+        CmdUtils.DEBUG = !!debugMode;
+        CmdUtils.CommandList = CmdUtils.CommandList.filter(cmd => CmdUtils.DEBUG || !cmd._hidden);
+        Utils.getPref("disabledCommands", disabledCommands => {
+            if (disabledCommands)
+                for (let cmd of CmdUtils.CommandList) {
+                    if (cmd.name in disabledCommands)
+                        cmd.disabled = true;
+                }
+        });
     });
+
 });
 
 Utils.getPref("parserLanguage", parserLanguage => CmdUtils.parserLanguage = parserLanguage || "en");

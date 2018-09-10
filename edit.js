@@ -16,11 +16,11 @@ CmdUtils.CreateCommand({
     description: "A short description of your command.",
     author: "Your Name",
     icon: "res/icon-24.png",
-    execute: function execute({object: {text}}) {
+    execute: function({object: {text}}) {
         CmdUtils.notify("Your input is: " + text);
         CmdUtils.closePopup();
     },
-    preview: function preview(pblock, {object: {text}}) {
+    preview: function(pblock, {object: {text}}) {
         pblock.innerHTML = "Your input is " + text + ".";
     },
 });
@@ -58,7 +58,8 @@ CmdUtils.makeSearchCommand({
 
 // evaluates and saves scripts from editor
 function saveScripts() {
-    var customscripts = editor.getValue();
+    var customscripts = editor.getSession().getValue();
+
     if (scriptNamespace === UBIQUITY_SETTINGS) {
         let settings;
         try {
@@ -69,7 +70,6 @@ function saveScripts() {
             return;
         }
 
-        console.log(settings);
         if (settings)
             chrome.storage.local.set(settinяs);
         else
@@ -89,7 +89,7 @@ function saveScripts() {
         // eval
         try {
             $("#info").html("evaluated!");
-                eval(customscripts);
+            eval(customscripts);
         } catch (e) {
             $("#info").html("<span style='background-color:red'>" + e.message + "</span>");
         }
@@ -107,12 +107,12 @@ editor = ace.edit("code");
 editor.setTheme("ace/theme/monokai");
 editor.getSession().setMode("ace/mode/javascript");
 
-Utils.getPref("keyboardScheme", keyboardScheme => {
-    if (keyboardScheme !== "ace")
-        editor.setKeyboardHandler("ace/keyboard/" + keyboardScheme);
-});
+// Utils.getPref("keyboardScheme", keyboardScheme => {
+//     if (keyboardScheme !== "ace")
+//         editor.setKeyboardHandler("ace/keyboard/" + keyboardScheme);
+// });
 
-editor.setPrintMarginColumn (120);
+editor.setPrintMarginColumn(120);
 
 editor.on("blur", saveScripts);
 editor.on("change", saveScripts);

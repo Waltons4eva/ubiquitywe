@@ -1,12 +1,11 @@
 CmdUtils.CreateCommand({
     name: "dark flow",
     argument: [{role: "object", nountype: noun_arb_text, label: "URL"}],
-    description: "Follow the URL in Dark Flow.",
-    homepage: "https://github.com/GChristensen/dark-flow#readme",
+    description: "Follow the URL in <a href='https://github.com/GChristensen/dark-flow#readme'>Dark Flow</a>.",
     icon: "commands/more/dark-flow.png",
     builtIn: true,
     _hidden: true,
-    _namespace: "More Commands",
+    _namespace: NS_MORE_COMMANDS,
     execute: function execute({object: {text}}) {
         chrome.runtime.sendMessage("dark-flow@firefox", {message: "dark-flow:follow-url", url: text}, null);
         CmdUtils.closePopup();

@@ -2,14 +2,14 @@
 
 // (C) 2010-2018 g/christensen (gchristnsn@gmail.com)
 
-(function() {
+var __lingvoLiveAPIToken;
 
+{
     var abbyyServiceAPI = "https://developers.lingvolive.com";
     var urlTemplateAPI = "${service}/api/v1/Translation?text=${words}&srcLang=${from}&dstLang=${to}";
     var urlTemplateTranslate = "https://www.lingvolive.com/en-us/translate/${from}-${to}/${words}";
 
     var latinREAPI = new RegExp("[a-z]");
-    var lingvoLiveAPIToken;
     var executionUrl;
 
     CmdUtils.CreateCommand(
@@ -56,7 +56,7 @@
                 }
 
                 try {
-                    if (!lingvoLiveAPIToken)
+                    if (!__lingvoLiveAPIToken)
                         this._authorize().then(() => {
                             this._translate(norm("object"), args.source, args.goal);
                         });
@@ -81,7 +81,7 @@
                     },
                     url: abbyyServiceAPI + "/api/v1.1/authenticate"
                 }).then(data => {
-                    lingvoLiveAPIToken = data;
+                    __lingvoLiveAPIToken = data;
                 });
             },
             /*---------------------------------------------------------------------------*/
@@ -129,7 +129,7 @@
                     url: requestUrl,
                     dataType: "json",
                     headers: {
-                        "Authorization": "Bearer " + lingvoLiveAPIToken
+                        "Authorization": "Bearer " + __lingvoLiveAPIToken
                     },
                     success: function (data) {
                         try {
@@ -142,7 +142,7 @@
                     statusCode: {
                         401: function () {
                             if (errorCtr === 0) {
-                                lingvoLiveAPIToken = undefined;
+                                __lingvoLiveAPIToken = undefined;
                                 self._authorize();
                                 self.oldRequest = jQuery.get(options);
                                 errorCtr += 1;
@@ -280,5 +280,4 @@
                 return result.join("");
             }
         });
-
-})();
+}
