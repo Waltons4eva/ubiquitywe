@@ -1,5 +1,4 @@
 // CmdUtils
-// jshint esversion: 6 
 
 if (!CmdUtils) var CmdUtils = { 
     VERSION: chrome.runtime.getManifest().version,
@@ -12,13 +11,13 @@ if (!CmdUtils) var CmdUtils = {
     log: console.log,
     active_tab: null,   // tab that is currently active, updated via background.js 
     selectedText: "",   // currently selected text, update via content script selection.js
-    selectedHTML: "",   // currently selected text, update via content script selection.js
+    selectedHTML: "",   // currently selected html, update via content script selection.js
     setPreview: function(message, prepend) { console.log(message); },
-    setSuggestions: function(message, prepend) { console.log(message); },
-    setPreviewVisible: function() { },
 };
 
 var _ = a => a;
+
+var H = Utils.escapeHtml;
 
 // stub for original ubiquity string formatter
 function L(pattern, substitute1, substitute2) {
@@ -30,12 +29,6 @@ function L(pattern, substitute1, substitute2) {
     return pattern;
 }
 
-function H(arg) {
-    return Utils.escapeHtml(arg);
-}
-
-CmdUtils.log = m => console.log(m);
-
 // debug log
 CmdUtils.deblog = function () {
     if(CmdUtils.DEBUG){
@@ -44,7 +37,7 @@ CmdUtils.deblog = function () {
 };
 
 CmdUtils.renderTemplate = function (template, data) {
-  return TrimPath.parseTemplate(template).process(data);
+    return TrimPath.parseTemplate(template).process(data);
 };
 
 var __globId = 0;
@@ -59,7 +52,7 @@ CmdUtils.CreateCommand = function CreateCommand(options) {
         options.names = options.names || [options.name];
     }
 
-    options.id = options.referenceName = options.name + __globId++;
+    options.id = options.name + __globId++;
 
     if (CmdUtils.getcmd(options.name)) {
         // remove previously defined command with this name
@@ -101,7 +94,7 @@ CmdUtils.CreateCommand = function CreateCommand(options) {
     var to = parseFloat(options.timeout || 0);
     if (to>0) {
     	options.timeoutFunc = null;
-    	if (typeof options.preview == 'function') {
+    	if (typeof options.preview === 'function') {
 		    options.preview_timeout = options.preview;
 			options.preview = function(b,a) {
                 if (options.preview_timeoutFunc !== null) clearTimeout(options.preview_timeoutFunc);
@@ -110,7 +103,7 @@ CmdUtils.CreateCommand = function CreateCommand(options) {
                 }, to);
 			};
     	}
-    	if (typeof options.execute == 'function') {
+    	if (typeof options.execute === 'function') {
 		    options.execute_timeout = options.execute;
 			options.execute = function(a) {
                 if (options.execute_timeoutFunc !== null) clearTimeout(options.execute_timeoutFunc);
@@ -463,8 +456,9 @@ CmdUtils.timeSinceInputUpdate = function timeSinceInputUpdate() {
 
 // returns command with this name
 CmdUtils.getcmd = function getcmd(cmdname) {
-    for (var c in CmdUtils.CommandList) 
-        if (CmdUtils.CommandList[c].name == cmdname || CmdUtils.CommandList[c].names.indexOf(cmdname)>-1) return CmdUtils.CommandList[c];
+    for (let c in CmdUtils.CommandList)
+        if (CmdUtils.CommandList[c].name === cmdname || CmdUtils.CommandList[c].names.indexOf(cmdname) > -1)
+            return CmdUtils.CommandList[c];
     return null;
 };
 
@@ -553,36 +547,18 @@ CmdUtils.notify = function (message, title) {
 // (that is to say; the URL that the relative paths are relative to).
 
 CmdUtils.absUrl = function (data, baseUrl) {
-    let uri = function(opts) {
-        let url = opts.uri;
-        let base = opts.base;
-
-        if (url && url.startsWith("//"))
-            url = "http:" + url;
-
-        let contains_scheme = url && /^[^:]+:/.test(url);
-
-        if (base && base.endsWith("/"))
-            base = base.substring(0, base.length - 2);
-
-        if (url && !contains_scheme && !url.startsWith("/"))
-            url = "/" + url;
-
-        return {spec: contains_scheme? url: base + url};
-    };
     switch (typeof data) {
         case "string": return data.replace(
             /<[^>]+>/g,
             tag => tag.replace(
                 /\b(href|src|action)=(?![\"\']?[a-z]+:\/\/)([\"\']?)([^\s>\"\']+)\2/i,
                 (_, a, q, path) =>
-                    a + "=" + q + uri({uri: path, base: baseUrl}).spec + q))
+                    a + "=" + q + new URL(path, baseUrl).href + q));
         case "object": {
             let $data = jQuery(data);
             for (let name of ["href", "src", "action"]) {
                 let sl = "*[" + name + "]", fn = function absUrl_each() {
-                    var {spec} = uri({uri: this.getAttribute(name), base: baseUrl});
-                    this.setAttribute(name, spec);
+                    this.setAttribute(name, new URL(this.getAttribute(name), baseUrl).href);
                 };
                 $data.filter(sl).each(fn).end().find(sl).each(fn);
             }
@@ -791,12 +767,9 @@ CmdUtils.makeSearchCommand.preview = function searchPreview(pblock, {object: {te
         var list = "", i = 0, max = parser.maxResults || 4;
         for (let {title, href, body, thumbnail} of results) if (title) {
             if (href) {
-                // no keyboard support in existing preview
-                //let key = i < 35 ? (i+1).toString(36) : "-";
-                //title = ("<kbd>" + key + "</kbd> <a href='" + href +
-                let key = i + 1;
-                title = (key + ". <a href='" + href +
-                    "' accesskey='" + key + "'>" + title + "</a>");
+                let key = i < 35 ? (i+1).toString(36) : "-";
+                title = ("<kbd >" + key + "</kbd>. <a href='" + href +
+                     "' accesskey='" + key + "'>" + title + "</a>");
             }
             list += "<dt class='title'>" + title + "</dt>";
             if (thumbnail)

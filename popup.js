@@ -140,7 +140,8 @@ function ubiq_help() {
     // }).sort().join(", ");
     html += "<p>";
     html += "<div class='ubiq-help-heading'>Keys</div>";
-    html += "Ctrl-C - copy preview to clipboard<br>";
+    html += "Ctrl+C - copy preview to clipboard<br>";
+    html += "Ctrl+Alt+&ltkey&gt; - open search result prefixed with &ltkey&gt; in a new tab<br>";
     html += "&#8593;/&#8595; - cycle through commands suggestions<br>";
     html += "F5 - reload the extension</div>";
 
@@ -192,10 +193,10 @@ function get_next_comand_index(asc) {
 
     // Don't navigate outside boundaries of the list of matches
     if (ubiq_suggestions && index >= ubiq_suggestions.length) {
-        index = ubiq_suggestions.length - 1;
+        index = 0;
     }
     else if (index < 0) {
-        index = 0;
+        index = ubiq_suggestions.length - 1;
     }
     else if (!ubiq_suggestions)
         return -1;
@@ -358,6 +359,13 @@ function ubiq_keydown_handler(evt) {
         return;
     }
 
+    if (evt.ctrlKey && evt.altKey && kc >= 40 && kc <= 90) {
+        let links = jQuery("[accessKey='" + String.fromCharCode(kc) + "']");
+        if (links.length > 0)
+            CmdUtils.addTab(links[0].href)
+        return;
+    }
+
     lcmd = ubiq_command();
 }
 
@@ -365,6 +373,9 @@ function ubiq_keyup_handler(evt) {
     if (!evt) return;
     var kc = evt.keyCode;
     if (lcmd == ubiq_command()) return;
+
+    if (evt.ctrlKey || evt.altKey)
+        return;
 
     // Cursor up
     if (kc == 38) {

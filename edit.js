@@ -36,10 +36,10 @@ CmdUtils.makeSearchCommand({
     timeout: 1000,
     icon: "res/icon-24.png",
     parser: {
-        container  : ".cssSelector", // result item container
-        title      : ".cssSelector", // result item title
-        thumbnail  : ".cssSelector", // result item thumbnail
-        //body       : ".cssSelector", // result item summary
+        container  : ".css > .selector", // result item container
+        title      : ".css > .selector", // result item title
+        thumbnail  : ".css > .selector", // result item thumbnail
+      //body       : ".css > .selector", // result item summary
         maxResults : 10,
     },
 });
