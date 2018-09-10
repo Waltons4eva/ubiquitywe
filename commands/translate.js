@@ -53,10 +53,10 @@
         timeout: 1000,
         help:
             `Type <b>translate</b> or <b>translate this</b> to translate the selection,
-            type <b>lingvo <i>some text</i></b> to translate text.<br/>
+            type <b>translate</b> <i>some text</i> to translate text.<br/>
             You can specify source and destination languages after <b>from</b>
-            or <b>to</b> words respectively, for example:
-            <b>translate</b> mother <b>from</b> english <b>to</b> chinese<br>
+            or <b>to</b> respectively, for example:
+            <b>translate</b> <i>mother</i> <b>from</b> <i>english</i> <b>to</b> <i>chinese</i><br>
             It works on the selected text in any web page, but there is a limit (a couple of paragraphs)
             to how much it can translate at once.
             If you want to translate a lot of text, use <b>translate-page</b> command instead.

@@ -259,14 +259,13 @@ CmdUtils.CreateCommand({
     description: "Searches Wikipedia for your words, in a given language.",
     preview: function wikipedia_preview(previewBlock, args) {
         var searchText = Utils.trim(args.object.text);
+        var lang = args.format.html || "English";
         if (!searchText) {
-            previewBlock.innerHTML = _("Searches Wikipedia in ${lang}.",
-                {lang: args.format.html || "English"});
+            previewBlock.innerHTML = `Searches Wikipedia in ${lang}.`;
             return;
         }
         var previewData = {query: args.object.html};
-        previewBlock.innerHTML = _("Searching Wikipedia for <b>" + args.object.text + "</b> ...",
-            previewData);
+        previewBlock.innerHTML = _("Searching Wikipedia for <b>" + args.object.text + "</b> ...");
         var apiParams = {
             format: "json",
             action: "query",
@@ -281,11 +280,9 @@ CmdUtils.CreateCommand({
                 "<p class='error'>" + _("Error searching Wikipedia") + "</p>";
         }
 
-
-
         var langCode = "en";
         if (args.format && args.format.data)
-            lancCode = args.format.data;
+            langCode = args.format.data;
 
         var apiUrl = "http://" + langCode + ".wikipedia.org/w/api.php";
 

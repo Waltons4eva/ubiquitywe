@@ -254,55 +254,61 @@ function ubiq_html_encode(text) {
     return ubiq_html_encoder.html(text).text();
 }
 
+function ubiq_default_state() {
+    ubiq_preview_set_visible(false);
+    ubiq_selected_command = -1;
+    ubiq_selected_sent = null;
+    ubiq_clear();
+    ubiq_help();
+}
+
 // will also call preview
 function ubiq_show_matching_commands(text) {
     if (!text) text = ubiq_input();
 
-    var query = ubiq_nl_parser.newQuery(text, null, CmdUtils.maxSuggestions, true);
+    if (text) {
+        var query = ubiq_nl_parser.newQuery(text, null, CmdUtils.maxSuggestions, true);
 
-    query.onResults = () => {
-        ubiq_suggestions = query.suggestionList;
+        query.onResults = () => {
+            ubiq_suggestions = query.suggestionList;
 
-        ubiq_ensure_command_in_range();
+            ubiq_ensure_command_in_range();
 
-        // We have matches, show a list
-        if (ubiq_suggestions.length > 0) {
-            var suggestions_div = document.createElement('div');
-            var suggestions_list = document.createElement('ul');
+            // We have matches, show a list
+            if (ubiq_suggestions.length > 0) {
+                var suggestions_div = document.createElement('div');
+                var suggestions_list = document.createElement('ul');
 
-            ubiq_set_tip(ubiq_suggestions[ubiq_selected_command]._verb.cmd.description );
-            ubiq_show_preview(ubiq_suggestions[ubiq_selected_command]);
+                ubiq_set_tip(ubiq_suggestions[ubiq_selected_command]._verb.cmd.description);
+                ubiq_show_preview(ubiq_suggestions[ubiq_selected_command]);
 
-            for (let i in ubiq_suggestions) {
-                var is_selected = (i == ubiq_selected_command);
-                var s = ubiq_suggestions[i];
-                var li = document.createElement('LI');
-                li.innerHTML = `<div id="suggestion-item-${i}"><table cellspacing="1" cellpadding="1">
-                        <tr><td>${ubiq_decorate_icon(s.icon)}</td><td>${s.displayHtml}</td></tr></table></div>`;
-                if (is_selected) {
-                    li.setAttribute('class', 'selected');
-                    ubiq_selected_sent = s;
+                for (let i in ubiq_suggestions) {
+                    var is_selected = (i == ubiq_selected_command);
+                    var s = ubiq_suggestions[i];
+                    var li = document.createElement('LI');
+                    li.innerHTML = `<div id="suggestion-item-${i}"><table cellspacing="1" cellpadding="1">
+                            <tr><td>${ubiq_decorate_icon(s.icon)}</td><td>${s.displayHtml}</td></tr></table></div>`;
+                    if (is_selected) {
+                        li.setAttribute('class', 'selected');
+                        ubiq_selected_sent = s;
+                    }
+                    suggestions_list.appendChild(li);
                 }
-                suggestions_list.appendChild(li);
-            }
 
-            suggestions_div.appendChild(suggestions_list);
-            ubiq_suggestion_el().innerHTML = suggestions_div.innerHTML; // shouldn't clear the preview
-            for (let i in ubiq_suggestions)
-                jQuery(`#suggestion-item-${i}`).click((e) => {
-                    ubiq_select_command(i);
-                });
-            ubiq_preview_set_visible(true);
-        } else {
-            ubiq_preview_set_visible(false);
-            ubiq_selected_command = -1;
-            ubiq_selected_sent = null;
-            ubiq_clear();
-            ubiq_help();
-            //if (text.length)
-            //    ubiq_set_suggestions('no commands found for <b>' + ubiq_html_encode(text) + '</b>', true);
-        }
-    };
+                suggestions_div.appendChild(suggestions_list);
+                ubiq_suggestion_el().innerHTML = suggestions_div.innerHTML; // shouldn't clear the preview
+                for (let i in ubiq_suggestions)
+                    jQuery(`#suggestion-item-${i}`).click((e) => {
+                        ubiq_select_command(i);
+                    });
+                ubiq_preview_set_visible(true);
+            } else {
+                ubiq_default_state()
+            }
+        };
+    }
+    else
+        ubiq_default_state();
 
     query.run();
 }
@@ -416,12 +422,9 @@ function ubiq_load_input(callback) {
     });
 }
 
-
 $(window).on('load', function() {
         if (typeof CmdUtils !== 'undefined' && typeof Utils !== 'undefined' && typeof backgroundPage !== 'undefined' ) {
         CmdUtils.setPreview = ubiq_set_preview;
-        CmdUtils.setSuggestions = ubiq_set_suggestions;
-        CmdUtils.setPreviewVisible = ubiq_preview_set_visible;
         CmdUtils.popupWindow = window;
 
         ubiq_nl_parser = NLParser.makeParserForLanguage(CmdUtils.parserLanguage, CmdUtils.CommandList);

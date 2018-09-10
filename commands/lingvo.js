@@ -25,10 +25,10 @@
             description: "Translate words using Abbyy Lingvo online service.",
             /*---------------------------------------------------------------------------*/
             help: "Type <b>lingvo</b> or <b>lingvo this</b> to translate the selection, "
-            + "type <b>lingvo <i>word</i></b> to translate a word.<br/>"
+            + "type <b>lingvo</b> <i>words</i> to translate words.<br/>"
             + "You can specify source and destination languages after <b>from</b> "
-            + "or <b>to</b> words respectively, for example:"
-            + " <b>lingvo</b> espoir <b>from</b> french <b>to</b> russian",
+            + "or <b>to</b> respectively, for example:"
+            + " <b>lingvo</b> <i>espoir</i> <b>from</b> <i>french</i> <b>to</b> <i>russian</i>",
             /*---------------------------------------------------------------------------*/
             icon: "res/lingvo.png",
             /*---------------------------------------------------------------------------*/

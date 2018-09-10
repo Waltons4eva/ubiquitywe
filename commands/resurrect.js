@@ -86,18 +86,18 @@
             /*---------------------------------------------------------------------------*/
             description: "Resurrect a dead page using Internet archiving services.",
             /*---------------------------------------------------------------------------*/
-            help: "Type <b>resurrect</b> to resurrect a selection or a current page, "
+            help: "Type <b>resurrect</b> to resurrect the page at the current tab, "
             + "type <b>resurrect URL</b> to resurrect the specified URL.<br/>"
             + "You can specify Internet archiving service after the <b>with</b> "
             + "word, for example:<br/><br/>"
             + " <b>resurrect</b> en.beijing2008.cn <b>with</b> wayback machine list<br/><br/>"
-            + "Supported archiving services are:<br/>"
-            + " wayback machine latest<br/>"
-            + " wayback machine list<br/>"
-            + " google cache<br/>"
-            + " google cache text only<br/>"
-            + " coralcdn<br/>"
-            + " webcite",
+            + "Supported archiving services:<br/>"
+            + "- wayback machine latest<br/>"
+            + "- wayback machine list<br/>"
+            + "- google cache<br/>"
+            + "- google cache text only<br/>"
+            + "- coralcdn<br/>"
+            + "- webcite",
             /*---------------------------------------------------------------------------*/
             icon: resurrect_commandIcon,
             /*---------------------------------------------------------------------------*/
