@@ -78,11 +78,11 @@ function saveScripts() {
     else {
         // save
         if (typeof chrome !== 'undefined' && chrome.storage) {
-            CmdUtils.getPref("customscripts", all_scripts => {
+            Utils.getPref("customscripts", all_scripts => {
                 if (!all_scripts)
                     all_scripts = {};
                 all_scripts[scriptNamespace] = {scripts: customscripts};
-                CmdUtils.setPref("customscripts", all_scripts);
+                Utils.setPref("customscripts", all_scripts);
             });
         }
 
@@ -107,7 +107,7 @@ editor = ace.edit("code");
 editor.setTheme("ace/theme/monokai");
 editor.getSession().setMode("ace/mode/javascript");
 
-CmdUtils.getPref("keyboardScheme", keyboardScheme => {
+Utils.getPref("keyboardScheme", keyboardScheme => {
     if (keyboardScheme !== "ace")
         editor.setKeyboardHandler("ace/keyboard/" + keyboardScheme);
 });
@@ -127,7 +127,7 @@ function setNamespaceScripts(all_scripts, namespace) {
 
 $("#script-namespaces").change(() => {
     saveScripts();
-    CmdUtils.getPref("customscripts", all_scripts => {
+    Utils.getPref("customscripts", all_scripts => {
         if (!all_scripts)
             all_scripts = {};
         scriptNamespace = $("#script-namespaces").val();
@@ -142,7 +142,7 @@ $("#create-namespace").click(() => {
     let name = prompt("Name: ");
     if (name) {
 
-        CmdUtils.getPref("customscripts", all_scripts => {
+        Utils.getPref("customscripts", all_scripts => {
             ADD_NAME: {
                 saveScripts();
 
@@ -170,9 +170,9 @@ $("#create-namespace").click(() => {
 $("#delete-namespace").click(() => {
     if (scriptNamespace !== "default" && scriptNamespace !== UBIQUITY_SETTINGS)
         if (confirm("Are you sure?")) {
-            CmdUtils.getPref("customscripts", all_scripts => {
+            Utils.getPref("customscripts", all_scripts => {
                 delete all_scripts[scriptNamespace];
-                CmdUtils.setPref("customscripts", all_scripts, );
+                Utils.setPref("customscripts", all_scripts, );
                 $('option:selected', $("#script-namespaces")).remove();
 
                 scriptNamespace = $("#script-namespaces").val();
@@ -195,7 +195,7 @@ if (typeof chrome !== 'undefined' && chrome.storage) {
             }
         });
     else
-        CmdUtils.getPref("customscripts", all_scripts => {
+        Utils.getPref("customscripts", all_scripts => {
             var sorted = Object.keys(all_scripts).sort(function (a, b) {
                 if (a.toLocaleLowerCase() < b.toLocaleLowerCase())
                     return -1;

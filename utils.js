@@ -1,7 +1,3 @@
-//
-// Utils
-//
-
 if (!Utils) var Utils = {};
 
 const TO_STRING = Object.prototype.toString;
@@ -9,6 +5,15 @@ const TO_STRING = Object.prototype.toString;
 Utils.log = console.log;
 
 Utils.trim = String.trim;
+
+Utils.getPref = function(key, callback) {
+    chrome.storage.local.get(null, p => callback(p[key]));
+};
+
+Utils.setPref = function(key, value, callback) {
+    chrome.storage.local.set({[key]: value}, () => {if (callback) callback()});
+
+};
 
 // === {{{ Utils.paramsToString(params, prefix = "?") }}} ===
 // Takes the given object containing keys and values into a query string

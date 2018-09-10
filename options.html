@@ -47,16 +47,16 @@
 <br clear="all"/>
 
 <div class="col-five">
-    <h2 class="top">Touch commands</h2>
+    <h2 class="top">Context menu commands</h2>
     <ul id="skin-list">
-        <div class="command light" id="skin_1"><label class="label" for="rad_skin_1">TBD</label></div>
+        <div class="command light" id="skin_1"><label class="label">TBD</label></div>
     </ul>
 </div>
 
 <div class="col-four">
-    <h2 class="top">Key Combination</h2>
-    <fieldset>
-        <legend>Invoke Ubiquity by pressing:</legend>
+    <h2 class="top">Version Information</h2>
+    <!--fieldset>
+        <legend>Invoke <b>UbiquityWE</b> by pressing:</legend>
         <div style="margin-left:10px;">
             <p>
                 <input id="keyInput" class="prefkeys" type="text" value="Ctrl+Space" readonly><br/>
@@ -64,11 +64,12 @@
             </p>
             <p id="keyNotify"></p>
         </div>
-    </fieldset>
+    </fieldset-->
+    <p>You are using <b>UbiquityWE</b> v<span id="ubiq-version"></span> <span id="ubiq-debug-mode">(debug mode)</span></p>
 
     <h2>Language Settings</h2>
     <p>
-        Language:
+        Command parser language:
         <select id="language-select">
         </select>
     </p>
@@ -79,15 +80,6 @@
             <td>Maximum number of suggestions:</td>
             <td><input id="max-suggestions" size="5" style="text-align:center" type="text"/></td>
         </tr>
-        <!--tr id="keybinding-row">
-            <td>Editor keyboard scheme:</td>
-            <td><select id="keyboard-scheme">
-                <option value="ace">Ace</option>
-                <option value="emacs">Emacs</option>
-                <option value="vim">Vim</option>
-            </select></td>
-        </tr-->
-        <tr><td>Debug mode <span style="color: gray;">(restart required)</span>:</td><td><input type="checkbox" id="debug-mode" value="Bike"/></td></tr>
     </table>
     <h2 class="imp-exp">Import/Export</h2>
     <div class="imp-exp"><a href="edit.html?ubiquity-settings" target="_blank">Live-edit Ubiquity settings</a></div>
@@ -95,24 +87,5 @@
 
 <!--br clear="all"/>
 
-<div id="editor-div" style="display:none">
-    <h2>Custom Skin Editor</h2>
-    <ul class="button-list">
-        <li>
-            <a class="button" onclick="saveCustomSkin()">Save</a>
-            <a class="button" onclick="saveAs()">Save As</a>
-            <a class="button" onclick="shareSkin()">Share</a>
-            Clicking save immediately updates Ubiquity's look.
-        </li>
-
-        <br/><br/>
-        <div class="warning">Changes you make to a custom skin may not be seen until after a browser restart. This is a
-            <a href="http://ubiquity.mozilla.com/trac/ticket/449">known bug</a>.
-        </div>
-        <br/><br/>
-
-        <li><textarea rows="30" style="width:92%" id="skin-editor"></textarea></li>
-    </ul>
-</div-->
 </body>
 </html>

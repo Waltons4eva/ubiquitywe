@@ -9,19 +9,6 @@
     var urlTemplateTranslate = "https://www.lingvolive.com/en-us/translate/${from}-${to}/${words}";
 
     var latinREAPI = new RegExp("[a-z]");
-
-    var langListAPI = {
-        "de": 1031,
-        "fr": 1036,
-        "it": 1040,
-        "es": 1034,
-        "ua": 1058,
-        "la": 1142,
-        "en": 1033,
-        "ru": 1049,
-        "ch": 1028
-    };
-
     var lingvoLiveAPIToken;
     var executionUrl;
 
@@ -32,31 +19,22 @@
             builtIn: true, _namespace: "Translation",
             /*---------------------------------------------------------------------------*/
             arguments: [{role: "object", nountype: noun_arb_text, label: "words"},
-                {role: "source", nountype: langListAPI, label: "language"},
-                {role: "goal", nountype: langListAPI, label: "language"}],
+                {role: "source", nountype: noun_type_lang_lingvo, label: "language"},
+                {role: "goal", nountype: noun_type_lang_lingvo, label: "language"}],
             /*---------------------------------------------------------------------------*/
-            description: "Translate words using Abbyy Lingvo online service",
+            description: "Translate words using Abbyy Lingvo online service.",
             /*---------------------------------------------------------------------------*/
-            help: "Type <b>lingvo</b> or <b>lingvo this</b> to translate a selection, "
-            + "type <b>lingvo word</b> to translate a word.<br/>"
+            help: "Type <b>lingvo</b> or <b>lingvo this</b> to translate the selection, "
+            + "type <b>lingvo <i>word</i></b> to translate a word.<br/>"
             + "You can specify source and destination languages after <b>from</b> "
-            + "or <b>to</b> words respectively, for example:<br/><br/>"
-            + " <b>lingvo</b> espoir <b>from</b> fr <b>to</b> ru<br/><br/>"
-            + "Supported language abbreviations are:<br/>"
-            + " de - German<br/>"
-            + " en - English<br/>"
-            + " es - Spanish<br/>"
-            + " fr - French<br/>"
-            + " it - Italian<br/>"
-            + " la - Latin<br/>"
-            + " ru - Russian<br/>"
-            + " ua - Ukrainan",
+            + "or <b>to</b> words respectively, for example:"
+            + " <b>lingvo</b> espoir <b>from</b> french <b>to</b> russian",
             /*---------------------------------------------------------------------------*/
             icon: "res/lingvo.png",
             /*---------------------------------------------------------------------------*/
             timeout: 1000,
             /*---------------------------------------------------------------------------*/
-            author: {name: "G. Christensen", email: "gchristnsn@gmail.com"},
+            author: {name: "g/christensen"},
             /*---------------------------------------------------------------------------*/
             execute: function (args) {
                 if (executionUrl != null)
@@ -68,20 +46,22 @@
                 if (!args.object.text)
                     return;
 
+                console.log(args);
+
                 this.previewBlock = pblock;
 
                 function norm(arg) {
                     if (args[arg] && args[arg].text)
-                        return args[arg].text.trim().toLowerCase();
+                        return args[arg].text.trim();
                 }
 
                 try {
                     if (!lingvoLiveAPIToken)
                         this._authorize().then(() => {
-                            this._translate(norm("object"), norm("source"), norm("goal"));
+                            this._translate(norm("object"), args.source, args.goal);
                         });
                     else
-                        this._translate(norm("object"), norm("source"), norm("goal"));
+                        this._translate(norm("object"), args.source, args.goal);
                 }
                 catch (e) {
                     pblock.innerHTML = this._failureMessage;
@@ -114,28 +94,31 @@
                 if (this.oldRequest != undefined)
                     this.oldRequest.abort();
 
-                function abbrev2id(lang, def, bypass) {
-                    var langId = lang;
-                    if (!langId)
-                        langId = def;
-                    return bypass ? langId : langListAPI[langId];
+                function abbrev2id(lang, def, need_code) {
+                    console.log(lang);
+                    if (!lang || lang && !lang.data)
+                        lang = def;
+                    return need_code ? lang.data[0]: lang.data[1];
                 }
 
                 var isLatin = latinREAPI.test(words);
+
+                const EN = {data: [1033, "en"]};
+                const RU = {data: [1049, "ru"]};
 
                 var requestUrl = CmdUtils.renderTemplate(urlTemplateAPI,
                     {
                         service: abbyyServiceAPI,
                         words: words, //words.replace(/ /, "+"),
-                        from: abbrev2id(from, isLatin ? "en" : "ru"),
-                        to: abbrev2id(to, isLatin ? "ru" : "en")
+                        from: abbrev2id(from, isLatin ? EN: RU, true),
+                        to: abbrev2id(to, isLatin ? RU: EN, true)
                     });
 
                 executionUrl = CmdUtils.renderTemplate(urlTemplateTranslate,
                     {
                         words: words, //words.replace(/ /, "+"),
-                        from: abbrev2id(from, isLatin ? "en" : "ru", true),
-                        to: abbrev2id(to, isLatin ? "ru" : "en", true)
+                        from: abbrev2id(from, isLatin ? EN: RU),
+                        to: abbrev2id(to, isLatin ? RU: EN)
                     });
 
                 var self = this;

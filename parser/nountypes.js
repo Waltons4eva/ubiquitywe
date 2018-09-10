@@ -236,3 +236,330 @@ var noun_type_tab = {
         return [fakeReq];
     },
 };
+
+var noun_type_lang_google = CmdUtils.NounType("language", {
+    Afrikaans: "af",
+    Albanian: "sq",
+    Arabic: "ar",
+    Armenian: "hy",
+    Azerbaijani: "az",
+    Basque: "eu",
+    Belarusian: "be",
+    Bulgarian: "bg",
+    Catalan: "ca",
+    "Chinese Simplified": "zh-CN",
+    "Chinese Traditional": "zh-TW",
+    Croatian: "hr",
+    Czech: "cs",
+    Danish: "da",
+    Dutch: "nl",
+    English: "en",
+    Estonian: "et",
+    Filipino: "tl",
+    Finnish: "fi",
+    French: "fr",
+    Galician: "gl",
+    Georgian: "ka",
+    German: "de",
+    Greek: "el",
+    Hebrew: "iw",
+    Hindi: "hi",
+    Hungarian: "hu",
+    Icelandic: "is",
+    Indonesian: "id",
+    Irish: "ga",
+    Italian: "it",
+    Japanese: "ja",
+    Korean: "ko",
+    Latin: "la",
+    Latvian: "lv",
+    Lithuanian: "lt",
+    Macedonian: "mk",
+    Malay: "ms",
+    Maltese: "mt",
+    Norwegian: "no",
+    Persian: "fa",
+    Polish: "pl",
+    Portuguese: "pt",
+    Romanian: "ro",
+    Russian: "ru",
+    Serbian: "sr",
+    Slovak: "sk",
+    Slovenian: "sl",
+    Spanish: "es",
+    Swahili: "sw",
+    Swedish: "sv",
+    Thai: "th",
+    Turkish: "tr",
+    Ukrainian: "uk",
+    Urdu: "ur",
+    Vietnamese: "vi",
+    Welsh: "cy",
+    Yiddish: "yi",
+});
+
+var noun_type_lang_wikipedia = CmdUtils.NounType("language", {
+    English: "en",
+    German: "de",
+    French: "fr",
+    Polish: "pl",
+    Japanese: "ja",
+    Italian: "it",
+    Dutch: "nl",
+    Portuguese: "pt",
+    Spanish: "es",
+    Russian: "ru",
+    Swedish: "sv",
+    Chinese: "zh",
+    "Norwegian (Bokmal)": "no",
+    Finnish: "fi",
+    Catalan: "ca",
+    Ukrainian: "uk",
+    Turkish: "tr",
+    Czech: "cs",
+    Hungarian: "hu",
+    Romanian: "ro",
+    Volapuk: "vo",
+    Esperanto: "eo",
+    Danish: "da",
+    Slovak: "sk",
+    Indonesian: "id",
+    Arabic: "ar",
+    Korean: "ko",
+    Hebrew: "he",
+    Lithuanian: "lt",
+    Vietnamese: "vi",
+    Slovenian: "sl",
+    Serbian: "sr",
+    Bulgarian: "bg",
+    Estonian: "et",
+    Persian: "fa",
+    Croatian: "hr",
+    "Simple English": "simple",
+    "Newar / Nepal Bhasa": "new",
+    Haitian: "ht",
+    "Norwegian (Nynorsk)": "nn",
+    Galician: "gl",
+    Thai: "th",
+    Telugu: "te",
+    Greek: "el",
+    Malay: "ms",
+    Basque: "eu",
+    Cebuano: "ceb",
+    Hindi: "hi",
+    Macedonian: "mk",
+    Georgian: "ka",
+    Latin: "la",
+    Bosnian: "bs",
+    Luxembourgish: "lb",
+    Breton: "br",
+    Icelandic: "is",
+    "Bishnupriya Manipuri": "bpy",
+    Marathi: "mr",
+    Albanian: "sq",
+    Welsh: "cy",
+    Azeri: "az",
+    "Serbo-Croatian": "sh",
+    Tagalog: "tl",
+    Latvian: "lv",
+    Piedmontese: "pms",
+    Bengali: "bn",
+    "Belarusian (Tarashkevitsa)": "be-x-old",
+    Javanese: "jv",
+    Tamil: "ta",
+    Occitan: "oc",
+    Ido: "io",
+    Belarusian: "be",
+    Aragonese: "an",
+    "Low Saxon": "nds",
+    Sundanese: "su",
+    Sicilian: "scn",
+    Neapolitan: "nap",
+    Kurdish: "ku",
+    Asturian: "ast",
+    Afrikaans: "af",
+    "West Frisian": "fy",
+    Swahili: "sw",
+    Walloon: "wa",
+    Cantonese: "zh-yue",
+    Samogitian: "bat-smg",
+    Quechua: "qu",
+    Urdu: "ur",
+    Chuvash: "cv",
+    Ripuarian: "ksh",
+    Malayalam: "ml",
+    Tajik: "tg",
+    Irish: "ga",
+    Venetian: "vec",
+    Tarantino: "roa-tara",
+    "Waray-Waray": "war",
+    Uzbek: "uz",
+    "Scottish Gaelic": "gd",
+    Kapampangan: "pam",
+    Kannada: "kn",
+    Maori: "mi",
+    Yiddish: "yi",
+    Yoruba: "yo",
+    Gujarati: "gu",
+    Nahuatl: "nah",
+    Lombard: "lmo",
+    Corsican: "co",
+    Gilaki: "glk",
+    "Upper Sorbian": "hsb",
+    "Min Nan": "zh-min-nan",
+    Aromanian: "roa-rup",
+    Alemannic: "als",
+    Interlingua: "ia",
+    Limburgian: "li",
+    Armenian: "hy",
+    Sakha: "sah",
+    Kazakh: "kk",
+    Tatar: "tt",
+    Gan: "gan",
+    Sanskrit: "sa",
+    Turkmen: "tk",
+    Wu: "wuu",
+    "Dutch Low Saxon": "nds-nl",
+    Faroese: "fo",
+    "West Flemish": "vls",
+    Norman: "nrm",
+    Ossetian: "os",
+    Voro: "fiu-vro",
+    Amharic: "am",
+    Romansh: "rm",
+    Banyumasan: "map-bms",
+    Pangasinan: "pag",
+    Divehi: "dv",
+    Mongolian: "mn",
+    "Egyptian Arabic": "arz",
+    "Northern Sami": "se",
+    Zazaki: "diq",
+    Nepali: "ne",
+    Friulian: "fur",
+    Manx: "gv",
+    Scots: "sco",
+    Ligurian: "lij",
+    Novial: "nov",
+    Bavarian: "bar",
+    Bihari: "bh",
+    Maltese: "mt",
+    Ilokano: "ilo",
+    Pali: "pi",
+    "Classical Chinese": "zh-classical",
+    Khmer: "km",
+    "Franco-Provencal/Arpitan": "frp",
+    Mazandarani: "mzn",
+    Kashubian: "csb",
+    Ladino: "lad",
+    "Pennsylvania German": "pdc",
+    Uyghur: "ug",
+    Cornish: "kw",
+    Sinhalese: "si",
+    "Anglo-Saxon": "ang",
+    Hawaiian: "haw",
+    Tongan: "to",
+    Sardinian: "sc",
+    "Central_Bicolano": "bcl",
+    Komi: "kv",
+    Punjabi: "pa",
+    Pashto: "ps",
+    Silesian: "szl",
+    Interlingue: "ie",
+    Malagasy: "mg",
+    Guarani: "gn",
+    Lingala: "ln",
+    Burmese: "my",
+    "Fiji Hindi": "hif",
+}, "^_");
+
+for (let ntl of [noun_type_lang_google, noun_type_lang_wikipedia]) {
+    ntl._code2name = ntl._list.reduce(function (o, s) {
+        o[s.data] = s.text;
+        return o;
+    }, {});
+    ntl.getLangName = function getLangName(langCode) {
+        return this._code2name[langCode]
+    };
+    ntl.noSelection = true;
+}
+
+{
+    noun_type_lang_wikipedia.default.push(
+        CmdUtils.makeSugg("English", null, "en"));
+}
+
+var noun_type_lang_microsoft;
+
+{
+    const MS_LANGS = {}
+        , MS_LANGS_REV =
+        {
+            ar: "Arabic"
+            , bg: "Bulgarian"
+            , ca: "Catalan"
+            , cs: "Czech"
+            , da: "Danish"
+            , nl: "Dutch"
+            , en: "English"
+            , et: "Estonian"
+            , fi: "Finnish"
+            , fr: "French"
+            , de: "German"
+            , el: "Greek"
+            , he: "Hebrew"
+            , hi: "Hindi"
+            , hu: "Hungarian"
+            , id: "Indonesian"
+            , it: "Italian"
+            , ja: "Japanese"
+            , ko: "Korean"
+            , lv: "Latvian"
+            , lt: "Lithuanian"
+            , no: "Norwegian"
+            , pl: "Polish"
+            , pt: "Portuguese"
+            , ro: "Romanian"
+            , ru: "Russian"
+            , sk: "Slovak"
+            , sl: "Slovenian"
+            , es: "Spanish"
+            , sv: "Swedish"
+            , th: "Thai"
+            , tr: "Turkish"
+            , uk: "Ukrainian"
+            , vi: "Vietnamese"
+            , "zh-CN": "Chinese Simplified"
+            , "zh-TW": "Chinese Traditional"
+        };
+
+    // all ms is in google except hebrew (ms:he vs goog:iw)
+    for (let [code, name] of Object.entries(MS_LANGS_REV)) {
+        MS_LANGS[name] = code;
+    }
+
+    noun_type_lang_microsoft = CmdUtils.NounType("language", MS_LANGS);
+    noun_type_lang_microsoft.MS_LANGS_REV = MS_LANGS_REV;
+}
+
+var noun_type_lang_lingvo = CmdUtils.NounType("language", {
+    "Chinese": [1028, "zh"],
+    "Danish": [1030, "da"],
+    "Dutch": [1043, "nl"],
+    "English": [1033, "en"],
+    "Finnish": [1035, "fi"],
+    "French": [1036, "fr"],
+    "German": [1031, "de"],
+    "Greek": [1032, "el"],
+    "Hungarian": [1038, "hu"],
+    "Italian": [1040, "it"],
+    "Kazakh": [1087, "kk"],
+    "Latin": [1142, "la"],
+    "Norwegian": [1044, "no"],
+    "Polish": [1045, "pl"],
+    "Portuguese": [2070, "pt"],
+    "Russian": [1049, "ru"],
+    "Spanish": [1034, "es"],
+    "Tatar": [1110, "tt"],
+    "Turkish": [1055, "tr"],
+    "Ukrainian": [1058, "uk"]
+});

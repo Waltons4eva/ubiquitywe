@@ -501,25 +501,17 @@ CmdUtils.loadCustomScripts = function loadCustomScripts(callback) {
     });
 };
 
-CmdUtils.getPref = function(key, callback) {
-    chrome.storage.local.get(null, p => callback(p[key]));
-};
-
-CmdUtils.setPref = function(key, value, callback) {
-    chrome.storage.local.set({[key]: value});
-};
-
 CmdUtils.enableCommand = function(cmd) {
     if (cmd.name in CmdUtils.DisabledCommands) {
         delete CmdUtils.DisabledCommands[cmd.name];
-        CmdUtils.setPref("disabledCommands", CmdUtils.DisabledCommands);
+        Utils.setPref("disabledCommands", CmdUtils.DisabledCommands);
     }
 };
 
 CmdUtils.disableCommand = function(cmd) {
     if (!(cmd.name in CmdUtils.DisabledCommands)) {
         CmdUtils.DisabledCommands[cmd.name] = true;
-        CmdUtils.setPref("disabledCommands", CmdUtils.DisabledCommands);
+        Utils.setPref("disabledCommands", CmdUtils.DisabledCommands);
     }
 };
 
@@ -664,7 +656,7 @@ CmdUtils.makeSearchCommand.execute = function searchExecute({object: {text}}) {
     CmdUtils.closePopup();
 };
 CmdUtils.makeSearchCommand.preview = function searchPreview(pblock, {object: {text}}) {
-    if (!text) return this.previewDefault(pblock);
+    if (!text) return void this.previewDefault(pblock);
 
     function put() {
         pblock.innerHTML =
@@ -725,7 +717,7 @@ CmdUtils.makeSearchCommand.preview = function searchPreview(pblock, {object: {te
                 results.push(keys.reduce((r, k, i) => (r[k] = vals[i][j], r), {}));
         }
         onParsed(results);
-    };
+    }
     function parseDocument(doc) {
         var $ = jQuery, results = [], $doc = $(doc);
         function find($_, key) {

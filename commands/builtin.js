@@ -2,7 +2,7 @@
 // jshint esversion: 6 
 
 CmdUtils.CreateCommand({
-    name: "change-ubiquity-settings",
+    names: ["change-ubiquity-settings", "change-ubiquity-options"],
     icon: "res/settings.png",
     builtIn: true,
     _namespace: "Ubiquity", // do not set this field in custom commands
@@ -15,7 +15,7 @@ CmdUtils.CreateCommand({
 
 CmdUtils.CreateCommand({
     names: ["list-ubiquity-commands", "command-list", "help"],
-    description: "Opens Ubiquity command list page",
+    description: "Opens Ubiquity command list page.",
     icon: "res/list_table.png",
     _namespace: "Ubiquity",
     builtIn: true,

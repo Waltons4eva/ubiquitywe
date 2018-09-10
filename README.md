@@ -1,8 +1,14 @@
 # UbiquityWE <sup>EXPERIMENTAL</sup>
 
-Ubiquity Addon for Firefox Quantum
+Ubiquity Addon for Firefox Quantum and Google Chrome
 
-More at: https://wiki.mozilla.org/Labs/Ubiquity/Ubiquity_0.5_User_Tutorial
+Ubiquity is a browser add-on that lets you give commands to a browser by entering command words into a special input box.
+
+Commands are shortcuts for things that you commonly do on the Web; they can eliminate repetitive tasks and let you get more done, faster.
+
+Your can write your own Ubiquity commands using the JavaScript language.
+
+Find more at [Ubiquity User Tutorial](https://wiki.mozilla.org/Labs/Ubiquity/Ubiquity_0.5_User_Tutorial).
 
 [DOWNLOAD (Firefox Add-On)](https://github.com/GChristensen/ubichr/releases/download/v0.2.0.18/ubiquity_webeextension.xpi) :: [VIDEO MANUAL](https://youtu.be/0YTyZiIHR0o)
 

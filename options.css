@@ -390,6 +390,10 @@ div.ubiq-tutorial h2 {
   width: 16px; height: 16px; margin: 0 2px -1px 0;
 }
 
-.imp-exp {
+#ubiq-debug-mode, .imp-exp {
   display: none;
+}
+
+#ubiq-debug-mode {
+  color: #BF4545;
 }

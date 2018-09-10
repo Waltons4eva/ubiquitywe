@@ -142,7 +142,7 @@ function ubiq_help() {
     html += "<div class='ubiq-help-heading'>Keys</div>";
     html += "Ctrl+C - copy preview to clipboard<br>";
     html += "Ctrl+Alt+&ltkey&gt; - open search result prefixed with &ltkey&gt; in a new tab<br>";
-    html += "&#8593;/&#8595; - cycle through commands suggestions<br>";
+    html += "&#8593;/&#8595; - cycle through command suggestions<br>";
     html += "F5 - reload the extension</div>";
 
     ubiq_set_preview(html);
@@ -162,7 +162,7 @@ function ubiq_focus() {
     el.focus();
 }
 
-function ubiq_command() {
+function ubiq_input() {
     var cmd = document.getElementById('ubiq_input');
     if (!cmd) {
         ubiq_selected_command = -1;
@@ -256,7 +256,7 @@ function ubiq_html_encode(text) {
 
 // will also call preview
 function ubiq_show_matching_commands(text) {
-    if (!text) text = ubiq_command();
+    if (!text) text = ubiq_input();
 
     var query = ubiq_nl_parser.newQuery(text, null, CmdUtils.maxSuggestions, true);
 
@@ -325,6 +325,16 @@ function ubiq_keydown_handler(evt) {
 
     // On ENTER, execute the given command
     if (kc == 13) {
+        let input = ubiq_input();
+        if (input.trim().toLowerCase() === "debug mode on") {
+            Utils.setPref("debugMode", true, () => chrome.runtime.reload());
+            return;
+        }
+        else if (input.trim().toLowerCase() === "debug mode off") {
+            Utils.setPref("debugMode", false, () => chrome.runtime.reload());
+            return;
+        }
+
         ubiq_execute();
         return;
     }
@@ -366,13 +376,13 @@ function ubiq_keydown_handler(evt) {
         return;
     }
 
-    lcmd = ubiq_command();
+    lcmd = ubiq_input();
 }
 
 function ubiq_keyup_handler(evt) {
     if (!evt) return;
     var kc = evt.keyCode;
-    if (lcmd == ubiq_command()) return;
+    if (lcmd == ubiq_input()) return;
 
     if (evt.ctrlKey || evt.altKey)
         return;
@@ -388,7 +398,7 @@ function ubiq_keyup_handler(evt) {
 
     ubiq_save_input();
     ubiq_show_matching_commands();
-    lcmd = ubiq_command();
+    lcmd = ubiq_input();
 }
 
 function ubiq_save_input() {

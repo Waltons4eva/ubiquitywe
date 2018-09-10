@@ -3,24 +3,14 @@ $(onDocumentLoad);
 
 function onDocumentLoad() {
 
-    CmdUtils.getPref("debugMode", debugMode => {
-        jQuery("#debug-mode").change(function changeDebugMode() {
-            CmdUtils.DEBUG = !!this.checked;
-            CmdUtils.setPref("debugMode", CmdUtils.DEBUG);
-            if (CmdUtils.DEBUG)
-                jQuery(".imp-exp").show();
-            else
-                jQuery(".imp-exp").hide();
-        }).prop('checked', debugMode);
+    jQuery("#ubiq-version").text(CmdUtils.VERSION);
 
+    Utils.getPref("debugMode", debugMode => {
         if (CmdUtils.DEBUG)
-            jQuery(".imp-exp").show();
-
-        // if (!CmdUtils.DEBUG)
-        //     jQuery("#keybinding-row").remove();
+            jQuery("#ubiq-debug-mode, .imp-exp").show();
     });
 
-  CmdUtils.getPref("parserLanguage", parserLanguage => {
+  Utils.getPref("parserLanguage", parserLanguage => {
 
       var $langSelect = $("#language-select");
       for (let code in NLParser.ParserRegistry) {
@@ -32,24 +22,24 @@ function onDocumentLoad() {
       $langSelect.change(() => {
         let lang = $langSelect.find(":selected").val();
         CmdUtils.parserLanguage = lang;
-        CmdUtils.setPref("parserLanguage", lang);
+        Utils.setPref("parserLanguage", lang);
       });
     });
 
-    CmdUtils.getPref("keyboardScheme", keyboardScheme => {
+    Utils.getPref("keyboardScheme", keyboardScheme => {
         var keyboardSchemeElt = $("#keyboard-scheme");
         keyboardSchemeElt.val(keyboardScheme || "ace");
 
         keyboardSchemeElt.change(() => {
             let scheme = keyboardSchemeElt.find(":selected").val();
-            CmdUtils.setPref("keyboardScheme", scheme);
+            Utils.setPref("keyboardScheme", scheme);
         });
     });
 
-    CmdUtils.getPref("maxSuggestions", maxSuggestions => {
+    Utils.getPref("maxSuggestions", maxSuggestions => {
         jQuery("#max-suggestions").change(function changeMaxSuggestions() {
             CmdUtils.maxSuggestions = parseInt(maxSuggestions);
-            CmdUtils.setPref("maxSuggestions", this.value);
+            Utils.setPref("maxSuggestions", this.value);
         }).val(maxSuggestions || 5);
      });
 }

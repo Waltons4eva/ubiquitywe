@@ -1,15 +1,15 @@
 console.log("UbiquityWE v"+CmdUtils.VERSION+" background script says hello");
 
 
-CmdUtils.getPref("customscripts", customscripts => {
+Utils.getPref("customscripts", customscripts => {
     if (!customscripts)
-        CmdUtils.setPref("customscripts", {}, () => CmdUtils.loadCustomScripts());;
+        Utils.setPref("customscripts", {}, () => CmdUtils.loadCustomScripts());;
 });
 
-CmdUtils.getPref("debugMode", debugMode => {
+Utils.getPref("debugMode", debugMode => {
     CmdUtils.DEBUG = !!debugMode;
     CmdUtils.CommandList = CmdUtils.CommandList.filter(cmd => CmdUtils.DEBUG || !cmd._hidden);
-    CmdUtils.getPref("disabledCommands", disabledCommands => {
+    Utils.getPref("disabledCommands", disabledCommands => {
         if (disabledCommands)
             for (let cmd of CmdUtils.CommandList) {
                 if (cmd.name in disabledCommands)
@@ -18,15 +18,15 @@ CmdUtils.getPref("debugMode", debugMode => {
     });
 });
 
+Utils.getPref("parserLanguage", parserLanguage => CmdUtils.parserLanguage = parserLanguage || "en");
+Utils.getPref("maxSuggestions", maxSuggestions=> CmdUtils.maxSuggestions = maxSuggestions || 5);
 
-CmdUtils.getPref("parserLanguage", parserLanguage => CmdUtils.parserLanguage = parserLanguage || "en");
-CmdUtils.getPref("parserLanguage", parserLanguage => CmdUtils.parserLanguage = parserLanguage || "en");
-CmdUtils.getPref("maxSuggestions", maxSuggestions=> CmdUtils.maxSuggestions = maxSuggestions || 5);
+chrome.i18n.getAcceptLanguages(ll => CmdUtils.acceptLanguages = ll);
 
-CmdUtils.getPref("lingvoApiKey", lingvoApiKey => {
+Utils.getPref("lingvoApiKey", lingvoApiKey => {
     if (!lingvoApiKey) {
         CmdUtils.lingvoApiKey = "NGNmNTVlNzUtNzg2MS00ZWE1LWIzNWItNjNlMTAyZTM5YmRlOmM3NTg3MDY2Y2MyMDQxY2E4NTQ0MDZhOTQyYTcxMTk2";
-        CmdUtils.setPref("lingvoApiKey", CmdUtils.lingvoApiKey)
+        Utils.setPref("lingvoApiKey", CmdUtils.lingvoApiKey)
     }
     else {
         CmdUtils.lingvoApiKey = lingvoApiKey;
