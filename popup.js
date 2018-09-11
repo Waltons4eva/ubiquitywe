@@ -35,6 +35,7 @@ function ubiq_preview_el() {
 
 function ubiq_preview_set_visible(v) {
     document.getElementById('ubiq-command-panel').style.display = v ? '' : 'none';
+    ubiq_preview_el().dispatchEvent(new Event("preview-change"));
     // if (!v)
     //     ubiq_suggestion_el().classList.add("result");
     // else
@@ -104,6 +105,12 @@ function ubiq_show_preview(sent, args) {
                 // zoom overflow dirty fix
                 CmdUtils.popupWindow.jQuery("#ubiq-command-preview").css("overflow-y", "auto");
                 try {
+                    // new Proxy({
+                    //     __proto__ : null,
+                    //     __feed__  : this,
+                    //     __bin__   : this.getJSONStorage(),
+                    // }, BinHandler)
+
                     sent.preview(ubiq_preview_el());
                     // trying to cope wit CmdUtils.previewAjax
                     ubiq_preview_el().dispatchEvent(new Event("preview-change"));
@@ -141,7 +148,7 @@ function ubiq_help() {
     html += "<p>";
     html += "<div class='ubiq-help-heading'>Keys</div>";
     html += "Ctrl+C - copy preview to clipboard<br>";
-    html += "Ctrl+Alt+&ltkey&gt; - open search result prefixed with &ltkey&gt; in a new tab<br>";
+    html += "Ctrl+Alt+&ltkey&gt; - open search result prefixed with &ltkey&gt;<br>";
     html += "&#8593;/&#8595; - cycle through command suggestions<br>";
     html += "F5 - reload the extension</div>";
 
@@ -306,11 +313,11 @@ function ubiq_show_matching_commands(text) {
                 ubiq_default_state()
             }
         };
+
+        query.run();
     }
     else
         ubiq_default_state();
-
-    query.run();
 }
 
 var lcmd = "";
@@ -331,24 +338,8 @@ function ubiq_keydown_handler(evt) {
 
     // On ENTER, execute the given command
     if (kc == 13) {
-        let input = ubiq_input();
-        if (input.trim().toLowerCase() === "debug mode on") {
-            Utils.setPref("debugMode", true, () => chrome.runtime.reload());
+        if (Utils.easterListener(ubiq_input()))
             return;
-        }
-        else if (input.trim().toLowerCase() === "debug mode off") {
-            Utils.setPref("debugMode", false, () => chrome.runtime.reload());
-            return;
-        }
-
-        if (input.trim().toLowerCase() === "enable more commands") {
-            Utils.setPref("enableMoreCommands", true, () => chrome.runtime.reload());
-            return;
-        }
-        else if (input.trim().toLowerCase() === "not enable more commands") {
-            Utils.setPref("enableMoreCommands", false, () => chrome.runtime.reload());
-            return;
-        }
 
         ubiq_execute();
         return;
@@ -357,15 +348,6 @@ function ubiq_keydown_handler(evt) {
     // On F5 restart extension
     if (kc == 116) {
         chrome.runtime.reload();
-        return;
-    }
-
-    // Ctrl+C copies preview to clipboard
-    if (kc == 67 && evt.ctrlKey) {
-        backgroundPage.console.log("copy to clip");
-        var el = ubiq_preview_el();
-        if (!el) return;
-        CmdUtils.setClipboard( el.innerText );
         return;
     }
 
@@ -385,9 +367,18 @@ function ubiq_keydown_handler(evt) {
     }
 
     if (evt.ctrlKey && evt.altKey && kc >= 40 && kc <= 90) {
-        let links = jQuery("[accessKey='" + String.fromCharCode(kc) + "']");
+        let links = jQuery("[accessKey='" + String.fromCharCode(kc).toLowerCase() + "']");
         if (links.length > 0)
             CmdUtils.addTab(links[0].href)
+        return;
+    }
+
+    // Ctrl+C copies preview to clipboard
+    if (kc == 67 && evt.ctrlKey) {
+        backgroundPage.console.log("copy to clip");
+        var el = ubiq_preview_el();
+        if (!el) return;
+        CmdUtils.setClipboard( el.innerText );
         return;
     }
 
@@ -453,7 +444,7 @@ $(window).on('load', function() {
              ubiq_load_input(() => {
                  ubiq_show_matching_commands();
              });
-             console.log("hello from UbiquityWE");
+             CmdUtils.deblog("hello from UbiquityWE");
          });
 
         // Add event handler to window

@@ -6,8 +6,17 @@ function onDocumentLoad() {
     jQuery("#ubiq-version").text(CmdUtils.VERSION);
 
     Utils.getPref("debugMode", debugMode => {
-        if (CmdUtils.DEBUG)
+        if (CmdUtils.DEBUG) {
             jQuery("#ubiq-debug-mode, .imp-exp").show();
+            jQuery("#max-search-results-row").show();
+
+            Utils.getPref("maxSearchResults", maxSearchResults => {
+                jQuery("#max-search-results").change(function () {
+                    CmdUtils.maxSearchResults = parseInt(maxSearchResults);
+                    Utils.setPref("maxSearchResults", this.value);
+                }).val(maxSearchResults || 10);
+            });
+        }
     });
 
   Utils.getPref("parserLanguage", parserLanguage => {

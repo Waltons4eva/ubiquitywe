@@ -247,3 +247,62 @@ Utils.extend(Sequence.prototype, {
         "[object Sequence(" + this.lead + "," + this.end + "," + this.step + ")]"
     ) },
 });
+
+// == Bin ==
+// A simple interface to access the feed's persistent JSON storage.
+// {{{
+// Bin.myKey("some value"); // set a value for a key
+// let val = Bin.myKey();   // get the value for the key
+// let ok = "myKey" in Bin; // check the key existence
+// for (let key in Bin) ... // iterate over keys
+// Bin.myKey(null);         // delete the key
+// }}}
+var BinHandler = {
+    // === {{{ Bin.***() }}} ===
+    // {{{Bin}}} allows arbitrary keys
+    // to be called as methods for getting/setting/deleting their values.
+    // Returns the value stored for the key.
+    get(target, key) {
+        return (val) => {
+            var bin = target.__bin__
+            if (val === void 0) return bin[key]
+            if (val === null) {
+                var old = bin[key]
+                delete bin[key]
+            }
+            else bin[key] = val
+            bin = target.__bin__ = target.__feed__.setJSONStorage(bin)
+            return key in bin ? bin[key] : old
+        }
+    },
+    has(target, key) {
+        return key in target.__bin__
+    },
+    *enumerate(target) {
+        for (let key in target.__bin__) yield key
+    },
+};
+
+
+
+Utils.easterListener = function(input) {
+    if (input.trim().toLowerCase() === "debug mode on") {
+        Utils.setPref("debugMode", true, () => chrome.runtime.reload());
+        return true;
+    }
+    else if (input.trim().toLowerCase() === "debug mode off") {
+        Utils.setPref("debugMode", false, () => chrome.runtime.reload());
+        return true;
+    }
+
+    if (input.trim().toLowerCase() === "enable more commands") {
+        Utils.setPref("enableMoreCommands", true, () => chrome.runtime.reload());
+        return true;
+    }
+    else if (input.trim().toLowerCase() === "not enable more commands") {
+        Utils.setPref("enableMoreCommands", false, () => chrome.runtime.reload());
+        return true;
+    }
+
+    return false;
+};

@@ -10,6 +10,8 @@ if (!CmdUtils) var CmdUtils = {
     backgroundWindow: window,
     popupWindow: null,
     log: console.log,
+    maxSuggestions: 5,
+    maxSearchResults: 10,
     active_tab: null,   // tab that is currently active, updated via background.js 
     selectedText: "",   // currently selected text, update via content script selection.js
     selectedHTML: "",   // currently selected html, update via content script selection.js
@@ -93,23 +95,26 @@ CmdUtils.CreateCommand = function CreateCommand(options) {
     }
 
     var to = parseFloat(options.timeout || 0);
-    if (to>0) {
+    if (to !== undefined) {
     	options.timeoutFunc = null;
     	if (typeof options.preview === 'function') {
 		    options.preview_timeout = options.preview;
-			options.preview = function(b,a) {
+			options.preview = function() {
+			    let args = arguments;
                 if (options.preview_timeoutFunc !== null) clearTimeout(options.preview_timeoutFunc);
                 options.preview_timeoutFunc = setTimeout(function () {
-                	options.preview_timeout(b, a);
+                    Utils.jsLog(arguments[0]);
+                	options.preview_timeout.apply(options, args);
                 }, to);
 			};
     	}
     	if (typeof options.execute === 'function') {
 		    options.execute_timeout = options.execute;
-			options.execute = function(a) {
+			options.execute = function() {
+                let args = arguments;
                 if (options.execute_timeoutFunc !== null) clearTimeout(options.execute_timeoutFunc);
                 options.execute_timeoutFunc = setTimeout(function () {
-					options.execute_timeout(a);
+					options.execute_timeout.apply(options, args);
                 }, to);
 			};
     	}
@@ -760,7 +765,7 @@ CmdUtils.makeSearchCommand.preview = function searchPreview(pblock, {object: {te
         var list = "", i = 0, max = parser.maxResults || 4;
         for (let {title, href, body, thumbnail} of results) if (title) {
             if (href) {
-                let key = i < 35 ? (i+1).toString(36) : "-";
+                let key = F;
                 title = ("<kbd >" + key + "</kbd>. <a href='" + href +
                      "' accesskey='" + key + "'>" + title + "</a>");
             }

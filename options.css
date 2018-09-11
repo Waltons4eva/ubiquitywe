@@ -396,4 +396,6 @@ div.ubiq-tutorial h2 {
 
 #ubiq-debug-mode {
   color: #BF4545;
+  top: 4px;
+  position: relative;
 }

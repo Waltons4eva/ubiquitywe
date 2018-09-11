@@ -1,5 +1,6 @@
 CmdUtils.CreateCommand({
     name: "dark flow",
+    uuid: "79C0722B-5D25-49A3-AE33-9ACA1152EC9C",
     argument: [{role: "object", nountype: noun_arb_text, label: "URL"}],
     description: "Follow the URL in <a href='https://github.com/GChristensen/dark-flow#readme'>Dark Flow</a>.",
     icon: "commands/more/dark-flow.png",

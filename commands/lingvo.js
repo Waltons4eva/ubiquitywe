@@ -15,6 +15,7 @@ var __lingvoLiveAPIToken;
     CmdUtils.CreateCommand(
         {
             names: ["lingvo"],
+            uuid: "757A2516-9A45-4D02-8756-854B5DE5A074",
             /*---------------------------------------------------------------------------*/
             builtIn: true, _namespace: "Translation",
             /*---------------------------------------------------------------------------*/
@@ -24,11 +25,11 @@ var __lingvoLiveAPIToken;
             /*---------------------------------------------------------------------------*/
             description: "Translate words using Abbyy Lingvo online service.",
             /*---------------------------------------------------------------------------*/
-            help: "Type <b>lingvo</b> or <b>lingvo this</b> to translate the selection, "
-            + "type <b>lingvo</b> <i>words</i> to translate words.<br/>"
-            + "You can specify source and destination languages after <b>from</b> "
-            + "or <b>to</b> respectively, for example:"
-            + " <b>lingvo</b> <i>espoir</i> <b>from</b> <i>french</i> <b>to</b> <i>russian</i>",
+            help: "Type <i>lingvo</i> or <i>lingvo this</i> to translate the selection, "
+            + "type <i>lingvo</i> <b>words</b> to translate words.<br/>"
+            + "You can specify source and destination languages after <i>from</i> "
+            + "or <i>to</i> respectively, for example:"
+            + " <i>lingvo</i> <b>espoir</b> <i>from</i> <b>french</b> <i>to</i> <b>russian</b>",
             /*---------------------------------------------------------------------------*/
             icon: "res/lingvo.png",
             /*---------------------------------------------------------------------------*/
@@ -45,8 +46,6 @@ var __lingvoLiveAPIToken;
             preview: function (pblock, args) {
                 if (!args.object.text)
                     return;
-
-                console.log(args);
 
                 this.previewBlock = pblock;
 
@@ -95,7 +94,6 @@ var __lingvoLiveAPIToken;
                     this.oldRequest.abort();
 
                 function abbrev2id(lang, def, need_code) {
-                    console.log(lang);
                     if (!lang || lang && !lang.data)
                         lang = def;
                     return need_code ? lang.data[0]: lang.data[1];

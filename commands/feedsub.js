@@ -1,5 +1,6 @@
 CmdUtils.CreateCommand({
     names: ["feedsub"],
+    uuid: "A2910385-002A-4BBE-AA22-9E92FC06352B",
     _namespace: "Syndication",
     description: "Subscribe to a RSS feed in Feedly.",
     help: `The command uses the URL opened in the current tab. 

@@ -592,12 +592,12 @@ NLParser = {};
             return this._verb.cmd.previewDelay
         },
 
-        execute: function PS_execute(/*context*/) {
-            return this._verb.execute(/*context, */this._argSuggs);
+        execute: function PS_execute(context) {
+            return this._verb.execute(context, this._argSuggs);
         },
 
-        preview: function PS_preview(/*context, */previewBlock) {
-            this._verb.preview(/*context, */previewBlock, this._argSuggs);
+        preview: function PS_preview(previewBlock, context) {
+            this._verb.preview(context, previewBlock, this._argSuggs);
         },
 
         copy: function PS_copy() {
@@ -1011,23 +1011,24 @@ NLParser = {};
             return this.cmd.disabled
         },
 
-        execute: function V_execute(/*context, */argumentValues) {
+        execute: function V_execute(context, argumentValues) {
+            let bin = context? context.bin: null;
             return (
                 this.newAPI
                     // New-style commands (api 1.5) expect a single dictionary with all
                     // arguments in it, and the object named 'object'.
-                    ? this.cmd.execute(/*context, */argumentValues)
+                    ? this.cmd.execute(argumentValues, bin)
                     // Old-style commands (api 1.0) expect the direct object to be passed
                     // in separately.
-                    : this.cmd.execute(/*context, */argumentValues.object, argumentValues));
+                    : this.cmd.execute(argumentValues.object, argumentValues));
         },
 
-        preview: function V_preview(/*context, */previewBlock, argumentValues) {
+        preview: function V_preview(context, previewBlock, argumentValues) {
+            let bin = context? context.bin: null;
             // Same logic as the execute command -- see comment above.
             (this.newAPI
-                ? this.cmd.preview(/*context, */previewBlock, argumentValues)
-                : this.cmd.preview(/*context, */previewBlock,
-                    argumentValues.object, argumentValues));
+                ? this.cmd.preview(previewBlock, argumentValues, bin)
+                : this.cmd.preview(previewBlock, argumentValues.object, argumentValues));
         },
 
         usesAnySpecificNounType: function V_usesAnySpecificNounType() {

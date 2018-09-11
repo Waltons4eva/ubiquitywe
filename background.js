@@ -1,4 +1,4 @@
-console.log("UbiquityWE v"+CmdUtils.VERSION+" background script says hello");
+CmdUtils.deblog("UbiquityWE v"+CmdUtils.VERSION+" background script says hello");
 
 
 Utils.getPref("customscripts", customscripts => {

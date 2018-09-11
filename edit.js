@@ -12,15 +12,27 @@ function insertExampleStub() {
 `/* This is a template command. */
 CmdUtils.CreateCommand({
     name: "my-command",
-    argument: [{role: "object", nountype: noun_arb_text, label: "text"}],
+    uuid: "%%UUID%%",
+    argument: [{role: "object",     nountype: noun_arb_text, label: "text"},
+             //{role: "goal",       nountype: noun_arb_text, label: "text"}, // to
+             //{role: "source",     nountype: noun_arb_text, label: "text"}, // from
+             //{role: "location",   nountype: noun_arb_text, label: "text"}, // near
+             //{role: "time",       nountype: noun_arb_text, label: "text"}, // at
+             //{role: "instrument", nountype: noun_arb_text, label: "text"}, // with
+             //{role: "format",     nountype: noun_arb_text, label: "text"}, // in
+             //{role: "modifier",   nountype: noun_arb_text, label: "text"}, // of
+             //{role: "alias",      nountype: noun_arb_text, label: "text"}, // as
+    ],
     description: "A short description of your command.",
+    help: "This text is displayed at the command list page.",
+    timeout: 0,
     author: "Your Name",
     icon: "res/icon-24.png",
-    execute: function({object: {text}}) {
+    execute: function({object: {text}}, Bin) {
         CmdUtils.notify("Your input is: " + text);
         CmdUtils.closePopup();
     },
-    preview: function(pblock, {object: {text}}) {
+    preview: function(pblock, {object: {text}}, Bin) {
         pblock.innerHTML = "Your input is " + text + ".";
     },
 });
@@ -30,6 +42,7 @@ CmdUtils.CreateCommand({
 `/* This is a template command. */
 CmdUtils.makeSearchCommand({
     name: "my-search-command",
+    uuid: "%%UUID%%",
     url: "http://www.example.com/find?q=%s",
     defaultUrl: "http://www.example.com",
     arguments: [{role: "object", nountype: noun_arb_text, label: "query"}],
@@ -49,7 +62,7 @@ CmdUtils.makeSearchCommand({
 
     var stub = stubs[this.id];
     //editor.replaceRange(stub, editor.getCursor());
-    editor.session.insert(editor.getCursorPosition(), stub);
+    editor.session.insert(editor.getCursorPosition(), stub.replace("%%UUID%%", UUID.generate()));
 
     //editor.setValue( stub + editor.getValue() );
     saveScripts();

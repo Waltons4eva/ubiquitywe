@@ -74,6 +74,7 @@
     CmdUtils.CreateCommand(
         {
             names: ["resurrect"],
+            uuid: "39324f28-48b0-47f5-a22e-fabeb3305705",
             /*---------------------------------------------------------------------------*/
             arguments: [{role: "object", nountype: noun_arb_text, label: "URL"},
                 {
@@ -86,11 +87,11 @@
             /*---------------------------------------------------------------------------*/
             description: "Resurrect a dead page using Internet archiving services.",
             /*---------------------------------------------------------------------------*/
-            help: "Type <b>resurrect</b> to resurrect the page at the current tab, "
-            + "type <b>resurrect URL</b> to resurrect the specified URL.<br/>"
-            + "You can specify Internet archiving service after the <b>with</b> "
+            help: "Type <i>resurrect</i> to resurrect the page at the current tab, "
+            + "type <i>resurrect</i> <b>URL</b> to resurrect the specified URL.<br/>"
+            + "You can specify Internet archiving service after the <i>with</i> "
             + "word, for example:<br/><br/>"
-            + " <b>resurrect</b> en.beijing2008.cn <b>with</b> wayback machine list<br/><br/>"
+            + " <i>resurrect</i> <b>en.beijing2008.cn</b> <i>with</i> <b>wayback machine list</b><br/><br/>"
             + "Supported archiving services:<br/>"
             + "- wayback machine latest<br/>"
             + "- wayback machine list<br/>"

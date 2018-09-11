@@ -4,16 +4,17 @@ let footballURL = "football/russia/";
 CmdUtils.CreateCommand(
     {
         names: ["soviet"],
+        uuid: "BB563505-67B7-4E00-AE6A-547636EFF053",
         /*---------------------------------------------------------------------------*/
         argument: [{role: "object", nountype: ["position", "schedule"], label: "table", default: "position"},
             {role: "modifier", nountype: ["football", "formula1"], label: "sport", default: "formula1"},
             {role: "format", nountype: ["premier", "first", "england"], label: "division", default: "premier"}],
         /*---------------------------------------------------------------------------*/
-        description: "Get latest information about sport events.",
-        help: `Syntax: sovsport <b>table</b> of <b>sport</b> in <b>division</b><br>
-            Available <b>table</b>s: position, schedule<br>
-            Available <b>sports</b>s: football, formula1<br>
-            Available <b>division</b>s: premier, first, england
+        description: "Get latest soviet information about sport events.",
+        help: `Syntax: <i>soviet</i> <b>table</b> <i>of</i> <b>sport</b> <i>in</i> <b>division</b><br>
+            <b>sport</b>: {football, formula1}<br>
+            <b>table</b>: {position, schedule}<br>
+            <b>division</b> (football only): {premier, first, england}
         `,
         timeout: 1000,
         builtIn: true,
@@ -31,16 +32,19 @@ CmdUtils.CreateCommand(
         /*---------------------------------------------------------------------------*/
         preview: function (pblock, args) {
             pblock.innerHTML = "";
-            this._get_data(pblock, args.object.text, args.modifier.text, args.format.text);
+            //if (args.modifier.text)
+                this._get_data(pblock, args.object.text, args.modifier.text, args.format.text);
         },
         /*---------------------------------------------------------------------------*/
         _failureMessage: "error",
         _get_url: function (pblock, url, callback) {
+            let self = this;
             CmdUtils.previewAjax(pblock, {
                 url: url,
                 type: "get",
                 dataType: "html",
                 success: function (data) {
+                    self._requestUrl = url;
                     let tables = jQuery(data).find(".stat-table_wrapper");
                     tables.find("input").remove();
                     tables.find("select").remove();
@@ -65,7 +69,6 @@ CmdUtils.CreateCommand(
                             url += "russia/premier";
                         else
                             url += "russia/first";
-                        console.log(url);
                         this._get_url(pblock, url, function (tables) {
                             if (tables.length > 0) {
                                 switch (type.toLowerCase()) {
@@ -78,10 +81,8 @@ CmdUtils.CreateCommand(
                                 }
                             }
                         });
-
                     }
-
-                    break;
+                break;
 
                 case "formula1":
                     url += "formula1";
@@ -97,13 +98,15 @@ CmdUtils.CreateCommand(
                             }
                         }
                     });
-                    break;
+                break;
             }
 
         },
         /*---------------------------------------------------------------------------*/
         execute: function () {
-            if (this._requestUrl != null)
+            if (this._requestUrl != null) {
                 Utils.openUrlInBrowser(this._requestUrl);
+                CmdUtils.closePopup();
+            }
         }
     });

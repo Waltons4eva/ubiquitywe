@@ -18,6 +18,7 @@
           "lib/jquery.min.js", 
           "lib/template.js",
           "lib/math_parser.js",
+          "lib/uuid.js",
           "utils.js",
           "cmdutils.js",
           "parser/contextutils.js",

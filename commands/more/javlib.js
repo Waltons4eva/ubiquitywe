@@ -71,7 +71,7 @@
             },
             statusCode: {
                 503: function (xhr) {
-                    pblock.innerHTML = "Waiting for Cloudflare...";
+                    pblock.innerHTML = "Waiting for Cloudflare... If it have stuck, try to clear history for the last hour.";
                     if (retry_ctr < 2) {
                         retry_ctr += 1;
                         chrome.tabs.create({active: false, url: "http://javlibrary.com/en"}, new_tab => {
@@ -82,10 +82,12 @@
                             }, 6000);
                         });
                     }
+                    else
+                        pblock.innerHTML = "Error.";
                 }
             },
             error: function (xhr) {
-                pblock.innerHTML = "Error";
+                pblock.innerHTML = "Error.";
             }
         };
 
@@ -94,8 +96,11 @@
 
     CmdUtils.CreateCommand({
         name: "javlibrary",
-        argument: [{role: "object", nountype: noun_arb_text, label: "text"}],
+        uuid: "2464CA49-78EF-425E-8A49-ED5F5EA121D0",
+        argument: [{role: "object", nountype: noun_arb_text, label: "movie code"}],
         description: "Search for movie information at <a href='http://javlibrary.com/en'>javlibrary</a>.",
+        help: `Syntax: <i>javlib</i> <b>movie code</b><br>
+               try: <i>javlib</i> <b>star-699</b>`,
         icon: "commands/more/jav.png",
         builtIn: true,
         timeout: 1000,
