@@ -28,11 +28,11 @@ CmdUtils.CreateCommand({
     timeout: 0,
     author: "Your Name",
     icon: "res/icon-24.png",
-    execute: function({object: {text}}, Bin) {
+    execute: function({object: {text}}, {Bin}) {
         CmdUtils.notify("Your input is: " + text);
         CmdUtils.closePopup();
     },
-    preview: function(pblock, {object: {text}}, Bin) {
+    preview: function(pblock, {object: {text}}, {Bin}) {
         pblock.innerHTML = "Your input is " + text + ".";
     },
 });
@@ -84,7 +84,7 @@ function saveScripts() {
         }
 
         if (settings)
-            chrome.storage.local.set(settinяs);
+            chrome.storage.local.set(settings);
         else
             chrome.storage.local.clear();
     }
@@ -204,7 +204,6 @@ if (typeof chrome !== 'undefined' && chrome.storage) {
             $("#script-namespaces").prop("disabled", "disabled");
             if (result) {
                 editor.setValue(JSON.stringify(result, null, 2), -1);
-                //alert("Here be dragons!");
             }
         });
     else

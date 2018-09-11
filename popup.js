@@ -90,28 +90,20 @@ function ubiq_show_preview(sent, args) {
     if (!cmd_struct || !cmd_struct.preview)
         return;
 
-    var preview_func = cmd_struct.preview;
-
-    switch(typeof preview_func)
+    switch(typeof cmd_struct.preview)
     {
         case 'undefined':
             ubiq_set_preview( cmd_struct.description );
             break;
         case 'string':
-            ubiq_set_preview( preview_func );
+            ubiq_set_preview( cmd_struct.preview );
             break;
         default:
             var pfunc = ()=>{
                 // zoom overflow dirty fix
                 CmdUtils.popupWindow.jQuery("#ubiq-command-preview").css("overflow-y", "auto");
                 try {
-                    // new Proxy({
-                    //     __proto__ : null,
-                    //     __feed__  : this,
-                    //     __bin__   : this.getJSONStorage(),
-                    // }, BinHandler)
-
-                    sent.preview(ubiq_preview_el());
+                    Utils.callPersistent(sent, sent.preview, ubiq_preview_el());
                     // trying to cope wit CmdUtils.previewAjax
                     ubiq_preview_el().dispatchEvent(new Event("preview-change"));
                 } catch (e) {
@@ -134,7 +126,7 @@ function ubiq_show_preview(sent, args) {
 
 function ubiq_execute() {
     if (ubiq_selected_sent)
-        ubiq_selected_sent.execute();
+        Utils.callPersistent(ubiq_selected_sent, ubiq_selected_sent.execute);
 }
 
 function ubiq_help() {

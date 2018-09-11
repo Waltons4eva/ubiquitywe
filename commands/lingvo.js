@@ -65,7 +65,6 @@ var __lingvoLiveAPIToken;
                 catch (e) {
                     pblock.innerHTML = this._failureMessage;
                 }
-
             },
             /*---------------------------------------------------------------------------*/
             _failureMessage: "error",

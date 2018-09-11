@@ -103,7 +103,6 @@ CmdUtils.CreateCommand = function CreateCommand(options) {
 			    let args = arguments;
                 if (options.preview_timeoutFunc !== null) clearTimeout(options.preview_timeoutFunc);
                 options.preview_timeoutFunc = setTimeout(function () {
-                    Utils.jsLog(arguments[0]);
                 	options.preview_timeout.apply(options, args);
                 }, to);
 			};

@@ -596,7 +596,7 @@ NLParser = {};
             return this._verb.execute(context, this._argSuggs);
         },
 
-        preview: function PS_preview(previewBlock, context) {
+        preview: function PS_preview(context, previewBlock) {
             this._verb.preview(context, previewBlock, this._argSuggs);
         },
 
@@ -1012,22 +1012,20 @@ NLParser = {};
         },
 
         execute: function V_execute(context, argumentValues) {
-            let bin = context? context.bin: null;
             return (
                 this.newAPI
                     // New-style commands (api 1.5) expect a single dictionary with all
                     // arguments in it, and the object named 'object'.
-                    ? this.cmd.execute(argumentValues, bin)
+                    ? this.cmd.execute(argumentValues, context)
                     // Old-style commands (api 1.0) expect the direct object to be passed
                     // in separately.
                     : this.cmd.execute(argumentValues.object, argumentValues));
         },
 
         preview: function V_preview(context, previewBlock, argumentValues) {
-            let bin = context? context.bin: null;
             // Same logic as the execute command -- see comment above.
             (this.newAPI
-                ? this.cmd.preview(previewBlock, argumentValues, bin)
+                ? this.cmd.preview(previewBlock, argumentValues, context)
                 : this.cmd.preview(previewBlock, argumentValues.object, argumentValues));
         },
 

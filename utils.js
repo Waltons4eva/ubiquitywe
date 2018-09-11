@@ -264,26 +264,68 @@ var BinHandler = {
     // Returns the value stored for the key.
     get(target, key) {
         return (val) => {
-            var bin = target.__bin__
-            if (val === void 0) return bin[key]
+            var bin = target.__bin__;
+            if (val === void 0) return bin[key];
             if (val === null) {
-                var old = bin[key]
+                var old = bin[key];
                 delete bin[key]
             }
-            else bin[key] = val
-            bin = target.__bin__ = target.__feed__.setJSONStorage(bin)
+            else bin[key] = val;
+            Utils.setJsonStorage(target.__uuid__, bin);
             return key in bin ? bin[key] : old
         }
     },
     has(target, key) {
-        return key in target.__bin__
+        return key in target.__bin__;
     },
     *enumerate(target) {
-        for (let key in target.__bin__) yield key
+        for (let key in target.__bin__) yield key;
     },
 };
 
+Utils.setJsonStorage = function(uuid, bin) {
+    if (!uuid) {
+        console.error(name + ": command UUID is required to store data, aborting.");
+        return;
+    }
 
+    Utils.getPref("jsonStorage", jsonStorage => {
+        if (!jsonStorage)
+            jsonStorage = {};
+        jsonStorage[uuid] = bin;
+        Utils.setPref("jsonStorage", jsonStorage);
+    });
+};
+
+Utils.getJsonStorage = function(uuid, callback) {
+    Utils.getPref("jsonStorage", jsonStorage => {
+        if (!jsonStorage)
+            jsonStorage = {};
+        if (callback && uuid) {
+            let bin = jsonStorage[uuid];
+            callback(bin? bin: {});
+        }
+        else if (callback)
+            callback({});
+    });
+};
+
+Utils.makeBin = function(uuid, callback) {
+    Utils.getJsonStorage(uuid, bin =>
+        callback(new Proxy({
+            __proto__ : null,
+            __uuid__  : uuid,
+            __bin__   : bin
+        }, BinHandler)));
+};
+
+Utils.callPersistent = function (sent, f) {
+    let args = arguments;
+    Utils.makeBin(sent._verb.cmd.uuid, bin => {
+        let new_args = [{Bin: bin}].concat(Array.prototype.slice.call(args, 2));
+        f.apply(sent, new_args);
+    });
+};
 
 Utils.easterListener = function(input) {
     if (input.trim().toLowerCase() === "debug mode on") {

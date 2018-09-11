@@ -58,6 +58,9 @@ CmdUtils.CreateCommand(
             });
         },
         _get_data: function (pblock, type, sport, division) {
+            if (!sport)
+                return;
+
             let url = rootURL;
             switch (sport.toLowerCase()) {
                 case "football":
