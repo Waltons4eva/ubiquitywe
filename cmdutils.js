@@ -6,12 +6,15 @@ if (!CmdUtils) var CmdUtils = {
     MORE_COMMANDS: false,
     CommandList: [],
     DisabledCommands: {},
+    ContextMenuCommands: [],
     jQuery: jQuery,
     backgroundWindow: window,
     popupWindow: null,
     log: console.log,
     maxSuggestions: 5,
     maxSearchResults: 10,
+    maxHistoryItems: 20,
+    selectedContextMenuCommand: undefined,
     active_tab: null,   // tab that is currently active, updated via background.js 
     selectedText: "",   // currently selected text, update via content script selection.js
     selectedHTML: "",   // currently selected html, update via content script selection.js
@@ -23,11 +26,10 @@ var _ = a => a;
 var H = Utils.escapeHtml;
 
 // stub for original ubiquity string formatter
-function L(pattern, substitute1, substitute2) {
-    if (substitute1)
-        pattern = pattern.replace("%S", substitute1);
-    if (substitute2)
-        pattern = pattern.replace("%S", substitute2);
+function L(pattern) {
+    for (let sub of Array.prototype.slice.call(arguments, 1)) {
+        pattern = pattern.replace("%S", sub);
+    }
 
     return pattern;
 }
@@ -55,12 +57,7 @@ CmdUtils.CreateCommand = function CreateCommand(options) {
         options.names = options.names || [options.name];
     }
 
-    options.id = options.name + __globId++;
-
-    if (CmdUtils.getcmd(options.name)) {
-        // remove previously defined command with this name
-        CmdUtils.CommandList = CmdUtils.CommandList.filter( cmd => cmd.name !== options.name );
-    }
+    options.id = options.uuid? options.uuid: options.name + __globId++;
 
     function toNounType(obj, key) {
         var val = obj[key];
@@ -72,10 +69,8 @@ CmdUtils.CreateCommand = function CreateCommand(options) {
     ASSIGN_ARGUMENTS:
     {
         let args = options.arguments || options.argument;
-        if (!args) {
-            options.arguments = [];
-            break ASSIGN_ARGUMENTS;
-        }
+        if (!args)
+            args = options.arguments = [{role: "object", nountype: noun_arb_text, label: "text"}];
         // handle simplified syntax
         if (typeof args.suggest === "function")
         // argument: noun
@@ -94,30 +89,24 @@ CmdUtils.CreateCommand = function CreateCommand(options) {
         options.arguments = args;
     }
 
+    options._preview = options.preview;
+    options._execute = options.execute;
+
     var to = parseFloat(options.timeout || 0);
-    if (to !== undefined) {
-    	options.timeoutFunc = null;
-    	if (typeof options.preview === 'function') {
-		    options.preview_timeout = options.preview;
-			options.preview = function() {
+    if (to > 0) {
+    	if (typeof options._preview === 'function') {
+			options.preview = function(pblock) {
 			    let args = arguments;
-                if (options.preview_timeoutFunc !== null) clearTimeout(options.preview_timeoutFunc);
-                options.preview_timeoutFunc = setTimeout(function () {
-                	options.preview_timeout.apply(options, args);
-                }, to);
-			};
-    	}
-    	if (typeof options.execute === 'function') {
-		    options.execute_timeout = options.execute;
-			options.execute = function() {
-                let args = arguments;
-                if (options.execute_timeoutFunc !== null) clearTimeout(options.execute_timeoutFunc);
-                options.execute_timeoutFunc = setTimeout(function () {
-					options.execute_timeout.apply(options, args);
-                }, to);
+			    let callback = CmdUtils.previewCallback(pblock, options._preview);
+                if (options.preview_timeout !== null)
+                    clearTimeout(options.preview_timeout);
+                options.preview_timeout = setTimeout(function () {
+                        callback.apply(options, args);
+                    }, to);
 			};
     	}
     }
+
     options.previewDefault = CmdUtils.CreateCommand.previewDefault;
     CmdUtils.CommandList.push(options);
 };
@@ -137,6 +126,33 @@ CmdUtils.CreateCommand.previewDefault = function previewDefault(pb) {
     }
     return (pb || 0).innerHTML = html;
 };
+
+CmdUtils.getCommandByUUID = function(uuid) {
+    return CmdUtils.CommandList.find(c => c.uuid.toLowerCase() === uuid.toLowerCase());
+};
+
+CmdUtils.commandHistoryPush = function(input) {
+    if (input) {
+        input = input.trim();
+        Utils.getPref("commandHistory", history => {
+            if (!history)
+                history = [];
+
+            ADD_ITEM: {
+                if (history.length > 0 && history[0].toLowerCase() === input.toLowerCase())
+                    break ADD_ITEM;
+
+                history = [input].concat(history);
+
+                if (history.length > CmdUtils.maxHistoryItems)
+                    history.splice(history.length - 1, 1);
+
+                Utils.setPref("commandHistory", history);
+            }
+        });
+    }
+};
+
 
 // helper to avoid stealing focus in preview
 CmdUtils._restoreFocusToInput = function(event) {
@@ -229,8 +245,7 @@ Utils.openUrlInBrowser = CmdUtils.addTab = function addTab(url) {
 };
 
 // opens new tab with post request and provided data
-CmdUtils.postNewTab
- = function postNewTab(url, data) {
+CmdUtils.postNewTab = function postNewTab(url, data) {
 	var form = document.createElement("form");
 	form.setAttribute("method", "post");
 	form.setAttribute("action", url);
@@ -250,6 +265,98 @@ CmdUtils.postNewTab
 	document.body.appendChild(form);
 	form.submit();
 	document.body.removeChild(form);
+};
+
+CmdUtils.getContextMenuCommand = function(input) {
+    if (!input)
+        return null;
+    return CmdUtils.ContextMenuCommands.find(c => c.command.toLowerCase() === input.toLowerCase());
+};
+
+CmdUtils.addContextMenuCommand = function(uuid, label, command) {
+    CmdUtils.ContextMenuCommands.push({
+        uuid: uuid,
+        label: label,
+        command: command
+    });
+
+    Utils.setPref("contextMenuCommands", CmdUtils.ContextMenuCommands, () => CmdUtils.createContextMenu());
+};
+
+CmdUtils.createContextMenu = function() {
+    chrome.contextMenus.removeAll();
+
+    let contexts = ["selection", "link", "page", "editable"];
+
+    for (let c of CmdUtils.ContextMenuCommands) {
+        let commandDef = CmdUtils.getCommandByUUID(c.uuid);
+        chrome.contextMenus.create({
+            id: c.command,
+            title: c.label,
+            icons: {"16": commandDef && commandDef.icon? commandDef.icon: "res/icon-24.png"},
+            contexts: contexts
+        });
+    }
+
+    if (CmdUtils.ContextMenuCommands.length > 0)
+        chrome.contextMenus.create({
+            id: "final-separator",
+            type: "separator",
+            contexts: contexts
+        });
+    chrome.contextMenus.create({
+        id: "ubiquity-settings",
+        title: "Ubiquity Settings",
+        icons: {"32": "res/icon-32.png"},
+        contexts: contexts
+    });
+
+    if (!CmdUtils.contextMenuListener) {
+        CmdUtils.contextMenuListener = function(info, tab) {
+            switch(info.menuItemId) {
+                case "ubiquity-settings":
+                    chrome.tabs.create({"url": "options.html"});
+                    break;
+                default:
+                    if (info.selectionText) { // TODO: add html selection
+                        CmdUtils.selectedText = info.selectionText;
+                        CmdUtils.selectedHtml = info.selectionText;
+                    }
+                    if (info.linkUrl) {
+                        CmdUtils.selectedText = info.linkUrl;
+                        CmdUtils.selectedHtml = info.linkUrl;
+                    }
+
+                    let contextMenuCmdData = CmdUtils.getContextMenuCommand(info.menuItemId);
+
+                    if (contextMenuCmdData) {
+                        let commandDef = CmdUtils.getCommandByUUID(contextMenuCmdData.uuid);
+
+                        if (!commandDef.preview || typeof commandDef.preview !== "function" || contextMenuCmdData.execute) {
+                            let parser = NLParser.makeParserForLanguage(CmdUtils.parserLanguage, CmdUtils.CommandList);
+                            let query = parser.newQuery(info.menuItemId, null, CmdUtils.maxSuggestions, true);
+
+                            query.onResults = () => {
+                                let sent = query.suggestionList && query.suggestionList.length > 0? query.suggestionList[0]: null;
+                                if (sent && sent._verb.cmd.uuid.toLowerCase() === commandDef.uuid.toLowerCase()) {
+                                    Utils.callPersistent(sent._verb.cmd.uuid, sent, sent.execute);
+                                    if (CmdUtils.rememberContextMenuCommands)
+                                        CmdUtils.commandHistoryPush(contextMenuCmdData.command);
+                                }
+                                else
+                                    CmdUtils.deblog("Context menu command/parser result mismatch")
+                            };
+
+                            query.run();
+                            return;
+                        }
+                    }
+                    CmdUtils.selectedContextMenuCommand = info.menuItemId;
+                    chrome.browserAction.openPopup();
+            }
+        };
+        chrome.contextMenus.onClicked.addListener(CmdUtils.contextMenuListener);
+    }
 };
 
 // returns a function that opens new tab with substituted {text} and {location} 
@@ -394,7 +501,11 @@ CmdUtils.updateActiveTab = function (callback) {
                     var tab = tabs[0];
                     if (tab.url.match('^https?://')) {
                         CmdUtils.active_tab = tab;
-                        CmdUtils.updateSelection(tab.id, callback);
+                        if (!CmdUtils.selectedContextMenuCommand)
+                            CmdUtils.updateSelection(tab.id, callback);
+                        else
+                            if (callback)
+                                callback();
                     }
                     else if (callback)
                         callback();
@@ -480,29 +591,28 @@ CmdUtils.copyToClipboard = CmdUtils.setClipboard = function setClipboard (t) {
 
 CmdUtils.unloadCustomScripts = function unloadCustomScripts() {
     CmdUtils.CommandList = CmdUtils.CommandList.filter((c)=>{
-        return c['builtIn']==true;
+        return c['builtIn'] == true;
     });
 };
 
 CmdUtils.loadCustomScripts = function loadCustomScripts(callback) {
     CmdUtils.unloadCustomScripts();
     // mark built-int commands
-    CmdUtils.CommandList.forEach((c)=>{c['builtIn']=true;});
+    CmdUtils.CommandList.forEach((c) => {c['builtIn'] = true;});
 
     // load custom scripts
-    chrome.storage.local.get('customscripts', function(result) {
-        if (result.customscripts)
-            for (let n in result.customscripts) {
-                try {
-                    eval(result.customscripts[n].scripts || "");
-                    for (let cc of CmdUtils.CommandList.filter((c)=>{return !c.builtIn && !c._namespace}))
-                        cc._namespace = n;
-                } catch (e) {
-                    console.error("custom scripts eval failed", e);
-                }
+    Utils.getCustomScripts(customscripts => {
+        for (let n in customscripts) {
+            try {
+                eval(customscripts[n].scripts || "");
+                for (let cc of CmdUtils.CommandList.filter((c)=>{return !c.builtIn && !c._namespace}))
+                    cc._namespace = n;
+            } catch (e) {
+                console.error("custom scripts eval failed", e);
             }
+        }
         if (callback)
-           callback(result.customscripts);
+           callback(customscripts);
     });
 };
 
@@ -764,7 +874,7 @@ CmdUtils.makeSearchCommand.preview = function searchPreview(pblock, {object: {te
         var list = "", i = 0, max = parser.maxResults || 4;
         for (let {title, href, body, thumbnail} of results) if (title) {
             if (href) {
-                let key = F;
+                let key = i + 1;
                 title = ("<kbd >" + key + "</kbd>. <a href='" + href +
                      "' accesskey='" + key + "'>" + title + "</a>");
             }
@@ -806,51 +916,32 @@ CmdUtils.makeSearchCommand.preview = function searchPreview(pblock, {object: {te
 //
 // {{{css}}} is an optional CSS string inserted along with the list.
 
-// function previewList(block, htmls, callback, css) {
-//     var {escapeHtml} = Utils, list = "", num = 0, CU = this;
-//     for (let key in htmls) {
-//         let k = ++num < 36 ? num.toString(36) : "-";
-//         list += ('<li><label for="' + num + '"><input type="button" id="' + num +
-//             '" class="button" value="' + k + '" accesskey="' + k +
-//             '" key="' + escapeHtml(key) + '"/>' + htmls[key] +
-//             '</label></li>');
-//     }
-//     block.innerHTML = (
-//         '<ol id="preview-list">' +
-//         '<style>' + previewList.CSS + (css || "") + '</style>' +
-//         '<input type="button" class="button" id="keyshifter"' +
-//         ' value="0" accesskey="0"/>' + list + '</ol>');
-//     var ol = block.firstChild, start = 0;
-//     callback && ol.addEventListener("click", function onPreviewListClick(ev) {
-//         var {target} = ev;
-//         if (target.type !== "button") return;
-//         ev.preventDefault();
-//         if (target.id === "keyshifter") {
-//             if (num < 36) return;
-//             let buttons = Array.slice(this.getElementsByClassName("button"), 1);
-//             start = (start + 35) % buttons.length;
-//             buttons = buttons.splice(start).concat(buttons);
-//             for (let i = 0, b; b = buttons[i];)
-//                 b.value = b.accessKey = ++i < 36 ? i.toString(36) : "-";
-//             return;
-//         }
-//         target.disabled = true;
-//         if (callback.call(this, target.getAttribute("key"), ev))
-//             Utils.setTimeout(function reenableButton() { target.disabled = false });
-//     }, false);
-//     return ol;
-// }
-// previewList.CSS = "\
-//   #preview-list {margin: 0; padding-left: 1.5em; list-style-type: none}\
-//   #preview-list > li {position: relative; min-height: 3ex}\
-//   #preview-list > li:hover {outline: 1px solid; -moz-outline-radius: 8px}\
-//   #preview-list label {display: block; cursor: pointer}\
-//   #preview-list .button {\
-//     position: absolute; left: -1.5em; height: 3ex;\
-//     padding: 0; border-width: 1px;\
-//     font: bold 108% monospace; text-transform: uppercase}\
-//   #keyshifter {position:absolute; top:-9999px}\
-// "
+CmdUtils.previewList = function(block, htmls, callback, css) {
+    var {escapeHtml} = Utils, list = "", num = 0, CU = this;
+    for (let key in htmls) {
+        let k = ++num < 36 ? num.toString(36) : "-";
+        list += ('<li key="' + escapeHtml(key) + '" accesskey="' + k + '"><span id="' + num +
+            '">' + k + '</span>. ' + htmls[key] + '</li>');
+    }
+    block.innerHTML = (
+        '<ol id="preview-list">' +
+        '<style>' + CmdUtils.previewList.CSS + (css || "") + '</style>' + list + '</ol>');
+    var ol = block.firstChild, start = 0;
+    callback && ol.addEventListener("click", function onPreviewListClick(ev) {
+        var {target} = ev;
+        if (target.tagName !== "LI") return;
+        ev.preventDefault();
+        if (callback)
+            callback.call(this, target.getAttribute("key"), ev);
+    }, false);
+    return ol;
+};
+CmdUtils.previewList.CSS = `\
+  #preview-list {margin: 0; padding: 2px; list-style-type: none}
+  #preview-list > li {position: relative; min-height: 3ex; margin-right: 3px; cursor: pointer}
+  #preview-list > li:hover {outline: 1px solid;}
+  #keyshifter {position:absolute; top:-9999px}
+`;
 
 
 (function ( $ ) {

@@ -193,13 +193,13 @@ var __lingvoLiveAPIToken;
                         switch (item.Node) {
                             case "Paragraph":
                                 if (!listLevel || listLevel == 1)
-                                    result.push("<p>");
+                                    result.push("<p class='lingvo-paragraph'>");
                                 this._formatItem(item.Markup, result);
                                 if (!listLevel || listLevel == 1)
                                     result.push("</p>");
                                 break;
                             case "Transcription":
-                                result.push("<span style='color: #80ff80'>");
+                                result.push("<span style='color: #80ff80' class='lingvo-transcription'>");
                                 result.push("[" + item.Text + "]");
                                 result.push("</span>");
                                 break;
@@ -207,14 +207,14 @@ var __lingvoLiveAPIToken;
                                 result.push(item.Text);
                                 break;
                             case "Abbrev":
-                                result.push("<span style='color: #a5a5a5'>");
+                                result.push(" <span style='color: #a5a5a5' class='lingvo-abbrev'>");
                                 result.push(item.Text);
-                                result.push("</span>");
+                                result.push("</span> ");
                                 break;
                             case "Comment":
-                                result.push("<span style='color: #a5a5a5'>");
+                                result.push(" <span style='color: #a5a5a5' class='lingvo-comment'>");
                                 this._formatItem(item.Markup, result);
-                                result.push("</span>");
+                                result.push("</span> ");
                                 break;
                             case "List":
                                 // if (listLevel && listLevel > 1)
@@ -241,12 +241,12 @@ var __lingvoLiveAPIToken;
                                 result.push(item.Text);
                                 break;
                             case "Examples":
-                                result.push("<ul style='padding-left: 15px;'>");
+                                result.push("<ul style='padding-left: 15px;' class='lingvo-examples'>");
                                 this._formatItem(item.Items, result);
                                 result.push("</ul>");
                                 break;
                             case "ExampleItem":
-                                result.push("<li>");
+                                result.push("<li class='lingvo-example-item'>");
                                 this._formatItem(item.Markup, result);
                                 result.push("</li>");
                                 break;

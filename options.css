@@ -114,7 +114,7 @@ h2{
   border-top: 1px solid black;
   font-variant: small-caps;
   color: black;
-  margin-top: 40px;
+  margin-top: 25px;
   padding: 10px 0;
 }
 
@@ -398,4 +398,38 @@ div.ubiq-tutorial h2 {
   color: #BF4545;
   top: 4px;
   position: relative;
+}
+
+#context-menu-commands-wrapper {
+    border-bottom: 1px solid black;
+    padding-bottom: 10px;
+    margin-bottom: 5px;
+}
+
+#context-menu-commands {
+    width: 100%;
+}
+
+#context-menu-commands td:nth-child(2) {
+    width: 30%;
+}
+
+#context-menu-commands td:nth-child(4) {
+    width: 50px;
+}
+
+#context-menu-commands input[type="text"] {
+    width: 100%;
+}
+
+#context-menu-commands .remove-item{
+    cursor: pointer;
+}
+
+.help {
+    cursor: help;
+}
+
+.setting-table {
+    font-size: 13px;
 }

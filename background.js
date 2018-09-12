@@ -1,10 +1,4 @@
-CmdUtils.deblog("UbiquityWE v"+CmdUtils.VERSION+" background script says hello");
-
-
-Utils.getPref("customscripts", customscripts => {
-    if (!customscripts)
-        Utils.setPref("customscripts", {}, () => CmdUtils.loadCustomScripts());;
-});
+CmdUtils.deblog("UbiquityWE v" + CmdUtils.VERSION + " background script says hello");
 
 Utils.getPref("enableMoreCommands", enableMoreCommands => {
 
@@ -20,19 +14,31 @@ Utils.getPref("enableMoreCommands", enableMoreCommands => {
     Utils.getPref("debugMode", debugMode => {
         CmdUtils.DEBUG = !!debugMode;
         CmdUtils.CommandList = CmdUtils.CommandList.filter(cmd => CmdUtils.DEBUG || !cmd._hidden);
+        CmdUtils.loadCustomScripts();
         Utils.getPref("disabledCommands", disabledCommands => {
             if (disabledCommands)
                 for (let cmd of CmdUtils.CommandList) {
                     if (cmd.name in disabledCommands)
                         cmd.disabled = true;
                 }
+
+            for (cmd of CmdUtils.CommandList) {
+                try {
+                    if (cmd.init) {
+                        Utils.callPersistent(cmd.uuid, cmd, cmd.init);
+                    }
+                }
+                catch (e) {
+                    console.log(e.message);
+                }
+            }
         });
     });
-
 });
 
-Utils.getPref("parserLanguage", parserLanguage => CmdUtils.parserLanguage = parserLanguage || "en");
 Utils.getPref("maxSuggestions", maxSuggestions=> CmdUtils.maxSuggestions = maxSuggestions || 5);
+Utils.getPref("rememberContextMenuCommands", rememberContextMenuCommands =>
+    CmdUtils.rememberContextMenuCommands = rememberContextMenuCommands);
 
 chrome.i18n.getAcceptLanguages(ll => CmdUtils.acceptLanguages = ll);
 
@@ -46,6 +52,11 @@ Utils.getPref("lingvoApiKey", lingvoApiKey => {
     }
 });
 
+Utils.getPref("contextMenuCommands", contextMenuCommands => {
+    if (contextMenuCommands)
+        CmdUtils.ContextMenuCommands = contextMenuCommands;
+    CmdUtils.createContextMenu();
+});
 
 // setup selection event sink
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -67,20 +78,16 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 chrome.tabs.onUpdated.addListener( function(tabId, changeInfo, tab) {
-    if (CmdUtils.DEBUG) if (tab) console.log("onUpdated", tab.url);  
+    //if (CmdUtils.DEBUG) if (tab) console.log("onUpdated", tab.url);
     CmdUtils.updateActiveTab();  
 });
 
 chrome.tabs.onActivated.addListener(function(actInfo) {
-    if (CmdUtils.DEBUG) console.log("onActivated", actInfo);
+    //if (CmdUtils.DEBUG) console.log("onActivated", actInfo);
     CmdUtils.updateActiveTab();  
 });
 
 chrome.tabs.onHighlighted.addListener( function(higInfo) {
-    if (CmdUtils.DEBUG) console.log("onHighlighted", higInfo);  
+    //if (CmdUtils.DEBUG) console.log("onHighlighted", higInfo);
     CmdUtils.updateActiveTab();  
-});
-
-chrome.browserAction.onClicked.addListener(function(tab) {
-   console.log('test');
 });

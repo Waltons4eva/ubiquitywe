@@ -48,23 +48,12 @@
 
 <div class="col-five">
     <h2 class="top">Context menu commands</h2>
-    <ul id="skin-list">
-        <div class="command light" id="skin_1"><label class="label">TBD</label></div>
-    </ul>
+    <div id="context-menu-commands-wrapper"><table id="context-menu-commands"></table></div>
+    <div><input type="checkbox" id="cm-history-switch"/><label for="cm-history-switch">Do not add context menu commands to history</label></div>
 </div>
 
 <div class="col-four">
     <h2 class="top">Version Information</h2>
-    <!--fieldset>
-        <legend>Invoke <b>UbiquityWE</b> by pressing:</legend>
-        <div style="margin-left:10px;">
-            <p>
-                <input id="keyInput" class="prefkeys" type="text" value="Ctrl+Space" readonly><br/>
-                Custom key combinations are not supported in <br>Firefox Quantum
-            </p>
-            <p id="keyNotify"></p>
-        </div>
-    </fieldset-->
     <p>You are using <b>UbiquityWE</b> v<span id="ubiq-version"></span> <img id="ubiq-debug-mode" src="/res/debug.png" title="Debug mode"/></p>
 
     <h2>Language Settings</h2>
@@ -75,13 +64,13 @@
     </p>
 
     <h2>Miscellaneous Settings</h2>
-    <table cellpadding="5">
+    <table cellpadding="5" class="setting-table">
         <tr>
             <td>Maximum number of suggestions:</td>
             <td><input id="max-suggestions" size="5" style="text-align:center" type="text"/></td>
         </tr>
         <tr id="max-search-results-row" style="display: none;">
-            <td>Default number of search results:</td>
+            <td>Default number of search results<sup class="help" title="Search engine result page configuration is required.">?</sup>:</td>
             <td><input id="max-search-results" size="5" style="text-align:center" type="text"/></td>
         </tr>
     </table>

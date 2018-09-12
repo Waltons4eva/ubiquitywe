@@ -596,7 +596,7 @@ NLParser = {};
             return this._verb.execute(context, this._argSuggs);
         },
 
-        preview: function PS_preview(context, previewBlock) {
+        preview: function PS_preview(previewBlock, context) {
             this._verb.preview(context, previewBlock, this._argSuggs);
         },
 
@@ -630,6 +630,12 @@ NLParser = {};
              none of them are filled. */
             for (var x in this._argSuggs) return true;
             return false;
+        },
+
+        equalCommands: function PS_equalCommands(other) {
+            if (!other || other && other._verb.cmd !== this._verb.cmd)
+                return false;
+            return true;
         },
 
         equals: function PS_equals(other) {

@@ -71,15 +71,15 @@
             },
             statusCode: {
                 503: function (xhr) {
-                    pblock.innerHTML = "Waiting for Cloudflare... If it have stuck, try to clear history for the last hour.";
+                    pblock.innerHTML = "Waiting for Cloudflare... When stuck, try to clear the recent history.";
                     if (retry_ctr < 2) {
                         retry_ctr += 1;
                         chrome.tabs.create({active: false, url: "http://javlibrary.com/en"}, new_tab => {
-                            chrome.tabs.hide(new_tab.id);
+                            //chrome.tabs.hide(new_tab.id);
                             setTimeout(() => {
-                                chrome.tabs.remove(new_tab.id);
+                                //chrome.tabs.remove(new_tab.id);
                                 CmdUtils.previewAjax(pblock, options);
-                            }, 6000);
+                            }, 8000);
                         });
                     }
                     else

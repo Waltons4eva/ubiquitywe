@@ -222,7 +222,7 @@ var noun_type_email = {
 var noun_type_tab = {
     label: "title or URL",
     noExternalCalls: true,
-    suggest: function nt_tab_suggest(text, html, cb, selectedIndices) {
+    suggest: function(text, html, cb, selectedIndices) {
         let fakeReq = {readyState: 2};
 
         CmdUtils.tabs.search(text, CmdUtils.maxSuggestions, tabs => {
@@ -231,6 +231,28 @@ var noun_type_tab = {
                 CmdUtils.makeSugg(
                     tab.title || tab.url,
                     null, tab, CmdUtils.matchScore(tab.match), selectedIndices)));
+        });
+
+        return [fakeReq];
+    },
+};
+
+var noun_type_context_menu_command = {
+    label: "label",
+    noExternalCalls: true,
+    suggest: function(text, html, cb, selectedIndices) {
+        let fakeReq = {readyState: 2};
+        let matcher = new RegExp(text, "i");
+
+        Utils.getPref("contextMenuCommands", contextMenuCommands => {
+            let matchingItems = contextMenuCommands.filter(m => {
+                m.match = matcher.exec(m.label);
+                return !!m.match;
+            });
+
+            fakeReq.readyState = 4;
+            cb(matchingItems.map(cm =>
+                CmdUtils.makeSugg(cm.label, null, cm, CmdUtils.matchScore(cm.match), selectedIndices)));
         });
 
         return [fakeReq];

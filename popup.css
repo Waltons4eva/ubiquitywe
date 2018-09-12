@@ -206,3 +206,7 @@ body {
 kbd {
     font: inherit;
 }
+
+.keys {
+    color: #a7a7a7;
+}

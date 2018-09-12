@@ -23,17 +23,13 @@ CmdUtils.CreateCommand(
         /*---------------------------------------------------------------------------*/
         icon: "commands/more/soviet.png",
         /*---------------------------------------------------------------------------*/
-        init: function (doc) {
-            Utils.getPref("debugMode", debugMode => {
-                if (debugMode)
-                    CmdUtils.loadCSS(doc, "__soviet__", "commands/more/soviet.css")
-            });
+        popup: function (doc) {
+            CmdUtils.loadCSS(doc, "__soviet__", "commands/more/soviet.css");
         },
         /*---------------------------------------------------------------------------*/
         preview: function (pblock, args) {
             pblock.innerHTML = "";
-            //if (args.modifier.text)
-                this._get_data(pblock, args.object.text, args.modifier.text, args.format.text);
+            this._get_data(pblock, args.object.text, args.modifier.text, args.format.text);
         },
         /*---------------------------------------------------------------------------*/
         _failureMessage: "error",

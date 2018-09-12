@@ -20,6 +20,12 @@ Utils.setPref = function(key, value, callback) {
 
 };
 
+Utils.getCustomScripts = function(callback) {
+    Utils.getPref("customscripts", customscripts => {
+        callback(customscripts? customscripts: {});
+    });
+};
+
 // === {{{ Utils.paramsToString(params, prefix = "?") }}} ===
 // Takes the given object containing keys and values into a query string
 // suitable for inclusion in an HTTP GET or POST request.
@@ -107,7 +113,6 @@ Utils.parseHtml = function (htmlText, callback) {
 
     callback(doc);
 };
-
 
 // borrowed from utils.js of original Ubiquity
 
@@ -319,11 +324,12 @@ Utils.makeBin = function(uuid, callback) {
         }, BinHandler)));
 };
 
-Utils.callPersistent = function (sent, f) {
+Utils.callPersistent = function (uuid, obj, f) {
     let args = arguments;
-    Utils.makeBin(sent._verb.cmd.uuid, bin => {
-        let new_args = [{Bin: bin}].concat(Array.prototype.slice.call(args, 2));
-        f.apply(sent, new_args);
+    Utils.makeBin(uuid, bin => {
+        let new_args = Array.prototype.slice.call(args, 3);
+        new_args.push({Bin: bin});
+        f.apply(obj, new_args);
     });
 };
 

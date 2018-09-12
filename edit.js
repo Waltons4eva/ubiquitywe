@@ -1,5 +1,3 @@
-// jshint esversion: 6
-
 const UBIQUITY_SETTINGS = "ubiquity-settings";
 
 var scriptNamespace = window.location.search? decodeURI(window.location.search.substring(1)): "default";
@@ -8,39 +6,54 @@ var scriptNamespace = window.location.search? decodeURI(window.location.search.s
 function insertExampleStub() {
 
     var stubs = {
+        'insertsimplecommandstub':
+            `CmdUtils.CreateCommand({
+    name: "my-simple-command",
+    uuid: "%%UUID%%",
+    arguments: [{role: "object", nountype: noun_arb_text, label: "text"}],
+    description: "A short description of your command.",
+    author: "Your Name",
+    preview: function(pblock, {object: {text}}) {
+        pblock.innerHTML = "Your input is " + text + ".";
+    },
+    execute: function({object: {text}}) {
+        CmdUtils.notify("Your input is: " + text);
+        CmdUtils.closePopup();
+    }
+});`,
+
   'insertcommandstub':
-`/* This is a template command. */
-CmdUtils.CreateCommand({
+`CmdUtils.CreateCommand({
     name: "my-command",
     uuid: "%%UUID%%",
-    argument: [{role: "object",     nountype: noun_arb_text, label: "text"},
-             //{role: "goal",       nountype: noun_arb_text, label: "text"}, // to
-             //{role: "source",     nountype: noun_arb_text, label: "text"}, // from
-             //{role: "location",   nountype: noun_arb_text, label: "text"}, // near
-             //{role: "time",       nountype: noun_arb_text, label: "text"}, // at
-             //{role: "instrument", nountype: noun_arb_text, label: "text"}, // with
-             //{role: "format",     nountype: noun_arb_text, label: "text"}, // in
-             //{role: "modifier",   nountype: noun_arb_text, label: "text"}, // of
-             //{role: "alias",      nountype: noun_arb_text, label: "text"}, // as
+    arguments: [{role: "object",     nountype: noun_arb_text, label: "text"},
+              //{role: "goal",       nountype: noun_arb_text, label: "text"}, // to
+              //{role: "source",     nountype: noun_arb_text, label: "text"}, // from
+              //{role: "location",   nountype: noun_arb_text, label: "text"}, // near
+              //{role: "time",       nountype: noun_arb_text, label: "text"}, // at
+              //{role: "instrument", nountype: noun_arb_text, label: "text"}, // with
+              //{role: "format",     nountype: noun_arb_text, label: "text"}, // in
+              //{role: "modifier",   nountype: noun_arb_text, label: "text"}, // of
+              //{role: "alias",      nountype: noun_arb_text, label: "text"}, // as
     ],
     description: "A short description of your command.",
     help: "This text is displayed at the command list page.",
     timeout: 0,
     author: "Your Name",
-    icon: "res/icon-24.png",
-    execute: function({object: {text}}, {Bin}) {
-        CmdUtils.notify("Your input is: " + text);
+    icon: "http://example.com/favicon.ico",
+    //init: function({Bin}) {}, // called once on Ubiquity load
+    //popup: function(doc /* popup document */, {Bin}) {}, // called every time when popup is opened
+    preview: function(pblock, args, {Bin}) {
+        pblock.innerHTML = "Your input is " + args.object.text + ".";
+    },
+    execute: function(args, {Bin}) {
+        CmdUtils.notify("Your input is: " + args.object.text);
         CmdUtils.closePopup();
-    },
-    preview: function(pblock, {object: {text}}, {Bin}) {
-        pblock.innerHTML = "Your input is " + text + ".";
-    },
-});
+    }
+});`,
 
-`
-, 'insertsearchstub': // simple search / preview command (e. g. using ajax)
-`/* This is a template command. */
-CmdUtils.makeSearchCommand({
+        'insertsearchstub': // simple search / preview command (e. g. using ajax)
+`CmdUtils.makeSearchCommand({
     name: "my-search-command",
     uuid: "%%UUID%%",
     url: "http://www.example.com/find?q=%s",
@@ -54,7 +67,7 @@ CmdUtils.makeSearchCommand({
         thumbnail  : ".css > .selector", // result item thumbnail
       //body       : ".css > .selector", // result item summary
         maxResults : 10,
-    },
+    }
 });
 
 `
@@ -91,9 +104,7 @@ function saveScripts() {
     else {
         // save
         if (typeof chrome !== 'undefined' && chrome.storage) {
-            Utils.getPref("customscripts", all_scripts => {
-                if (!all_scripts)
-                    all_scripts = {};
+            Utils.getCustomScripts(all_scripts => {
                 all_scripts[scriptNamespace] = {scripts: customscripts};
                 Utils.setPref("customscripts", all_scripts);
             });
@@ -140,9 +151,7 @@ function setNamespaceScripts(all_scripts, namespace) {
 
 $("#script-namespaces").change(() => {
     saveScripts();
-    Utils.getPref("customscripts", all_scripts => {
-        if (!all_scripts)
-            all_scripts = {};
+    Utils.getCustomScripts(all_scripts => {
         scriptNamespace = $("#script-namespaces").val();
         setNamespaceScripts(all_scripts, scriptNamespace);
     });
@@ -155,7 +164,7 @@ $("#create-namespace").click(() => {
     let name = prompt("Name: ");
     if (name) {
 
-        Utils.getPref("customscripts", all_scripts => {
+        Utils.getCustomScripts(all_scripts => {
             ADD_NAME: {
                 saveScripts();
 
@@ -183,9 +192,9 @@ $("#create-namespace").click(() => {
 $("#delete-namespace").click(() => {
     if (scriptNamespace !== "default" && scriptNamespace !== UBIQUITY_SETTINGS)
         if (confirm("Are you sure?")) {
-            Utils.getPref("customscripts", all_scripts => {
+            Utils.getCustomScripts(all_scripts => {
                 delete all_scripts[scriptNamespace];
-                Utils.setPref("customscripts", all_scripts, );
+                Utils.setPref("customscripts", all_scripts);
                 $('option:selected', $("#script-namespaces")).remove();
 
                 scriptNamespace = $("#script-namespaces").val();
@@ -194,6 +203,7 @@ $("#delete-namespace").click(() => {
         }
 });
 
+$("#insertsimplecommandstub").click( insertExampleStub );
 $("#insertcommandstub").click( insertExampleStub );
 $("#insertsearchstub").click( insertExampleStub );
 
@@ -207,7 +217,7 @@ if (typeof chrome !== 'undefined' && chrome.storage) {
             }
         });
     else
-        Utils.getPref("customscripts", all_scripts => {
+        Utils.getCustomScripts(all_scripts => {
             var sorted = Object.keys(all_scripts).sort(function (a, b) {
                 if (a.toLocaleLowerCase() < b.toLocaleLowerCase())
                     return -1;
