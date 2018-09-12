@@ -3,7 +3,7 @@
     "short_name": "UbiquityWE",
     "homepage_url": "https://github.com/GChristensen/ubichr#readme",
     "author": "rostok, gchristnsn",
-    "version": "0.2.0.18",
+    "version": "0.2.1.0",
     "description": "WebExtension port of Ubiquity",
     "content_security_policy": "script-src 'self' 'unsafe-eval' https://maps.googleapis.com; style-src 'self' 'unsafe-inline'; object-src 'self'",
     "applications": {
@@ -31,6 +31,7 @@
           "commands/more/soviet.js",
           "commands/more/dark-flow.js",
           "commands/builtin.js",
+          "commands/mail.js",
           "commands/translate.js",
           "commands/search.js",
           "commands/lingvo.js",

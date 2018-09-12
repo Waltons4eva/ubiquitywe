@@ -195,6 +195,7 @@ function buildTable(customscripts) {
     insertBuiltinNamespace("Browser");
     insertBuiltinNamespace("Utility");
     insertBuiltinNamespace("Search");
+    insertBuiltinNamespace("Mail");
     insertBuiltinNamespace("Syndication");
     insertBuiltinNamespace("Translation");
 

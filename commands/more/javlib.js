@@ -75,11 +75,26 @@
                     if (retry_ctr < 2) {
                         retry_ctr += 1;
                         chrome.tabs.create({active: false, url: "http://javlibrary.com/en"}, new_tab => {
-                            //chrome.tabs.hide(new_tab.id);
-                            setTimeout(() => {
-                                //chrome.tabs.remove(new_tab.id);
-                                CmdUtils.previewAjax(pblock, options);
-                            }, 8000);
+                            let retries = 0;
+                            function checkForTitle() {
+                                chrome.tabs.executeScript(new_tab.id,
+                                    {code: `___title = document.getElementsByTagName('title'); 
+                                            ___title && ___title.length > 0? ___title[0].textContent: ''`},
+                                    function (title) {
+                                        if (title && title.length > 0 && title[0].toLowerCase().indexOf("javlibrary") >= 0) {
+                                            chrome.tabs.remove(new_tab.id);
+                                            retries = 100;
+                                            CmdUtils.previewAjax(pblock, options);
+                                        }
+                                    });
+
+                                if (retries < 12) {
+                                    retries += 1;
+                                    setTimeout(checkForTitle, 1000);
+                                }
+                            }
+
+                            checkForTitle();
                         });
                     }
                     else

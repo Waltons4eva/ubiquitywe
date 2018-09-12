@@ -90,7 +90,6 @@ CmdUtils.CreateCommand = function CreateCommand(options) {
     }
 
     options._preview = options.preview;
-    options._execute = options.execute;
 
     var to = parseFloat(options.timeout || 0);
     if (to > 0) {

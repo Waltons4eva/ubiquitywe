@@ -408,6 +408,8 @@ div.ubiq-tutorial h2 {
 
 #context-menu-commands {
     width: 100%;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 #context-menu-commands td:nth-child(2) {

@@ -72,7 +72,7 @@ var noun_type_number = {
         var num = +text;
         return isNaN(num) ? [] : [CmdUtils.makeSugg(text, null, num)];
     },
-    default: CmdUtils.makeSugg("1", null, 1, 0.5),
+    //default: CmdUtils.makeSugg("1", null, 1, 0.5),
 };
 
 // === {{{ noun_type_percentage }}} ===
@@ -113,7 +113,7 @@ var noun_type_percentage = {
 // * {{{text, html}}} : date/time text
 // * {{{data}}} : {{{Date}}} instance
 
-function scoreDateTime(text) {
+function __scoreDateTime(text) {
   // Give penalty for short input only slightly,
   // as Date.parse() can handle variety of lengths like:
   // "t" or "Wednesday September 18th 2009 13:29:54 GMT+0900",
@@ -130,7 +130,7 @@ var noun_type_date = {
     var date = Date.parse(text);
     if (!date) return [];
 
-    var score = scoreDateTime(text);
+    var score = __scoreDateTime(text);
     if (date.isToday())
       score *= .5;
     if (date.getHours() || date.getMinutes() || date.getSeconds())
@@ -151,7 +151,7 @@ var noun_type_time = {
     var date = Date.parse(text);
     if (!date) return [];
 
-    var score = scoreDateTime(text), now = Date.parse("now");
+    var score = __scoreDateTime(text), now = Date.parse("now");
     if (Math.abs(now - date) > 9) { // not "now"
       if (!now.isSameDay(date))
         score *= .7; // not "today"
@@ -173,7 +173,7 @@ var noun_type_date_time = {
     var date = Date.parse(text);
     if (!date) return [];
 
-    var score = scoreDateTime(text), now = Date.parse("now");
+    var score = __scoreDateTime(text), now = Date.parse("now");
     if (Math.abs(now - date) > 9) { // not "now"
       if (now.isSameDay(date))
         score *= .7; // "today"
@@ -193,21 +193,21 @@ var noun_type_date_time = {
 // http://blog.livedoor.jp/dankogai/archives/51190099.html
 // * {{{text, html}}} : email address
 
-const EMAIL_ATOM = "[\\w!#$%&'*+/=?^`{}~|-]+";
+const __EMAIL_ATOM = "[\\w!#$%&'*+/=?^`{}~|-]+";
+const __EMAIL_HOST = RegExp("^(?:" + __EMAIL_ATOM + "(?:\\." + __EMAIL_ATOM +
+                            ')*|(?:\\"(?:\\\\[^\\r\\n]|[^\\\\\\"])*\\"))@(' +
+                            __EMAIL_ATOM + "(?:\\." + __EMAIL_ATOM + ")*)$");
+const __EMAIL_USER =  RegExp("^(?:" + __EMAIL_ATOM + "(?:\\." + __EMAIL_ATOM +
+                             ')*|(?:\\"(?:\\\\[^\\r\\n]|[^\\\\\\"])*\\"))$');
 var noun_type_email = {
     label: "email",
     noExternalCalls: true,
     cacheTime: -1,
-    _email: RegExp("^(?:" + EMAIL_ATOM + "(?:\\." + EMAIL_ATOM +
-        ')*|(?:\\"(?:\\\\[^\\r\\n]|[^\\\\\\"])*\\"))@(' +
-        EMAIL_ATOM + "(?:\\." + EMAIL_ATOM + ")*)$"),
-    _username: RegExp("^(?:" + EMAIL_ATOM + "(?:\\." + EMAIL_ATOM +
-        ')*|(?:\\"(?:\\\\[^\\r\\n]|[^\\\\\\"])*\\"))$'),
     suggest: function nt_email_suggest(text, html, cb, selectionIndices) {
-        if (this._username.test(text))
+        if (__EMAIL_USER.test(text))
             return [CmdUtils.makeSugg(text, html, null, 0.3, selectionIndices)];
 
-        var match = text.match(this._email);
+        var match = text.match(__EMAIL_HOST);
         if (!match) return [];
 
         var domain = match[1];
@@ -216,6 +216,48 @@ var noun_type_email = {
         var score = /\.(?:\d+|[a-z]{2,})$/i.test(domain) ? 1 : 0.8;
 
         return [CmdUtils.makeSugg(text, html, null, score, selectionIndices)];
+    }
+};
+
+const __STORED_EMAIL_UUID = "--stored-email-items";
+var noun_type_stored_email = {
+    label: "email",
+    noExternalCalls: true,
+    cacheTime: -1,
+    suggest: function (text, html, cb, selectionIndices) {
+        Utils.makeBin(__STORED_EMAIL_UUID, bin => {
+            let textSugg;
+            let matcher = new RegExp(text, "i");
+            let contacts = bin.contacts();
+
+            let matchingItems = contacts.map(c => {return {email: c}}).filter(c => {
+                c.match = matcher.exec(c.email);
+                return !!c.match;
+            });
+
+            let contactSuggs = matchingItems.map(c =>
+                CmdUtils.makeSugg(c.email, null, null, CmdUtils.matchScore(c.match), selectionIndices));
+
+            if (__EMAIL_USER.test(text))
+                textSugg = CmdUtils.makeSugg(text, html, null, 0.3, selectionIndices);
+            else {
+                var match = text.match(__EMAIL_HOST);
+                if (match) {
+                    var domain = match[1];
+                    var score = /\.(?:\d+|[a-z]{2,})$/i.test(domain) ? 0.9 : 0.8;
+                    textSugg = CmdUtils.makeSugg(text, html, null, score, selectionIndices);
+                }
+            }
+
+            if (!textSugg)
+                 textSugg = CmdUtils.makeSugg(text, html, null, 0.2, selectionIndices);
+
+            contactSuggs.push(textSugg);
+
+            cb(contactSuggs);
+        });
+
+        return {};
     }
 };
 

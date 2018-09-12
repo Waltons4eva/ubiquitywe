@@ -40,7 +40,7 @@ function insertExampleStub() {
     help: "This text is displayed at the command list page.",
     timeout: 0,
     author: "Your Name",
-    icon: "http://example.com/favicon.ico",
+    icon: "http://example.com/favicon.png",
     //init: function({Bin}) {}, // called once on Ubiquity load
     //popup: function(doc /* popup document */, {Bin}) {}, // called every time when popup is opened
     preview: function(pblock, args, {Bin}) {

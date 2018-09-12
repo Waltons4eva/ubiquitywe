@@ -222,7 +222,7 @@ function ubiq_select_command(index) {
 }
 
 function ubiq_decorate_icon(icon) {
-    if (!icon || icon === "http://example.com/favicon.ico") {
+    if (!icon || icon === "http://example.com/favicon.png") {
         icon = 'res/icon-24.png';
     }
     icon = '<img src="' + icon + '" border="0" alt="" align="absmiddle"> ';
@@ -253,8 +253,10 @@ function ubiq_show_matching_commands(text) {
                 var suggestions_div = document.createElement('div');
                 var suggestions_list = document.createElement('ul');
 
-                if (ubiq_selected_sent && !ubiq_suggestions[ubiq_selected_command].equalCommands(ubiq_selected_sent))
+                if (ubiq_selected_sent && !ubiq_suggestions[ubiq_selected_command].equalCommands(ubiq_selected_sent)) {
+                    console.log("uuu");
                     ubiq_set_preview(ubiq_suggestions[ubiq_selected_command]._verb.cmd.description);
+                }
                 ubiq_show_preview(ubiq_suggestions[ubiq_selected_command]);
 
                 for (let i in ubiq_suggestions) {
