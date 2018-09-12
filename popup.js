@@ -253,8 +253,8 @@ function ubiq_show_matching_commands(text) {
                 var suggestions_div = document.createElement('div');
                 var suggestions_list = document.createElement('ul');
 
-                if (ubiq_selected_sent && !ubiq_suggestions[ubiq_selected_command].equalCommands(ubiq_selected_sent)) {
-                    console.log("uuu");
+                if (ubiq_selected_sent && !ubiq_suggestions[ubiq_selected_command].equalCommands(ubiq_selected_sent)
+                        || !ubiq_selected_sent) {
                     ubiq_set_preview(ubiq_suggestions[ubiq_selected_command]._verb.cmd.description);
                 }
                 ubiq_show_preview(ubiq_suggestions[ubiq_selected_command]);
