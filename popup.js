@@ -222,7 +222,7 @@ function ubiq_select_command(index) {
 }
 
 function ubiq_decorate_icon(icon) {
-    if (!icon) {
+    if (!icon || icon === "http://example.com/favicon.ico") {
         icon = 'res/icon-24.png';
     }
     icon = '<img src="' + icon + '" border="0" alt="" align="absmiddle"> ';

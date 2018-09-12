@@ -44,7 +44,26 @@ function insertExampleStub() {
     //init: function({Bin}) {}, // called once on Ubiquity load
     //popup: function(doc /* popup document */, {Bin}) {}, // called every time when popup is opened
     preview: function(pblock, args, {Bin}) {
-        pblock.innerHTML = "Your input is " + args.object.text + ".";
+    
+        if (/^https?:\\/\\/.*/.test(args.object.text))  
+            CmdUtils.previewAjax(pblock, {
+                url: args.object.text,
+                dataType: "html",
+                success: function(data) {
+                    if (data) {
+                        let html = data.substring(0, 500); 
+                        pblock.innerHTML = "Request response: <br>" + Utils.escapeHtml(html) + "...";
+                    }
+                    else
+                        pblock.innerHTML = "Response is empty.";
+                },
+                error: function() {
+                    pblock.innerHTML = "HTTP request error.";
+                }
+            });  
+        else
+            pblock.innerHTML = "Invalid URL.";
+            
     },
     execute: function(args, {Bin}) {
         CmdUtils.notify("Your input is: " + args.object.text);
