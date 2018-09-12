@@ -23,13 +23,16 @@ var __lingvoLiveAPIToken;
                 {role: "source", nountype: noun_type_lang_lingvo, label: "language"},
                 {role: "goal", nountype: noun_type_lang_lingvo, label: "language"}],
             /*---------------------------------------------------------------------------*/
-            description: "Translate words using Abbyy Lingvo online service.",
+            description: "Translate words using <a href='https://www.lingvolive.com/'>Abbyy Lingvo</a> online service.",
             /*---------------------------------------------------------------------------*/
-            help: "Type <i>lingvo</i> or <i>lingvo this</i> to translate the selection, "
-            + "type <i>lingvo</i> <b>words</b> to translate words.<br/>"
-            + "You can specify source and destination languages after <i>from</i> "
-            + "or <i>to</i> respectively, for example:"
-            + " <i>lingvo</i> <b>espoir</b> <i>from</i> <b>french</b> <i>to</i> <b>russian</b>",
+            help:
+                `<span class="syntax">Syntax</span><ul class="syntax"><li><b>lingvo</b> {[<b>this</b>] | [<i>words</i>]} <b>from</b> <i>language</i> <b>to</b> <i>language</i></li></ul>
+                   <span class="arguments">Arguments</span><br>
+                   <ul class="syntax"> 
+                       <li>- <b>from, to</b> - a valid language name supported by Lingvo</li>
+                   </ul>
+                    <span class="arguments">Example</span>
+                    <ul class="syntax"><li><b>lingvo</b> <i>espoir</i> <b>from</b> <i>french</i> <b>to</b> <i>russian</i></li></ul>`,
             /*---------------------------------------------------------------------------*/
             icon: "res/lingvo.png",
             /*---------------------------------------------------------------------------*/

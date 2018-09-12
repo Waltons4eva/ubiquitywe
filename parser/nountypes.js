@@ -194,7 +194,7 @@ var noun_type_date_time = {
 // * {{{text, html}}} : email address
 
 const __EMAIL_ATOM = "[\\w!#$%&'*+/=?^`{}~|-]+";
-const __EMAIL_HOST = RegExp("^(?:" + __EMAIL_ATOM + "(?:\\." + __EMAIL_ATOM +
+const __EMAIL_ADDRESS = RegExp("^(?:" + __EMAIL_ATOM + "(?:\\." + __EMAIL_ATOM +
                             ')*|(?:\\"(?:\\\\[^\\r\\n]|[^\\\\\\"])*\\"))@(' +
                             __EMAIL_ATOM + "(?:\\." + __EMAIL_ATOM + ")*)$");
 const __EMAIL_USER =  RegExp("^(?:" + __EMAIL_ATOM + "(?:\\." + __EMAIL_ATOM +
@@ -207,7 +207,7 @@ var noun_type_email = {
         if (__EMAIL_USER.test(text))
             return [CmdUtils.makeSugg(text, html, null, 0.3, selectionIndices)];
 
-        var match = text.match(__EMAIL_HOST);
+        var match = text.match(__EMAIL_ADDRESS);
         if (!match) return [];
 
         var domain = match[1];
@@ -226,35 +226,47 @@ var noun_type_stored_email = {
     cacheTime: -1,
     suggest: function (text, html, cb, selectionIndices) {
         Utils.makeBin(__STORED_EMAIL_UUID, bin => {
+            let contacts = bin.contacts();
+            if (!contacts)
+                contacts = [];
+
+            if (contacts.find(c => c.toLowerCase() === text.toLowerCase())) {
+                console.log("nya0");
+                cb([CmdUtils.makeSugg(text, html, null, 1, selectionIndices)]);
+                return;
+            }
+
+            console.log(text);
             let textSugg;
             let matcher = new RegExp(text, "i");
-            let contacts = bin.contacts();
 
-            let matchingItems = contacts.map(c => {return {email: c}}).filter(c => {
+
+            let matchingItems = contacts.map(c => ({email: c})).filter(c => {
                 c.match = matcher.exec(c.email);
                 return !!c.match;
             });
 
             let contactSuggs = matchingItems.map(c =>
-                CmdUtils.makeSugg(c.email, null, null, CmdUtils.matchScore(c.match), selectionIndices));
+                CmdUtils.makeSugg(c.email, c.email, null, CmdUtils.matchScore(c.match), selectionIndices));
 
-            if (__EMAIL_USER.test(text))
+            if (__EMAIL_USER.test(text)) {
                 textSugg = CmdUtils.makeSugg(text, html, null, 0.3, selectionIndices);
+            }
             else {
-                var match = text.match(__EMAIL_HOST);
+                var match = text.match(__EMAIL_ADDRESS);
                 if (match) {
                     var domain = match[1];
-                    var score = /\.(?:\d+|[a-z]{2,})$/i.test(domain) ? 0.9 : 0.8;
+                    var score = /\.(?:\d+|[a-z]{2,})$/i.test(domain) ? 1 : 0.8;
                     textSugg = CmdUtils.makeSugg(text, html, null, score, selectionIndices);
                 }
             }
 
-            if (!textSugg)
-                 textSugg = CmdUtils.makeSugg(text, html, null, 0.2, selectionIndices);
+            if (textSugg)
+                contactSuggs.push(textSugg);
 
-            contactSuggs.push(textSugg);
-
-            cb(contactSuggs);
+            if (contactSuggs.length > 0) {
+                cb(contactSuggs);
+            }
         });
 
         return {};

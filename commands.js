@@ -34,21 +34,28 @@ function fillTableCellForFeed(cell, feed, subtext) {
 }
 
 function formatMetaData(md) {
-    var authors = md.authors || md.author;
-    var contributors = md.contributors || md.contributor;
+    var contributors = md.contributors || (md.contributor? [md.contributor]: []);
+    var authors = md.authors || (md.author? [md.author]: []);
+
+    if (authors && contributors.length > 0)
+        authors = authors.concat(contributors);
+
+    if ( md.contributors)
+        console.log( md.contributors);
+
     var {license, homepage} = md;
-    function div(data, format, klass, lkey) {
+    function span(data, format, klass, lkey) {
         return !data ? "" : (
-        '<div class="' + klass + '">'
+        '<span class="' + klass + '">'
         + format(data) +
-        '</div>')
+        '</span>')
     };
     return (
-        '<div class="meta">' +
-        div(authors, formatAuthors, "author", "createdby") +
-        div(license, escapeHtml, "license", "license") +
-        div(contributors, formatAuthors, "contributors", "contributions") +
-        div(homepage, formatUrl, "homepage", "viewmoreinfo") +
+        '<div class="meta">' + (authors.length > 0? 'Authors: ': '') +
+        span(authors, formatAuthors, "author", "createdby") +
+        //div(license, escapeHtml, "license", "license") +
+        //span(contributors, formatAuthors, "contributors", "contributions") +
+        //div(homepage, formatUrl, "homepage", "viewmoreinfo") +
         '</div>');
 
 }
@@ -71,13 +78,13 @@ function formatAuthor(authorData) {
         authorMarkup += (
             '<a href="mailto:' + ee + '">' +
             ("name" in authorData ? escapeHtml(authorData.name) : ee) +
-            '</a> ');
+            '</a>');
     }
 
-    if ("homepage" in authorData) {
-        authorMarkup += ('[<a href="' + escapeHtml(authorData.homepage) +
-            '">' + "Homepage: " + '</a>]');
-    }
+    // if ("homepage" in authorData) {
+    //     authorMarkup += ('[<a href="' + escapeHtml(authorData.homepage) +
+    //         '">' + "Homepage: " + '</a>]');
+    // }
 
     return authorMarkup;
 }

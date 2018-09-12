@@ -70,7 +70,7 @@ CmdUtils.CreateCommand = function CreateCommand(options) {
     {
         let args = options.arguments || options.argument;
         if (!args)
-            args = options.arguments = [{role: "object", nountype: noun_arb_text, label: "text"}];
+            args = options.arguments = [];
         // handle simplified syntax
         if (typeof args.suggest === "function")
         // argument: noun

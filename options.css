@@ -435,3 +435,24 @@ div.ubiq-tutorial h2 {
 .setting-table {
     font-size: 13px;
 }
+
+ul.syntax {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 20px;
+    list-style: none;
+}
+
+ul.syntax li {
+    padding: 0;
+}
+
+span.syntax {
+    font-weight: 600;
+}
+
+span.arguments {
+    font-weight: 600;
+    display: inline-block;
+    margin-top: 10px;
+}

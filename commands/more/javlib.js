@@ -114,8 +114,7 @@
         uuid: "2464CA49-78EF-425E-8A49-ED5F5EA121D0",
         argument: [{role: "object", nountype: noun_arb_text, label: "movie code"}],
         description: "Search for movie information at <a href='http://javlibrary.com/en'>javlibrary</a>.",
-        help: `Syntax: <i>javlib</i> <b>movie code</b><br>
-               try: <i>javlib</i> <b>star-699</b>`,
+        help: `Try: <b>javlib</b> <i>star-699</i>`,
         icon: "commands/more/jav.png",
         builtIn: true,
         timeout: 1000,

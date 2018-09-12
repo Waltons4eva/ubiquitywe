@@ -42,7 +42,7 @@
     CmdUtils.CreateCommand({
         name: "translate",
         uuid: "43599939-571E-4EBF-AF64-8AD6F39C7B79",
-        description: "Translates from one language to another.",
+        description: "Translates from one language to another using <a href='https://www.bing.com/translator'>Bing Translator</a>.",
         _namespace: "Translation",
         icon: "res/translate_bing.ico",
         arguments: {
@@ -53,15 +53,16 @@
         builtIn: true,
         timeout: 1000,
         help:
-            `Type <i>translate</i> or <i>translate this</i> to translate the selection,
-            type <i>translate</i> <b>some text</b> to translate text.<br/>
-            You can specify source and destination languages after <i>from</i>
-            or <i>to</i> respectively, for example:
-            <i>translate</i> <b>mother</b> <i>from</i> <b>english</b> <i>to</i> <b>chinese</b><br>
-            It works on the selected text in any web page, but there is a limit (a couple of paragraphs)
+            `<span class="syntax">Syntax</span><ul class="syntax"><li><b>translate</b> {[<b>this</b>] | [<i>text</i>]} <b>from</b> <i>language</i> <b>to</b> <i>language</i></li></ul>
+                   <span class="arguments">Arguments</span><br>
+                   <ul class="syntax"> 
+                       <li>- <b>from, to</b> - a valid language name supported by Bing Translator</li>
+                   </ul>
+                    <span class="arguments">Example</span>
+                    <ul class="syntax"><li><b>translate</b> <i>mother</i> <b>from</b> <i>english</i> <b>to</b> <i>chinese</i></li></ul>
+            <p>It works on the selected text in any web page, but there is a limit (a couple of paragraphs)
             to how much it can translate at once.
-            If you want to translate a lot of text, use <i>translate-page</i> command instead.
-          `,
+            If you want to translate a lot of text, use <i>translate-page</i> command instead.</p>`,
         author: "satyr",
         execute: function translate_execute({object, goal, source}) {
             let from = "", to = "";

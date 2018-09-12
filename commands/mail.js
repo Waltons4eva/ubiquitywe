@@ -1,31 +1,56 @@
 CmdUtils.CreateCommand({
     name: "email",
     uuid: "65947074-CF99-4114-827E-0FC7CB348CE1",
-    arguments: [{role: "object",     nountype: noun_arb_text, label: "subject"},
-                {role: "goal",       nountype: noun_type_stored_email, label: "contact"},
-              //{role: "instrument", nountype: ["gmail"], label: "mail service",  default: "gmail"},
-                {role: "source",     nountype: noun_type_number, label: "user", default: 0},
+    arguments: [{role: "goal",   nountype: noun_type_stored_email, label: "contact"},
+                {role: "object", nountype: noun_arb_text, label: "body"},
+                {role: "source",   nountype: {primary: 0, secondary: 1}, label: "account"}
     ],
-    description: "Compose a email.",
-    help: "This text is displayed at the command list page.",
+    description: "Compose an email with the selection as body.",
+    help: `<span class="syntax">Syntax</span><ul class="syntax"><li><b>email</b> <b>this</b> <b>to</b> <i>email@address</i> <b>from</b> <i>account</i></li></ul>
+           <span class="arguments">Arguments</span><br>
+           <ul class="syntax">
+               <li>- <b>this</b> - a mandatory keyword used as a substitution for the selection, an arbitrary text may be used instead<br></li> 
+               <li>- <b>to</b> - recipient's address: a valid email address<br></li>
+               <li>- <b>from</b> - gmail account: {<b>primary</b>, <b>secondary</b>}<br></li>
+           </ul>
+           <span class="arguments">Example</span>
+           <ul class="syntax"><li><b>email</b> <b>this</b> <b>to</b> <i>user@example.com</i> <b>from</b> <i>secondary</i></li></ul>`,
     timeout: 0,
     builtIn: true,
     _namespace: "Mail",
     author: "g/christensen",
     icon: "res/email.png",
     preview: function(pblock, args, {Bin}) {
+        let desc = "Send ";
 
+        if (args.object && args.object.text)
+            desc += "\"" + args.object.summary + "\" ";
+        else
+            desc += "empty message ";
+
+        if (args.goal && args.goal.text)
+            desc += "to &lt;" + args.goal.text + "&gt; ";
+
+        if (args.source && args.source.text)
+            desc += "from the " + args.source.text + " account.";
+        else
+            desc += "from the primary account.";
+
+        pblock.innerHTML = desc;
     },
     execute: function(args, {Bin}) {
         let gmail = "https://mail.google.com/mail/u/"
         let gmail_compose = "?ui=2&view=cm";
 
-        let user = args.source && args.source.text? args.source.text: "0";
+        let user = args.source && args.source.data? args.source.data: "0";
 
         let url = gmail + user + "/" + gmail_compose;
 
+        // if (args.instrument && args.instrument.text)
+        //     url += "&su=" + encodeURIComponent(args.object.text);
+
         if (args.object.text)
-            url += "&su=" + encodeURIComponent(args.object.text);
+             url += "&body=" + encodeURIComponent(args.object.text);
 
         if (args.goal && args.goal.text) {
             url += "&to=" + encodeURIComponent(args.goal.text);
@@ -41,7 +66,77 @@ CmdUtils.CreateCommand({
             });
         }
 
-        // &body=...
+        CmdUtils.addTab(url);
+        CmdUtils.closePopup();
+    }
+});
+
+CmdUtils.CreateCommand({
+    name: "compose",
+    uuid: "2C25DC63-66E0-493D-B750-D33B55999EDB",
+    arguments: [{role: "object", nountype: noun_arb_text, label: "subject"},
+                {role: "goal", nountype: noun_type_stored_email, label: "contact"},
+                {role: "time",   nountype: {primary: 0, secondary: 1}, label: "account"}
+    ],
+    description: "Compose an empty email with the given subject.",
+    help: `<span class="syntax">Syntax</span><ul class="syntax"><li><b>compose</b> <i>message subject</i> <b>to</b> <i>email@address</i> <b>at</b> <i>account</i></li></ul>
+           <span class="arguments">Arguments</span><br>
+           <ul class="syntax"> 
+               <li>- <b>to</b> - recipient's address: a valid email address</li>
+               <li>- <b>at</b> - gmail account: {<b>primary</b>, <b>secondary</b>}<br></li>
+           </ul>
+           <span class="arguments">Example</span>
+           <ul class="syntax"><li><b>compose</b> <i>store order</i> <b>to</b> <i>user@example.com</i> <b>at</b> <i>secondary</i>`,
+    timeout: 0,
+    builtIn: true,
+    _namespace: "Mail",
+    author: "g/christensen",
+    icon: "res/email.png",
+    preview: function(pblock, args, {Bin}) {
+        let desc = "Compose email to ";
+
+        if (args.goal && args.goal.text)
+            desc += "&lt;" + args.goal.summary + "&gt; ";
+        else
+            desc += "nobody ";
+
+        if (args.object && args.object.text)
+            desc += "with subject: \"" + args.object.summary + "\" ";
+
+        if (args.time && args.time.text)
+            desc += "at the " + args.time.text + " account.";
+        else
+            desc += "at the primary account.";
+
+        pblock.innerHTML = desc;
+    },
+    execute: function(args, {Bin}) {
+        let gmail = "https://mail.google.com/mail/u/"
+        let gmail_compose = "?ui=2&view=cm";
+
+        let user = args.time && args.time.data? args.time.data: "0";
+
+        let url = gmail + user + "/" + gmail_compose;
+
+        if (args.object && args.object.text)
+             url += "&su=" + encodeURIComponent(args.object.text);
+
+        //if (args.object.text)
+        //    url += "&body=" + encodeURIComponent(args.object.text);
+
+        if (args.goal && args.goal.text) {
+            url += "&to=" + encodeURIComponent(args.goal.text);
+            Utils.makeBin(__STORED_EMAIL_UUID, bin => {
+                let contacts = bin.contacts();
+                if (!contacts)
+                    contacts = [];
+
+                if (!contacts.find(c => c.toLowerCase() === args.goal.text.toLowerCase())) {
+                    contacts.push(args.goal.text);
+                    bin.contacts(contacts);
+                }
+            });
+        }
 
         CmdUtils.addTab(url);
         CmdUtils.closePopup();
@@ -59,7 +154,11 @@ CmdUtils.CreateCommand({
     author: "g/christensen",
     icon: "res/forget-email.png",
     preview: function(pblock, args, {Bin}) {
-
+        if (args.object.text) {
+            pblock.innerHTML = "Forget " + args.object.text + ".";
+        }
+        else
+            pblock.innerHTML = this.description;
     },
     execute: function(args, {Bin}) {
         if (args.object.text)
@@ -83,16 +182,26 @@ CmdUtils.CreateCommand({
     uuid: "8CF164B7-1505-47BE-8DDD-7D1E3781ABF1",
     arguments: [{role: "object", nountype: noun_arb_text, label: "pattern"}],
     description: "Forget multiple emails at once.",
-    help: `Syntax: <i><u>forget-emails</u></i> <b>pattern</b><br>
-           Arguments:<br>
-           - <b>pattern</b>: <b>all</b> or a string/regular expression.`,
+    help: `<span class="syntax">Syntax</span><ul class="syntax"><li><b>forget-emails</b> {<b>all</b> | <i>pattern</i>}</li></ul>
+           <span class="arguments">Arguments</span><br>
+           <ul class="syntax"> 
+               <li>- <b>all</b> - forget all emails</li>
+               <li>- <i>pattern</i> - forget emails containing this string (may be a regular expression)</li>
+           </ul>`,
     timeout: 0,
     builtIn: true,
     _namespace: "Mail",
     author: "g/christensen",
     icon: "res/forget-email.png",
     preview: function(pblock, args, {Bin}) {
-
+        if (args.object.text) {
+            if (args.object.text.toLowerCase() === "all")
+                pblock.innerHTML = "Forget all emails.";
+            else
+                pblock.innerHTML = "Forget all emails containing \"" + args.object.text + "\".";
+        }
+        else
+            pblock.innerHTML = this.description;
     },
     execute: function(args, {Bin}) {
         if (args.object.text) {

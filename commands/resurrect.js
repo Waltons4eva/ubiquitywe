@@ -87,18 +87,21 @@
             /*---------------------------------------------------------------------------*/
             description: "Resurrect a dead page using Internet archiving services.",
             /*---------------------------------------------------------------------------*/
-            help: "Type <i>resurrect</i> to resurrect the page at the current tab, "
-            + "type <i>resurrect</i> <b>URL</b> to resurrect the specified URL.<br/>"
-            + "You can specify Internet archiving service after the <i>with</i> "
-            + "word, for example:<br/><br/>"
-            + " <i>resurrect</i> <b>en.beijing2008.cn</b> <i>with</i> <b>wayback machine list</b><br/><br/>"
-            + "Supported archiving services:<br/>"
-            + "- wayback machine latest<br/>"
-            + "- wayback machine list<br/>"
-            + "- google cache<br/>"
-            + "- google cache text only<br/>"
-            + "- coralcdn<br/>"
-            + "- webcite",
+            help: `<span class="syntax">Syntax</span><ul class="syntax"><li><b>resurrect</b> <i>URL</i> <b>with</b> <i>archiving service</i></li></ul>
+                   <span class="arguments">Arguments</span><br>
+                   <ul class="syntax"> 
+                       <li>- <b>with</b> - one of the following archiving services:
+                       <ul class="syntax">
+                            <li>- <i>wayback machine latest</i></li>
+                            <li>- <i>wayback machine list</i></li>
+                            <li>- <i>google cache</i></li>
+                            <li>- <i>google cache text only</i></li>
+                            <li>- <i>coralcdn</i></li>
+                            <li>- <i>webcite</i></li>
+                       </ul></li>
+                   </ul>
+                   <span class="arguments">Example</span>
+                   <ul class="syntax"><li><b>resurrect</b> <i>http://en.beijing2008.cn</i> <b>with</b> <i>wayback machine list</i></li></ul>`,
             /*---------------------------------------------------------------------------*/
             icon: resurrect_commandIcon,
             /*---------------------------------------------------------------------------*/

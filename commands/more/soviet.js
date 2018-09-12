@@ -10,12 +10,25 @@ CmdUtils.CreateCommand(
             {role: "modifier", nountype: ["football", "formula1"], label: "sport", default: "formula1"},
             {role: "format", nountype: ["premier", "first", "england"], label: "division", default: "premier"}],
         /*---------------------------------------------------------------------------*/
-        description: "Get latest soviet information about sport events.",
-        help: `Syntax: <i>soviet</i> <b>table</b> <i>of</i> <b>sport</b> <i>in</i> <b>division</b><br>
-            <b>sport</b>: {football, formula1}<br>
-            <b>table</b>: {position, schedule}<br>
-            <b>division</b> (football only): {premier, first, england}
-        `,
+        description: "Get the latest soviet information about sport events.",
+        help: `<span class="syntax">Syntax</span><ul class="syntax"><li><b>soviet</b> {<i>position</i> | <i>schedule</i>} <b>of</b> <i>sport</i> <b>in</b> <i>division</i></li></ul>
+                <span class="arguments">Arguments</span><br>
+                    <ul class="syntax">
+                    <li>- <b>of</b> - a name of sport:</li>
+                        <ul class="syntax">
+                           <li>- <i>football</i></li>
+                           <li>- <i>formula1</i></li>
+                        </ul></li>
+                    <li>- <b>in</b> - division (football only):
+                    <ul class="syntax">
+                           <li>- <i>premier</i></li>
+                           <li>- <i>first</i></li>
+                           <li>- <i>england</i></li>
+                        </ul></li>
+                    </ul>
+                <span class="arguments">Example</span>
+                <ul class="syntax"><li><b>soviet</b> <i>position</i> <b>of</b> <i>football</i> <b>in</b> <i>england</i></li></ul>`,
+
         timeout: 1000,
         builtIn: true,
         _hidden: true,
