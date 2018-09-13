@@ -11,7 +11,7 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
         icon: "res/google.png",
         description: "Searches Google for your words.",
         arguments: [{role: "object", nountype: noun_arb_text, label: "query"}],
-        timeout: 1000,
+        previewDelay: 1000,
         help: "You can use the keyboard shortcut ctrl + alt + number to open one " +
         "of the Google results shown in the preview.",
         parser: {
@@ -30,7 +30,7 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
         _namespace: "Search",
         builtIn: true,
         arguments: [{role: "object", nountype: noun_arb_text, label: "query"}],
-        timeout: 1000,
+        previewDelay: 1000,
         icon: "res/bing.png",
         parser: {
             container: ".b_algo",
@@ -48,7 +48,7 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
         _namespace: "Search",
         builtIn: true,
         arguments: [{role: "object", nountype: noun_arb_text, label: "query"}],
-        timeout: 1000,
+        previewDelay: 1000,
         icon: "res/imdb.png",
         parser: {
             container  : ".findResult",
@@ -68,7 +68,7 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
         _namespace: "Search",
         builtIn: true,
         arguments: [{role: "object", nountype: noun_arb_text, label: "query"}],
-        timeout: 1000,
+        previewDelay: 1000,
         preview: function(pblock, {object: {text, summary}}) {
             if (!text) return void this.previewDefault(pblock);
 
@@ -118,7 +118,7 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
         arguments: [{role: "object", nountype: noun_arb_text, label: "query"}],
         _namespace: "Search",
         builtIn: true,
-        timeout: 1000,
+        previewDelay: 1000,
         author: {name: "Federico Parodi", email: "getimages@jimmy2k.it"},
         contributor: "satyr",
         homepage: "http://www.jimmy2k.it/getimagescommand",
@@ -260,7 +260,7 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
             {role: "format", nountype: noun_type_lang_wikipedia}],
         _namespace: "Search",
         builtIn: true,
-        timeout: 1000,
+        previewDelay: 1000,
         homepage: "http://theunfocused.net/moz/ubiquity/verbs/",
         author: {name: "Blair McBride", email: "blair@theunfocused.net"},
         contributors: ["Viktor Pyatkovka"],
@@ -374,7 +374,7 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
         description: "Shows a location on the map.",
         icon: "res/google.png",
         builtIn: true,
-        timeout: 500,
+        previewDelay: 1000,
         requirePopup: "https://maps.googleapis.com/maps/api/js?sensor=false",
         argument: [{role: "object", nountype: noun_arb_text, label: "query"}],
         preview: async function mapsPreview(previewBlock, args) {

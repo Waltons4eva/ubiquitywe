@@ -28,7 +28,8 @@
     }
 
     function msTranslator(method, params, back) {
-        params.appId = CmdUtils.microsoftTranslatorAppId || ("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+ new Date % 10);
+        params.appId = CmdUtils.microsoftTranslatorAppId;
+        console.log(params.appId);
         $.ajax({
             url: "http://api.microsofttranslator.com/V2/Ajax.svc/" + method,
             data: params,
@@ -51,7 +52,7 @@
             goal: noun_type_lang_microsoft
         },
         builtIn: true,
-        timeout: 1000,
+        previewDelay: 1000,
         help:
             `<span class="syntax">Syntax</span>
             <ul class="syntax">

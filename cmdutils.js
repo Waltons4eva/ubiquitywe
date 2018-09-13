@@ -341,7 +341,8 @@ CmdUtils.createContextMenu = function() {
                                     Utils.callPersistent(sent._verb.cmd.uuid, sent, sent.execute);
                                     if (CmdUtils.rememberContextMenuCommands)
                                         CmdUtils.commandHistoryPush(contextMenuCmdData.command);
-                                    parser.strengthenMemory(sent);
+                                    if (CmdUtils.DEBUG)
+                                        parser.strengthenMemory(sent);
                                 }
                                 else
                                     CmdUtils.deblog("Context menu command/parser result mismatch")
@@ -851,7 +852,7 @@ CmdUtils.makeSearchCommand.preview = function searchPreview(pblock, {object: {te
         if (parser.log) parser.log(results, "results");
         for (let k of parser.plain || [])
             for (let r of results) r[k] = r[k] && Utils.escapeHtml(r[k]);
-        var list = "", i = 0, max = parser.maxResults || 4;
+        var list = "", i = 0, max = parser.maxResults || 10;
         for (let {title, href, body, thumbnail} of results) if (title) {
             if (href) {
                 let key = i + 1;

@@ -117,7 +117,7 @@
         help: `Try: <b>javlib</b> <i>star-699</i>`,
         icon: "commands/more/jav.png",
         builtIn: true,
-        timeout: 1000,
+        previewDelay: 1000,
         _hidden: true,
         _namespace: NS_MORE_COMMANDS,
         execute: function execute({object: {text}}) {

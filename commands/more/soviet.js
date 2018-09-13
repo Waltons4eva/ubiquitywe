@@ -36,7 +36,7 @@ CmdUtils.CreateCommand(
                     <li><b>soviet</b> <i>position</i> <b>of</b> <i>football</i> <b>in</b> <i>england</i></li>
                 </ul>`,
 
-        timeout: 1000,
+        previewDelay: 1000,
         builtIn: true,
         _hidden: true,
         _namespace: NS_MORE_COMMANDS,

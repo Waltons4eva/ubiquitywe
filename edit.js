@@ -40,11 +40,11 @@ function insertExampleStub() {
     ],
     description: "A short description of your command.",
     help: "This text is displayed at the command list page.",
-    timeout: 1000,
     author: "Your Name",
     icon: "http://example.com/favicon.png",
-    //init: function({Bin}) {}, // called once on Ubiquity load
-    //popup: function(doc /* popup document */, {Bin}) {}, // called every time when popup is opened
+    previewDelay: 1000,
+    //init: function({Bin}) {},
+    //popup: function(doc /* popup document */, {Bin}) {},
     preview: function(pblock, args, {Bin}) {
     
         if (/^https?:\\/\\/.*/.test(args.object.text))  
@@ -79,8 +79,8 @@ function insertExampleStub() {
     url: "http://www.example.com/find?q=%s",
     defaultUrl: "http://www.example.com",
     arguments: [{role: "object", nountype: noun_arb_text, label: "query"}],
-    timeout: 1000,
     icon: "res/icon-24.png",
+    previewDelay: 1000,
     parser: {
         container  : ".css > .selector", // result item container
         title      : ".css > .selector", // result item title

@@ -2,7 +2,7 @@
 
 A natural language interface for web browsers.
 
-[DOWNLOAD (Firefox Add-On)](https://github.com/GChristensen/ubichr/releases/download/v0.2.0.18/ubiquity_webeextension.xpi) :: [VIDEO MANUAL](https://youtu.be/0YTyZiIHR0o)
+[DOWNLOAD (Firefox Add-On)](https://github.com/GChristensen/ubichr/releases/download/v0.2.1.5/ubiquity_webeextension.xpi) :: [VIDEO MANUAL](https://youtu.be/yx7x5ASMPq4)
 
 ![screen](screen.png?raw=true)
 
@@ -177,7 +177,7 @@ in your commands.
 >> Use **this.previewDefault(pblock)** to set the default preview.
 >> If your command takes arguments (see above), your preview method will
 >> be passed the dictionary as the second argument.
->> * **timeout** - pecifies the amount in time, in
+>> * **previewDelay** - pecifies the amount in time, in
 >> milliseconds, to wait before calling the preview function defined
 >> in **options.preview**. If the user presses a key before this
 >> amount of time has passed, then the preview function isn't
@@ -303,7 +303,7 @@ in your commands.
 NounType system of the original Ubiquity parser is a powerful tool which allows to
 add dynamic things (such as the set of current tabs) to parser suggestion list and command
 arguments.
-See noun_type_tabs for an example.
+[See](https://github.com/GChristensen/ubichr/blob/master/parser/nountypes.js) noun_type_tabs for an example.
 
 Currently, the following noun types are built-in into UbiquityWE:
 
@@ -318,9 +318,22 @@ JavaScript's Date constructor.
 * **noun_type_lang_wikipedia** - language name/code pairs, supported by Wikipedia.
 * **noun_type_lang_microsoft** - language name/code pairs, supported by Bing Translator.
 
+#### Debug mode
+
+Debug mode allows to live-edit UbiquityWE settings as text, which may be useful if you
+need to transfer Ubiquity settings between Firefox profiles. To enter tebug mode type
+
+`debug mode on` 
+
+in the command line and press Enter. Similarly, type
+
+`debug mode off`
+
+to exit it.
+
 #### TODO
 
-* Design a component archichecture for UbiquityWE.
+* Redesign/refactor UbiquityWE in component-based architecture.
 * Ubiquity Touch: add a popup near the page text selection a la Oxford Dictionary one to execute predefined 
 commands with set arguments on the selection (useful for various dictionary/clipping apps 
 on touch devices).

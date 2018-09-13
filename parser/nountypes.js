@@ -231,12 +231,10 @@ var noun_type_stored_email = {
                 contacts = [];
 
             if (contacts.find(c => c.toLowerCase() === text.toLowerCase())) {
-                console.log("nya0");
                 cb([CmdUtils.makeSugg(text, html, null, 1, selectionIndices)]);
                 return;
             }
 
-            console.log(text);
             let textSugg;
             let matcher = new RegExp(text, "i");
 

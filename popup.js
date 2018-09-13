@@ -127,9 +127,9 @@ function ubiq_help() {
     var html = "<div id='ubiq-help-wrapper'><p>Type the name of a command and press Enter to execute it. "
         + "Use <b>help</b> command for assistance.</p>";
     html += "<p>";
-    html += "<div class='ubiq-help-heading'>Keys</div>";
+    html += "<div class='ubiq-help-heading'>Keyboard Shortcuts</div>";
     html += "<span class='keys'>Ctrl+C</span> - copy preview to clipboard<br>";
-    html += "<span class='keys'>Ctrl+Alt+Enter</span> - add command to context menu<br>";
+    html += "<span class='keys'>Ctrl+Alt+Enter</span> - add selected command to context menu<br>";
     html += "<span class='keys'>Ctrl+Alt+\\</span> - open command history<br>";
     html += "<span class='keys'>Ctrl+Alt+&ltkey&gt;</span> - select list item prefixed with &ltkey&gt;<br>";
     html += "<span class='keys'>&#8593;/&#8595;</span> - cycle through command suggestions<br>";
@@ -465,6 +465,6 @@ $(window).on('unload', function() {
     CmdUtils.selectedText = "";
     CmdUtils.selectedHtml = "";
     CmdUtils.commandHistoryPush(ubiq_get_input());
-    if (ubiq_selected_sent)
+    if (CmdUtils.DEBUG && ubiq_selected_sent)
         NLParser.instance.strengthenMemory(ubiq_selected_sent);
 });

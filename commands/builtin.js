@@ -8,7 +8,7 @@ CmdUtils.CreateCommand({
     builtIn: true,
     _namespace: "Ubiquity", // do not set this field in custom commands
     description: "Takes you to the Ubiquity command <a href=options.html target=_blank>settings page</a>.",
-    execute: function () {
+    execute: function() {
         CmdUtils.addTab("options.html");
     }
 });
@@ -21,7 +21,7 @@ CmdUtils.CreateCommand({
     _namespace: "Ubiquity",
     builtIn: true,
     preview: "Lists all available commands",
-    execute: CmdUtils.SimpleUrlBasedCommand("commands.html")
+    execute: function() {CmdUtils.addTab("commands.html")}
 });
 
 CmdUtils.CreateCommand({
@@ -31,7 +31,7 @@ CmdUtils.CreateCommand({
     _namespace: "Ubiquity",
     builtIn: true,
     description: "Takes you to the Ubiquity command <a href=edit.html target=_blank>editor page</a>.",
-    execute: function () {
+    execute: function() {
         CmdUtils.addTab("edit.html");
     }
 });
@@ -44,7 +44,7 @@ CmdUtils.CreateCommand({
     icon: "res/arrow_refresh.png",
     builtIn: true,
     preview: "Reloads Ubiquity extension.",
-    execute: ()=>{
+    execute: function() {
         chrome.runtime.reload();
     }
 });
@@ -58,7 +58,7 @@ CmdUtils.CreateCommand({
     builtIn: true,
     icon: "res/debug.png",
     preview: "Debug the popup window in a separate tab.",
-    execute: CmdUtils.SimpleUrlBasedCommand("popup.html")
+    execute: function() {CmdUtils.addTab("popup.html")}
 });
 
 CmdUtils.CreateCommand({
@@ -66,7 +66,7 @@ CmdUtils.CreateCommand({
     uuid: "24616A75-C995-439B-B6F4-F3ED72662C89",
     argument: [{role: "object", nountype: noun_type_tab, label: "tab title or URL"}],
     description: "Switches to the tab whose title or URL matches the input.",
-    timeout: 100,
+    previewDelay: 100,
     _namespace: "Browser",
     icon: "res/tab_go.png",
     builtIn: true,
@@ -81,7 +81,7 @@ CmdUtils.CreateCommand({
     uuid: "26CCB2AC-053B-4C33-91AF-5C1C669901B5",
     argument: [{role: "object", nountype: noun_type_tab, label: "tab title or URL"}],
     description: "Closes the tab whose title or URL matches the input or the current tab if no tab matches.",
-    timeout: 100,
+    previewDelay: 100,
     _namespace: "Browser",
     icon: "res/tab_delete.png",
     builtIn: true,
@@ -98,7 +98,7 @@ CmdUtils.CreateCommand({
     uuid: "FA80916D-08ED-4E97-AF35-5BE34A9ECA00",
     argument: [{role: "object", nountype: noun_arb_text, label: "tab title or URL"}],
     description: "Closes all open tabs that have the given word in common.",
-    timeout: 100,
+    previewDelay: 100,
     _namespace: "Browser",
     icon: "res/tab_delete.png",
     builtIn: true,
