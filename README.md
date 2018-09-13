@@ -2,7 +2,7 @@
 
 A natural language interface for web browsers.
 
-[DOWNLOAD (Firefox Add-On)](https://github.com/GChristensen/ubichr/releases/download/v0.2.1.5/ubiquity_webeextension.xpi) :: [VIDEO MANUAL](https://youtu.be/yx7x5ASMPq4)
+[DOWNLOAD (Firefox Add-On)](https://github.com/GChristensen/ubichr/releases/download/v0.2.1.6/ubiquity_webeextension.xpi) :: [VIDEO MANUAL](https://youtu.be/8GAibcDncOc)
 
 ![screen](screen.png?raw=true)
 

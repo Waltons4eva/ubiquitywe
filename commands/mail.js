@@ -3,7 +3,7 @@ CmdUtils.CreateCommand({
     uuid: "65947074-CF99-4114-827E-0FC7CB348CE1",
     arguments: [{role: "object", nountype: noun_arb_text, label: "body"},
                 {role: "goal",   nountype: noun_type_stored_email, label: "contact"},
-                {role: "source",   nountype: {primary: 0, secondary: 1}, label: "account"}
+                {role: "source",   nountype: {default: 0, secondary: 1}, label: "account"}
     ],
     description: "Compose an email with the selection as body.",
     help: `<span class="syntax">Syntax</span>
@@ -15,7 +15,7 @@ CmdUtils.CreateCommand({
                 <li>- <b>this</b> - mandatory keyword used as substitution for the selection, an arbitrary text may be used
                     instead<br></li>
                 <li>- <b>to</b> - recipient's address: a valid email address<br></li>
-                <li>- <b>from</b> - gmail account: {<b>primary</b>, <b>secondary</b>}<br></li>
+                <li>- <b>from</b> - gmail account: {<b>default</b>, <b>secondary</b>}<br></li>
             </ul>
             <span class="arguments">Example</span>
             <ul class="syntax">
@@ -39,7 +39,7 @@ CmdUtils.CreateCommand({
         if (args.source && args.source.text)
             desc += "from the " + args.source.text + " account.";
         else
-            desc += "from the primary account.";
+            desc += "from the default account.";
 
         pblock.innerHTML = desc;
     },
@@ -80,7 +80,7 @@ CmdUtils.CreateCommand({
     uuid: "2C25DC63-66E0-493D-B750-D33B55999EDB",
     arguments: [{role: "object", nountype: noun_arb_text, label: "subject"},
                 {role: "goal", nountype: noun_type_stored_email, label: "contact"},
-                {role: "time",   nountype: {primary: 0, secondary: 1}, label: "account"}
+                {role: "time",   nountype: {default: 0, secondary: 1}, label: "account"}
     ],
     description: "Compose an empty email with the given subject.",
     help: `<span class="syntax">Syntax</span>
@@ -90,7 +90,7 @@ CmdUtils.CreateCommand({
             <span class="arguments">Arguments</span><br>
             <ul class="syntax">
                 <li>- <b>to</b> - recipient's address: a valid email address</li>
-                <li>- <b>at</b> - gmail account: {<b>primary</b>, <b>secondary</b>}<br></li>
+                <li>- <b>at</b> - gmail account: {<b>default</b>, <b>secondary</b>}<br></li>
             </ul>
             <span class="arguments">Example</span>
             <ul class="syntax">
@@ -113,7 +113,7 @@ CmdUtils.CreateCommand({
         if (args.time && args.time.text)
             desc += "at the " + args.time.text + " account.";
         else
-            desc += "at the primary account.";
+            desc += "at the default account.";
 
         pblock.innerHTML = desc;
     },
