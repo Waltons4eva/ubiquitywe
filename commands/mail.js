@@ -1,18 +1,18 @@
 CmdUtils.CreateCommand({
     name: "email",
     uuid: "65947074-CF99-4114-827E-0FC7CB348CE1",
-    arguments: [{role: "goal",   nountype: noun_type_stored_email, label: "contact"},
-                {role: "object", nountype: noun_arb_text, label: "body"},
+    arguments: [{role: "object", nountype: noun_arb_text, label: "body"},
+                {role: "goal",   nountype: noun_type_stored_email, label: "contact"},
                 {role: "source",   nountype: {primary: 0, secondary: 1}, label: "account"}
     ],
     description: "Compose an email with the selection as body.",
     help: `<span class="syntax">Syntax</span>
             <ul class="syntax">
-                <li><b>email</b> <b>this</b> <b>to</b> <i>email@address</i> <b>from</b> <i>account</i></li>
+                <li><b>email</b> <b>this</b> <b>to</b> <i>email@address</i> [<b>from</b> <i>account</i>]</li>
             </ul>
             <span class="arguments">Arguments</span><br>
             <ul class="syntax">
-                <li>- <b>this</b> - a mandatory keyword used as a substitution for the selection, an arbitrary text may be used
+                <li>- <b>this</b> - mandatory keyword used as substitution for the selection, an arbitrary text may be used
                     instead<br></li>
                 <li>- <b>to</b> - recipient's address: a valid email address<br></li>
                 <li>- <b>from</b> - gmail account: {<b>primary</b>, <b>secondary</b>}<br></li>
@@ -87,7 +87,7 @@ CmdUtils.CreateCommand({
     description: "Compose an empty email with the given subject.",
     help: `<span class="syntax">Syntax</span>
             <ul class="syntax">
-                <li><b>compose</b> <i>message subject</i> <b>to</b> <i>email@address</i> <b>at</b> <i>account</i></li>
+                <li><b>compose</b> <i>message subject</i> <b>to</b> <i>email@address</i> [<b>at</b> <i>account</i>]</li>
             </ul>
             <span class="arguments">Arguments</span><br>
             <ul class="syntax">

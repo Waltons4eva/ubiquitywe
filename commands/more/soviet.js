@@ -13,7 +13,7 @@ CmdUtils.CreateCommand(
         description: "Get the latest soviet information about sport events.",
         help: `<span class="syntax">Syntax</span>
                 <ul class="syntax">
-                    <li><b>soviet</b> {<i>position</i> | <i>schedule</i>} <b>of</b> <i>sport</i> <b>in</b> <i>division</i></li>
+                    <li><b>soviet</b> {<b>position</b> | <b>schedule</b>} <b>of</b> <i>sport</i> [<b>in</b> <i>division</i>]</li>
                 </ul>
                 <span class="arguments">Arguments</span><br>
                 <ul class="syntax">

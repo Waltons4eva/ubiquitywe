@@ -87,7 +87,7 @@
             /*---------------------------------------------------------------------------*/
             description: "Resurrect a dead page using Internet archiving services.",
             /*---------------------------------------------------------------------------*/
-            help: `<span class="syntax">Syntax</span><ul class="syntax"><li><b>resurrect</b> <i>URL</i> <b>with</b> <i>archiving service</i></li></ul>
+            help: `<span class="syntax">Syntax</span><ul class="syntax"><li><b>resurrect</b> [<i>URL</i>] [<b>with</b> <i>archiving service</i>]</li></ul>
                    <span class="arguments">Arguments</span><br>
                    <ul class="syntax"> 
                        <li>- <b>with</b> - one of the following archiving services:

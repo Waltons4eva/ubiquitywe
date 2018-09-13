@@ -23,6 +23,13 @@ if (!CmdUtils) var CmdUtils = {
 
 var _ = a => a;
 
+
+var _ = function(x, data) {
+    return data
+        ? TrimPath.parseTemplate(x).process(data, {keepWhitespace: true})
+        : x
+};
+
 var H = Utils.escapeHtml;
 
 // stub for original ubiquity string formatter
@@ -91,7 +98,7 @@ CmdUtils.CreateCommand = function CreateCommand(options) {
 
     options._preview = options.preview;
 
-    var to = parseFloat(options.timeout || 0);
+    var to = parseFloat(options.timeout || options.previewDelay);
     if (to > 0) {
     	if (typeof options._preview === 'function') {
 			options.preview = function(pblock) {
@@ -232,15 +239,8 @@ CmdUtils.getLocation = function getLocation() {
 };
 
 // opens new tab with provided url
-Utils.openUrlInBrowser = CmdUtils.addTab = function addTab(url) {
-	if (typeof browser !== 'undefined') {
-		chrome.tabs.create({ "url": url });
-	} else 
-	if (typeof chrome !== 'undefined' && typeof chrome.tabs !== 'undefined') {
-		chrome.tabs.create({ "url": url });
-	} else {
-		window.open(url);
-	}
+Utils.openUrlInBrowser = CmdUtils.addTab = function addTab(url, callback) {
+    chrome.tabs.create({ "url": url }, tab => {if (callback) callback(tab)});
 };
 
 // opens new tab with post request and provided data
@@ -521,11 +521,11 @@ CmdUtils.updateActiveTab = function (callback) {
         }
 };
 
-CmdUtils.getSelection = () => CmdUtils.selectedText;
-CmdUtils.getHtmlSelection = () => CmdUtils.selectedHtml;
+ContextUtils.getSelection = CmdUtils.getSelection = () => CmdUtils.selectedText;
+ContextUtils.getHtmlSelection = CmdUtils.getHtmlSelection = () => CmdUtils.selectedHtml;
 
 // replaces current selection with string provided
-CmdUtils.setSelection = function setSelection(s) {
+ContextUtils.setSelection = CmdUtils.setSelection = function setSelection(s) {
     //console.log("CmdUtils.setSelection"+s)
     if (typeof s!=='string') s = s+'';
     s = s.replace(/(['"])/g, "\\$1");

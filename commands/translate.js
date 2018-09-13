@@ -55,7 +55,7 @@
         help:
             `<span class="syntax">Syntax</span>
             <ul class="syntax">
-                <li><b>translate</b> {[<b>this</b>] | [<i>text</i>]} <b>from</b> <i>language</i> <b>to</b> <i>language</i></li>
+                <li><b>translate</b> {[<b>this</b>] | <i>text</i>} [<b>from</b> <i>language</i>] [<b>to</b> <i>language</i>]</li>
             </ul>
             <span class="arguments">Arguments</span><br>
             <ul class="syntax">
