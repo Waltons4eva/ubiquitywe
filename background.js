@@ -57,6 +57,10 @@ Utils.getPref("microsoftTranslatorAppId", microsoftTranslatorAppId => {
         CmdUtils.microsoftTranslatorAppId = microsoftTranslatorAppId;
 });
 
+Utils.getPref("suggestionMemory", suggestionMemory => {
+    CmdUtils.suggestionMemory = suggestionMemory || {__proto__: null};
+});
+
 Utils.getPref("contextMenuCommands", contextMenuCommands => {
     if (contextMenuCommands)
         CmdUtils.ContextMenuCommands = contextMenuCommands;

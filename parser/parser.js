@@ -305,7 +305,7 @@ NLParser = {};
                 plugin.pronouns = parser.anaphora.map(a =>
                     RegExp(a.replace(/\W/g, "\\$&").replace(/^\b|\b$/g, "\\b"), "i"))
             }
-            return new Parser(verbList, plugin, ContextUtils, new SuggestionMemory())
+            return new Parser(verbList, plugin, ContextUtils, new SuggestionMemory("main_parser"));
         };
 
     // ParserQuery: An object that wraps a request to the parser for suggestions

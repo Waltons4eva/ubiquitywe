@@ -463,4 +463,7 @@ $(window).on('load', function() {
 $(window).on('unload', function() {
     CmdUtils.selectedText = "";
     CmdUtils.selectedHtml = "";
+    CmdUtils.commandHistoryPush(ubiq_get_input());
+    if (ubiq_selected_sent)
+        NLParser.instance.strengthenMemory(ubiq_selected_sent);
 });

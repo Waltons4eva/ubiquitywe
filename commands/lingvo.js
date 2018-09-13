@@ -26,13 +26,18 @@ var __lingvoLiveAPIToken;
             description: "Translate words using <a href='https://www.lingvolive.com/'>Abbyy Lingvo</a> online service.",
             /*---------------------------------------------------------------------------*/
             help:
-                `<span class="syntax">Syntax</span><ul class="syntax"><li><b>lingvo</b> {[<b>this</b>] | [<i>words</i>]} <b>from</b> <i>language</i> <b>to</b> <i>language</i></li></ul>
-                   <span class="arguments">Arguments</span><br>
-                   <ul class="syntax"> 
-                       <li>- <b>from, to</b> - a valid language name supported by Lingvo</li>
-                   </ul>
-                    <span class="arguments">Example</span>
-                    <ul class="syntax"><li><b>lingvo</b> <i>espoir</i> <b>from</b> <i>french</i> <b>to</b> <i>russian</i></li></ul>`,
+                `<span class="syntax">Syntax</span>
+                <ul class="syntax">
+                    <li><b>lingvo</b> {[<b>this</b>] | [<i>words</i>]} <b>from</b> <i>language</i> <b>to</b> <i>language</i></li>
+                </ul>
+                <span class="arguments">Arguments</span><br>
+                <ul class="syntax">
+                    <li>- <b>from, to</b> - a valid language name supported by Lingvo</li>
+                </ul>
+                <span class="arguments">Example</span>
+                <ul class="syntax">
+                    <li><b>lingvo</b> <i>espoir</i> <b>from</b> <i>french</i> <b>to</b> <i>russian</i></li>
+                </ul>`,
             /*---------------------------------------------------------------------------*/
             icon: "res/lingvo.png",
             /*---------------------------------------------------------------------------*/

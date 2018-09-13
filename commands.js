@@ -50,13 +50,9 @@ function formatMetaData(md) {
         + format(data) +
         '</span>')
     };
-    return (
-        '<div class="meta">' + (authors.length > 0? 'Authors: ': '') +
-        span(authors, formatAuthors, "author", "createdby") +
-        //div(license, escapeHtml, "license", "license") +
-        //span(contributors, formatAuthors, "contributors", "contributions") +
-        //div(homepage, formatUrl, "homepage", "viewmoreinfo") +
-        '</div>');
+    return ('<div class="meta">' + (authors.length > 0? 'Authors: ': '') +
+             span(authors, formatAuthors, "author", "createdby") +
+            '</div>');
 
 }
 
@@ -80,12 +76,6 @@ function formatAuthor(authorData) {
             ("name" in authorData ? escapeHtml(authorData.name) : ee) +
             '</a>');
     }
-
-    // if ("homepage" in authorData) {
-    //     authorMarkup += ('[<a href="' + escapeHtml(authorData.homepage) +
-    //         '">' + "Homepage: " + '</a>]');
-    // }
-
     return authorMarkup;
 }
 
@@ -118,9 +108,8 @@ function fillTableRowForCmd(row, cmd, className) {
         [cmd.disabled ? "removeAttr" : "attr"]("checked", "checked"));
 
     var cmdElement = jQuery(
-        '<td class="command">' +
-        (!("icon" in cmd) ? "" :
-            '<img class="favicon" src="' + escapeHtml(cmd.icon) + '"/>') +
+        '<td class="command"><img class="favicon" src="'
+        + escapeHtml((!("icon" in cmd) || cmd["icon"] === "http://example.com/favicon.png")? "res/icon-24.png": cmd.icon) + '"/>' +
         ('<a class="id" name="' + escapeHtml(cmd.id) + '"/>' +
             '<span class="name">' + escapeHtml(name) + '</span>') +
         '<span class="description"></span>' +

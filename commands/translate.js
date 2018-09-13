@@ -53,16 +53,21 @@
         builtIn: true,
         timeout: 1000,
         help:
-            `<span class="syntax">Syntax</span><ul class="syntax"><li><b>translate</b> {[<b>this</b>] | [<i>text</i>]} <b>from</b> <i>language</i> <b>to</b> <i>language</i></li></ul>
-                   <span class="arguments">Arguments</span><br>
-                   <ul class="syntax"> 
-                       <li>- <b>from, to</b> - a valid language name supported by Bing Translator</li>
-                   </ul>
-                    <span class="arguments">Example</span>
-                    <ul class="syntax"><li><b>translate</b> <i>mother</i> <b>from</b> <i>english</i> <b>to</b> <i>chinese</i></li></ul>
+            `<span class="syntax">Syntax</span>
+            <ul class="syntax">
+                <li><b>translate</b> {[<b>this</b>] | [<i>text</i>]} <b>from</b> <i>language</i> <b>to</b> <i>language</i></li>
+            </ul>
+            <span class="arguments">Arguments</span><br>
+            <ul class="syntax">
+                <li>- <b>from, to</b> - a valid language name supported by Bing Translator</li>
+            </ul>
+            <span class="arguments">Example</span>
+            <ul class="syntax">
+                <li><b>translate</b> <i>mother</i> <b>from</b> <i>english</i> <b>to</b> <i>chinese</i></li>
+            </ul>
             <p>It works on the selected text in any web page, but there is a limit (a couple of paragraphs)
-            to how much it can translate at once.
-            If you want to translate a lot of text, use <i>translate-page</i> command instead.</p>`,
+                to how much it can translate at once.
+                If you want to translate a lot of text, use <i>translate-page</i> command instead.</p>`,
         author: "satyr",
         execute: function translate_execute({object, goal, source}) {
             let from = "", to = "";

@@ -6,15 +6,21 @@ CmdUtils.CreateCommand({
                 {role: "source",   nountype: {primary: 0, secondary: 1}, label: "account"}
     ],
     description: "Compose an email with the selection as body.",
-    help: `<span class="syntax">Syntax</span><ul class="syntax"><li><b>email</b> <b>this</b> <b>to</b> <i>email@address</i> <b>from</b> <i>account</i></li></ul>
-           <span class="arguments">Arguments</span><br>
-           <ul class="syntax">
-               <li>- <b>this</b> - a mandatory keyword used as a substitution for the selection, an arbitrary text may be used instead<br></li> 
-               <li>- <b>to</b> - recipient's address: a valid email address<br></li>
-               <li>- <b>from</b> - gmail account: {<b>primary</b>, <b>secondary</b>}<br></li>
-           </ul>
-           <span class="arguments">Example</span>
-           <ul class="syntax"><li><b>email</b> <b>this</b> <b>to</b> <i>user@example.com</i> <b>from</b> <i>secondary</i></li></ul>`,
+    help: `<span class="syntax">Syntax</span>
+            <ul class="syntax">
+                <li><b>email</b> <b>this</b> <b>to</b> <i>email@address</i> <b>from</b> <i>account</i></li>
+            </ul>
+            <span class="arguments">Arguments</span><br>
+            <ul class="syntax">
+                <li>- <b>this</b> - a mandatory keyword used as a substitution for the selection, an arbitrary text may be used
+                    instead<br></li>
+                <li>- <b>to</b> - recipient's address: a valid email address<br></li>
+                <li>- <b>from</b> - gmail account: {<b>primary</b>, <b>secondary</b>}<br></li>
+            </ul>
+            <span class="arguments">Example</span>
+            <ul class="syntax">
+                <li><b>email</b> <b>this</b> <b>to</b> <i>user@example.com</i> <b>from</b> <i>secondary</i></li>
+            </ul>`,
     timeout: 0,
     builtIn: true,
     _namespace: "Mail",
@@ -79,14 +85,18 @@ CmdUtils.CreateCommand({
                 {role: "time",   nountype: {primary: 0, secondary: 1}, label: "account"}
     ],
     description: "Compose an empty email with the given subject.",
-    help: `<span class="syntax">Syntax</span><ul class="syntax"><li><b>compose</b> <i>message subject</i> <b>to</b> <i>email@address</i> <b>at</b> <i>account</i></li></ul>
-           <span class="arguments">Arguments</span><br>
-           <ul class="syntax"> 
-               <li>- <b>to</b> - recipient's address: a valid email address</li>
-               <li>- <b>at</b> - gmail account: {<b>primary</b>, <b>secondary</b>}<br></li>
-           </ul>
-           <span class="arguments">Example</span>
-           <ul class="syntax"><li><b>compose</b> <i>store order</i> <b>to</b> <i>user@example.com</i> <b>at</b> <i>secondary</i>`,
+    help: `<span class="syntax">Syntax</span>
+            <ul class="syntax">
+                <li><b>compose</b> <i>message subject</i> <b>to</b> <i>email@address</i> <b>at</b> <i>account</i></li>
+            </ul>
+            <span class="arguments">Arguments</span><br>
+            <ul class="syntax">
+                <li>- <b>to</b> - recipient's address: a valid email address</li>
+                <li>- <b>at</b> - gmail account: {<b>primary</b>, <b>secondary</b>}<br></li>
+            </ul>
+            <span class="arguments">Example</span>
+            <ul class="syntax">
+                <li><b>compose</b> <i>shopping list</i> <b>to</b> <i>user@example.com</i> <b>at</b> <i>secondary</i>`,
     timeout: 0,
     builtIn: true,
     _namespace: "Mail",
@@ -96,7 +106,7 @@ CmdUtils.CreateCommand({
         let desc = "Compose email to ";
 
         if (args.goal && args.goal.text)
-            desc += "&lt;" + args.goal.summary + "&gt; ";
+            desc += "&lt;" + args.goal.text + "&gt; ";
         else
             desc += "nobody ";
 
@@ -182,12 +192,15 @@ CmdUtils.CreateCommand({
     uuid: "8CF164B7-1505-47BE-8DDD-7D1E3781ABF1",
     arguments: [{role: "object", nountype: noun_arb_text, label: "pattern"}],
     description: "Forget multiple emails at once.",
-    help: `<span class="syntax">Syntax</span><ul class="syntax"><li><b>forget-emails</b> {<b>all</b> | <i>pattern</i>}</li></ul>
-           <span class="arguments">Arguments</span><br>
-           <ul class="syntax"> 
-               <li>- <b>all</b> - forget all emails</li>
-               <li>- <i>pattern</i> - forget emails containing this string (may be a regular expression)</li>
-           </ul>`,
+    help: `<span class="syntax">Syntax</span>
+        <ul class="syntax">
+            <li><b>forget-emails</b> {<b>all</b> | <i>pattern</i>}</li>
+        </ul>
+        <span class="arguments">Arguments</span><br>
+        <ul class="syntax">
+            <li>- <b>all</b> - forget all emails</li>
+            <li>- <i>pattern</i> - forget emails containing this string (may be a regular expression)</li>
+        </ul>`,
     timeout: 0,
     builtIn: true,
     _namespace: "Mail",

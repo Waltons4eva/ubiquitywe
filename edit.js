@@ -5,6 +5,9 @@ var scriptNamespace = window.location.search? decodeURI(window.location.search.s
 // inserts stub (example command)
 function insertExampleStub() {
 
+    if (scriptNamespace === UBIQUITY_SETTINGS)
+        return;
+
     var stubs = {
         'insertsimplecommandstub':
             `CmdUtils.CreateCommand({
@@ -38,7 +41,7 @@ function insertExampleStub() {
     ],
     description: "A short description of your command.",
     help: "This text is displayed at the command list page.",
-    timeout: 0,
+    timeout: 1000,
     author: "Your Name",
     icon: "http://example.com/favicon.png",
     //init: function({Bin}) {}, // called once on Ubiquity load

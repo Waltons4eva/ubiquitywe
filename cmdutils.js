@@ -341,6 +341,7 @@ CmdUtils.createContextMenu = function() {
                                     Utils.callPersistent(sent._verb.cmd.uuid, sent, sent.execute);
                                     if (CmdUtils.rememberContextMenuCommands)
                                         CmdUtils.commandHistoryPush(contextMenuCmdData.command);
+                                    parser.strengthenMemory(sent);
                                 }
                                 else
                                     CmdUtils.deblog("Context menu command/parser result mismatch")

@@ -149,6 +149,8 @@
                                 //jQuery(a).css("margin-left", "3px");
                                 jQuery(a).css("font-style", "italic");
                                 a.innerHTML = "T";
+                                if (server !== "www")
+                                    a.remove();
                             }
 
                             let link_m = jrow.find("td:nth-child(2) .icon-magnet");
