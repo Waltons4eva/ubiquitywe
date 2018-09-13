@@ -40,19 +40,22 @@ function formatMetaData(md) {
     if (authors && contributors.length > 0)
         authors = authors.concat(contributors);
 
-    if ( md.contributors)
-        console.log( md.contributors);
-
     var {license, homepage} = md;
     function span(data, format, klass, lkey) {
         return !data ? "" : (
         '<span class="' + klass + '">'
         + format(data) +
         '</span>')
-    };
-    return ('<div class="meta">' + (authors.length > 0? 'Authors: ': '') +
-             span(authors, formatAuthors, "author", "createdby") +
-            '</div>');
+    }
+
+    var result = ('<div class="meta">'
+        + (license? license + ' ': '')
+        + (license && authors.length > 0? ' | ': '')
+        + (authors.length > 0? 'Authors: ': '')
+        + span(authors, formatAuthors, "author", "createdby")
+        + (homepage? ' <a href="' + homepage + '"><img src="res/homepage.png"></a>': '')
+        + '</div>');
+    return result;
 
 }
 

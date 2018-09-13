@@ -7,7 +7,7 @@ CmdUtils.CreateCommand({
     icon: "res/settings.png",
     builtIn: true,
     _namespace: "Ubiquity", // do not set this field in custom commands
-    description: "Takes you to the Ubiquity command <a href=options.html target=_blank>settings page</a>.",
+    description: "Takes you to the Ubiquity <a href=options.html target=_blank>settings page</a>.",
     execute: function() {
         CmdUtils.addTab("options.html");
     }

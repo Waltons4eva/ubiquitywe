@@ -53,8 +53,7 @@ Utils.getPref("lingvoApiKey", lingvoApiKey => {
 });
 
 Utils.getPref("microsoftTranslatorAppId", microsoftTranslatorAppId => {
-    CmdUtils.microsoftTranslatorAppId = microsoftTranslatorAppId
-       || ("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+ Math.floor(Math.random() * 10));
+    CmdUtils.microsoftTranslatorAppId = microsoftTranslatorAppId;
 });
 
 Utils.getPref("suggestionMemory", suggestionMemory => {

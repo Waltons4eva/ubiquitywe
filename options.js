@@ -30,10 +30,12 @@ function onDocumentLoad() {
 
     $("#context-menu-commands input[name='label']").blur((e) => {
         let tr = e.target.parentNode.parentNode;
-        let cm = CmdUtils.getContextMenuCommand($(tr).find("input[name='command']").val());
-        cm.label = e.target.value;
-        CmdUtils.createContextMenu();
-        Utils.setPref("contextMenuCommands", CmdUtils.ContextMenuCommands);
+        if (e.target.value) {
+            let cm = CmdUtils.getContextMenuCommand($(tr).find("input[name='command']").val());
+            cm.label = e.target.value;
+            CmdUtils.createContextMenu();
+            Utils.setPref("contextMenuCommands", CmdUtils.ContextMenuCommands);
+        }
     });
 
     $("#context-menu-commands input[name='execute']").change((e) => {
@@ -57,6 +59,7 @@ function onDocumentLoad() {
         if (CmdUtils.DEBUG) {
             $("#ubiq-debug-mode, .imp-exp").show();
             $("#max-search-results-row").show();
+            $("h2:not(.top)").css("margin-top", "25px");
 
             Utils.getPref("maxSearchResults", maxSearchResults => {
                 $("#max-search-results").change(function () {

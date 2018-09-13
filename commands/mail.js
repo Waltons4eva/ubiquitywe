@@ -5,7 +5,7 @@ CmdUtils.CreateCommand({
                 {role: "goal",   nountype: noun_type_stored_email, label: "contact"},
                 {role: "source",   nountype: {default: 0, secondary: 1}, label: "account"}
     ],
-    description: "Compose an email with the selection as body.",
+    description: "Compose an email with the current selection as body using <a href='http://gmail.com'>Gmail</a>.",
     help: `<span class="syntax">Syntax</span>
             <ul class="syntax">
                 <li><b>email</b> <b>this</b> <b>to</b> <i>email@address</i> [<b>from</b> <i>account</i>]</li>
@@ -82,7 +82,7 @@ CmdUtils.CreateCommand({
                 {role: "goal", nountype: noun_type_stored_email, label: "contact"},
                 {role: "time",   nountype: {default: 0, secondary: 1}, label: "account"}
     ],
-    description: "Compose an empty email with the given subject.",
+    description: "Compose an empty email with the given subject using <a href='http://gmail.com'>Gmail</a>.",
     help: `<span class="syntax">Syntax</span>
             <ul class="syntax">
                 <li><b>compose</b> <i>message subject</i> <b>to</b> <i>email@address</i> [<b>at</b> <i>account</i>]</li>
