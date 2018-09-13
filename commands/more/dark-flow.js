@@ -9,7 +9,6 @@ CmdUtils.CreateCommand({
     _namespace: NS_MORE_COMMANDS,
     execute: function execute({object: {text}}) {
         chrome.runtime.sendMessage("dark-flow@firefox", {message: "dark-flow:follow-url", url: text}, null);
-        CmdUtils.closePopup();
     },
     preview: "Follow the URL in Dark Flow"
 });

@@ -364,7 +364,6 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
             var searchUrl = "http://" + lang + ".wikipedia.org/wiki/Special:Search";
             var searchParams = {search: args.object.text};
             Utils.openUrlInBrowser(searchUrl + Utils.paramsToString(searchParams));
-            CmdUtils.closePopup();
         }
     });
 
@@ -455,7 +454,6 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
         execute: function({object: {text}}) {
             if (text.substr(-2)=="-l") text = text.slice(0,-2);
             CmdUtils.addTab("http://maps.google.com/maps?q="+encodeURIComponent(text));
-            CmdUtils.closePopup();
         }
     });
 });

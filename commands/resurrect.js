@@ -148,7 +148,6 @@
                 else {
                     Utils.openUrlInBrowser(handler(target.location));
                 }
-                CmdUtils.closePopup();
             }
         });
 }

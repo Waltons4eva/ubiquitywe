@@ -73,7 +73,6 @@ CmdUtils.CreateCommand({
         }
 
         CmdUtils.addTab(url);
-        CmdUtils.closePopup();
     }
 });
 
@@ -149,7 +148,6 @@ CmdUtils.CreateCommand({
         }
 
         CmdUtils.addTab(url);
-        CmdUtils.closePopup();
     }
 });
 
@@ -183,7 +181,6 @@ CmdUtils.CreateCommand({
                         bin.contacts(contacts);
                     }
             });
-        CmdUtils.closePopup();
     }
 });
 
@@ -231,6 +228,5 @@ CmdUtils.CreateCommand({
                 }
             });
         }
-        CmdUtils.closePopup();
     }
 });

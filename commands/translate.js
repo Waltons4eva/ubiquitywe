@@ -82,7 +82,6 @@
                 translate(object, from, to, CmdUtils.setSelection.bind(CmdUtils));
             else
                 CmdUtils.deblog("Error performing translation: no text or text exceeded limits");
-            CmdUtils.closePopup();
         },
         preview: function translate_preview(pblock, {object, goal, source}) {
             let limitExceeded = object.text.length > MS_TRANSLATOR_LIMIT;
@@ -137,7 +136,6 @@
                     u: object.text,
                     tl: goal.data || "en",
                 }));
-            CmdUtils.closePopup();
         },
         preview: function gtranslate_preview(pb, {object, goal}) {
             if (!object.text)

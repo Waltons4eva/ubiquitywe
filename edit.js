@@ -21,7 +21,6 @@ function insertExampleStub() {
     },
     execute: function({object: {text}}) {
         CmdUtils.notify("Your input is: " + text);
-        CmdUtils.closePopup();
     }
 });`,
 
@@ -70,7 +69,6 @@ function insertExampleStub() {
     },
     execute: function(args, {Bin}) {
         CmdUtils.notify("Your input is: " + args.object.text);
-        CmdUtils.closePopup();
     }
 });`,
 

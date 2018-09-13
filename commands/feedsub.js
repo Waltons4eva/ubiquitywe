@@ -46,7 +46,5 @@ CmdUtils.CreateCommand({
       else {
           CmdUtils.addTab(feedlySubUrl + encodeURIComponent(url));
       }
-
-      CmdUtils.closePopup();
     }
 });

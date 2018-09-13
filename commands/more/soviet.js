@@ -125,7 +125,6 @@ CmdUtils.CreateCommand(
         execute: function () {
             if (this._requestUrl != null) {
                 Utils.openUrlInBrowser(this._requestUrl);
-                CmdUtils.closePopup();
             }
         }
     });

@@ -48,7 +48,6 @@ var __lingvoLiveAPIToken;
             execute: function (args) {
                 if (executionUrl != null)
                     CmdUtils.addTab(executionUrl);
-                CmdUtils.closePopup();
             },
             /*---------------------------------------------------------------------------*/
             preview: function (pblock, args) {

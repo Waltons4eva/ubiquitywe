@@ -27,7 +27,7 @@ things you have (web)API for, to make intricate org-mode protocol capture scheme
  
 
 Unfortunately, almost all codebase of the original ubiquity is not functional in 
-Firefox Quantum and there were several attempts to resurrect it. This is a fork of 
+Firefox Quantum. There were several attempts to resurrect it, and this is a fork of 
 the Chrome Ubiquity addon (UbiChr) by [rostok](https://github.com/rostok/ubichr) 
 which lacked parser. Besides the introduction of the parser from the last version 
 of "legacy" Ubiquity by [satyr](https://bitbucket.org/satyr/ubiquity)
@@ -41,7 +41,7 @@ of "legacy" Ubiquity by [satyr](https://bitbucket.org/satyr/ubiquity)
 #### Currently implemented API
 
 Although UbiquityWE is aimed to retain resemblance with the original Ubiquity as much as possible,
-there are some notable differences which emerge from Firefox Quantum limitations.
+there are some notable differences which emerge, in part, from Firefox Quantum limitations.
 
 * Since there is no sandboxed evaluation available in Firefox WebExtensions, the
 [Bin](https://wiki.mozilla.org/Labs/Ubiquity/Ubiquity_0.5_Author_Tutorial#Persistent_Storage)
@@ -51,6 +51,11 @@ Insert the "full-featured command" in UbiquityWE command editor for an example.
   * init() - called once on Ubiquity load.
   * popup(popup_document) - called each time Ubiquity popup is shown with the popup document
     as the parameter. Any document-wide CSS/script injection should be done here.
+* Because there is no command subscription model anymore, each command is required to
+ have an UUID. Although a command generally will run without an UUID, in this case it
+ would not be able to store persistent data and it would be not possible to add such command 
+ to browser context menu. An RFC 4122 v4 UUID is generated automatically for commands
+ added through command editor templates.
 
 The original Ubiquity commands were sandboxed from the browser API; Utils/CmdUtils modules
 were the primary interface to it. There are no such restrictions in UbiquityWE: commands

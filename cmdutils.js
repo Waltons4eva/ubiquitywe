@@ -359,22 +359,6 @@ CmdUtils.createContextMenu = function() {
     }
 };
 
-// returns a function that opens new tab with substituted {text} and {location} 
-CmdUtils.SimpleUrlBasedCommand = function SimpleUrlBasedCommand(url) {
-    if (!url) return;
-    var search_func = function(directObj) {
-        if (!directObj) return;
-        var text = directObj.text;
-        text = encodeURIComponent(text);
-        var finalurl = url;
-        finalurl = finalurl.replace('{text}', text);
-        finalurl = finalurl.replace('{location}', CmdUtils.getLocation());
-        CmdUtils.addTab(finalurl);
-        CmdUtils.closePopup();
-    };
-    return search_func;
-};
-
 // gets json with xhr
 CmdUtils.ajaxGetJSON = function ajaxGetJSON(url, callback) {
     var xhr = new XMLHttpRequest();
@@ -471,8 +455,6 @@ CmdUtils.updateSelection = function (tab_id, callback) {
                 CmdUtils.selectedText = selection[0].text || "";
                 CmdUtils.selectedHtml = selection[0].html || "";
             }
-            CmdUtils.deblog("selectedText is ", CmdUtils.selectedText);
-
             if (callback)
                 callback();
         });
@@ -482,7 +464,6 @@ CmdUtils.updateSelection = function (tab_id, callback) {
         if (callback)
             callback();
     }
-
 };
 
 CmdUtils._internalClearSelection = function() {
@@ -768,7 +749,6 @@ CmdUtils.makeSearchCommand.execute = function searchExecute({object: {text}}) {
         Utils.openUrlInBrowser(
             CmdUtils.makeSearchCommand.query(this.url, text, this.charset),
             CmdUtils.makeSearchCommand.query(this.postData, text, this.charset))
-    CmdUtils.closePopup();
 };
 CmdUtils.makeSearchCommand.preview = function searchPreview(pblock, {object: {text}}) {
     if (!text) return void this.previewDefault(pblock);

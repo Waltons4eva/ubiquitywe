@@ -10,7 +10,6 @@ CmdUtils.CreateCommand({
     description: "Takes you to the Ubiquity command <a href=options.html target=_blank>settings page</a>.",
     execute: function () {
         CmdUtils.addTab("options.html");
-        CmdUtils.closePopup();
     }
 });
 
@@ -34,7 +33,6 @@ CmdUtils.CreateCommand({
     description: "Takes you to the Ubiquity command <a href=edit.html target=_blank>editor page</a>.",
     execute: function () {
         CmdUtils.addTab("edit.html");
-        CmdUtils.closePopup();
     }
 });
 
@@ -75,8 +73,6 @@ CmdUtils.CreateCommand({
     execute: function execute({object}) {
         if (object && object.data)
             chrome.tabs.update(object.data.id, {active: true});
-
-        CmdUtils.closePopup();
     }
 });
 
@@ -94,8 +90,6 @@ CmdUtils.CreateCommand({
             CmdUtils.closeTab();
         else
             chrome.tabs.remove(object.data.id);
-
-        CmdUtils.closePopup();
     }
 });
 
@@ -115,8 +109,6 @@ CmdUtils.CreateCommand({
                     chrome.tabs.remove(tab.id);
             });
         }
-
-        CmdUtils.closePopup();
     }
 });
 
@@ -131,7 +123,6 @@ CmdUtils.CreateCommand({
     preview: "Print the current page.",
     execute: function (directObj) {
         chrome.tabs.executeScript( { code:"window.print();" } );
-        CmdUtils.closePopup();
     }
 });
 

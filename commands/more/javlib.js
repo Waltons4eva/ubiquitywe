@@ -121,7 +121,6 @@
         _hidden: true,
         _namespace: NS_MORE_COMMANDS,
         execute: function execute({object: {text}}) {
-            CmdUtils.closePopup();
         },
         preview: function preview(pblock, {object: {text}}) {
             if (text) {

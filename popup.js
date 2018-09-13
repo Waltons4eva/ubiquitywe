@@ -118,6 +118,7 @@ function ubiq_show_preview(sent, args) {
 function ubiq_execute(input) {
     if (ubiq_selected_sent) {
         CmdUtils.commandHistoryPush(input);
+        CmdUtils.closePopup();
         Utils.callPersistent(ubiq_selected_sent._verb.cmd.uuid, ubiq_selected_sent, ubiq_selected_sent.execute);
     }
 }
