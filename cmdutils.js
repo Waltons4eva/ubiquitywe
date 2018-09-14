@@ -314,7 +314,7 @@ CmdUtils.createContextMenu = function() {
         CmdUtils.contextMenuListener = function(info, tab) {
             switch(info.menuItemId) {
                 case "ubiquity-settings":
-                    chrome.tabs.create({"url": "options.html"});
+                    chrome.tabs.create({"url": "res/options.html"});
                     break;
                 default:
                     if (info.selectionText) { // TODO: add html selection

@@ -241,12 +241,25 @@ $(() => {
     });
 
     $("#expand-editor").click(() => {
-        $(".head, #nav-container, #head-br, #expand-editor").remove();
-        $("#panel").css("width", "100%");
-        $("body").css("margin", "0");
-        $("body").css("max-width", "100%");
-        $("#toolbar").css("padding-right", "5px");
+        if ($("#expand-editor img").prop("src").endsWith("/res/icons/collapse.png")) {
+            console.log("nyaa");
+            $("#panel").css("width", "870px");
+            $("body").css("margin", "auto");
+            $("body").css("max-width", "900px");
+            $("#toolbar").css("padding-right", "30px");
+            $(".head, #nav-container, #head-br").show();
+            $("#expand-editor img").prop("src", "/res/icons/expand.png");
+        }
+        else {
+            $(".head, #nav-container, #head-br").hide();
+            $("#panel").css("width", "100%");
+            $("body").css("margin", "0");
+            $("body").css("max-width", "100%");
+            $("#toolbar").css("padding-right", "5px");
+            $("#expand-editor img").prop("src", "/res/icons/collapse.png");
+        }
         window.dispatchEvent(new Event('resize'));
+        editor.focus();
     });
 
     $("#insertsimplecommandstub").click(insertExampleStub);
