@@ -47,7 +47,7 @@ li {
   text-decoration: none;
 }
 
-#nav li:hover {
+#nav li:hover, #nav li.selected {
   background-color: #66bb00;
 }
 
@@ -84,12 +84,11 @@ li {
 .head {
   font-weight: bold;
   background-color: white;
-  color: black;
   text-align: left;
   color: grey;
   font-variant: small-caps;
   font-size: 14pt;
-  margin-top: 10px;
+  padding-top: 10px;
 }
 
 .left {
@@ -213,6 +212,10 @@ a[onclick], .sort-switch {
   color: inherit;
   cursor: inherit;
   text-decoration: none;
+}
+
+.selected {
+
 }
 
 .error {
@@ -390,7 +393,7 @@ div.ubiq-tutorial h2 {
   width: 16px; height: 16px; margin: 0 2px -1px 0;
 }
 
-#ubiq-debug-mode, .imp-exp {
+#ubiq-debug-mode, .imp-exp, .advanced {
   display: none;
 }
 

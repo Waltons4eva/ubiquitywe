@@ -8,7 +8,7 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
         url: "http://www.google.com/search?q=%s",
         _namespace: "Search",
         builtIn: true,
-        icon: "res/google.png",
+        icon: "/res/icons/google.png",
         description: "Searches Google for your words.",
         arguments: [{role: "object", nountype: noun_arb_text, label: "query"}],
         previewDelay: 1000,
@@ -31,7 +31,7 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
         builtIn: true,
         arguments: [{role: "object", nountype: noun_arb_text, label: "query"}],
         previewDelay: 1000,
-        icon: "res/bing.png",
+        icon: "/res/icons/bing.png",
         parser: {
             container: ".b_algo",
             title: "h2 > a",
@@ -49,7 +49,7 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
         builtIn: true,
         arguments: [{role: "object", nountype: noun_arb_text, label: "query"}],
         previewDelay: 1000,
-        icon: "res/imdb.png",
+        icon: "/res/icons/imdb.png",
         parser: {
             container  : ".findResult",
             title      : ".result_text",
@@ -63,7 +63,7 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
         uuid: "223E9F19-1DD8-4725-B09C-86EA5DE44DB0",
         url: ("http://www.youtube.com/results?search_type=search_videos" +
             "&search=Search&search_sort=relevance&search_query={QUERY}"),
-        icon: "res/youtube.png",
+        icon: "/res/icons/youtube.png",
         description: ("Searches YouTube for videos matching your words. Previews the top results."),
         _namespace: "Search",
         builtIn: true,
@@ -123,7 +123,7 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
         contributor: "satyr",
         homepage: "http://www.jimmy2k.it/getimagescommand",
         license: "MPL",
-        icon: "res/google.png",
+        icon: "/res/icons/google.png",
         description: "Browse pictures from Google Images.",
         url: "https://www.google.com/search?tbm=isch&q={QUERY}",
         preview: function gi_preview(pblock, {object: {text: q}}) {
@@ -265,7 +265,7 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
         author: {name: "Blair McBride", email: "blair@theunfocused.net"},
         contributors: ["Viktor Pyatkovka"],
         license: "MPL",
-        icon: "res/wikipedia.ico",
+        icon: "/res/icons/wikipedia.ico",
         description: "Searches Wikipedia for your words, in a given language.",
         preview: function wikipedia_preview(previewBlock, args) {
             var searchText = Utils.trim(args.object.text);
@@ -372,7 +372,7 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
         uuid: "0898F48A-1550-4DA4-B86D-CA7D669E0332",
         _namespace: "Search",
         description: "Shows a location on the map.",
-        icon: "res/google.png",
+        icon: "/res/icons/google.png",
         builtIn: true,
         previewDelay: 1000,
         requirePopup: "https://maps.googleapis.com/maps/api/js?sensor=false",

@@ -292,7 +292,7 @@ CmdUtils.createContextMenu = function() {
         chrome.contextMenus.create({
             id: c.command,
             title: c.label,
-            icons: {"16": commandDef && commandDef.icon? commandDef.icon: "res/icon-24.png"},
+            icons: {"16": commandDef && commandDef.icon? commandDef.icon: "/res/icons/icon-24.png"},
             contexts: contexts
         });
     }
@@ -306,7 +306,7 @@ CmdUtils.createContextMenu = function() {
     chrome.contextMenus.create({
         id: "ubiquity-settings",
         title: "Ubiquity Settings",
-        icons: {"32": "res/icon-32.png"},
+        icons: {"32": "/res/icons/icon-32.png"},
         contexts: contexts
     });
 
@@ -513,13 +513,17 @@ ContextUtils.setSelection = CmdUtils.setSelection = function setSelection(s) {
     s = s.replace(/(['"])/g, "\\$1");
     s = s.replace(/\\\\/g, "\\");
     // http://jsfiddle.net/b3Fk5/2/
+    console.log("Allahu akbar!!!");
     var insertCode = `
     function replaceSelectedText(replacementText) {
         var sel, range;
         sel = window.getSelection();
         var activeElement = document.activeElement;
+                    console.log("Allahu akbar");
         if (activeElement.nodeName == "TEXTAREA" ||
-            (activeElement.nodeName == "INPUT" && activeElement.type.toLowerCase() == "text")) {
+            (activeElement.nodeName == "INPUT" && (activeElement.type.toLowerCase() == "text"
+                || activeElement.type.toLowerCase() == "search"))) {
+            console.log("subhan Allah");
                 var val = activeElement.value, start = activeElement.selectionStart, end = activeElement.selectionEnd;
                 activeElement.value = val.slice(0, start) + replacementText + val.slice(end);
         } else {
@@ -615,15 +619,21 @@ CmdUtils.disableCommand = function(cmd) {
 // show browser notification with simple limiter 
 CmdUtils.lastNotification = "";
 CmdUtils.notify = function (message, title) {
-    if (CmdUtils.lastNotification == title+"/"+message) return;
+    if (typeof message === "object") {
+        title = message.title;
+        message = message.text;
+    }
+    if (CmdUtils.lastNotification === title + "/" + message) return;
     chrome.notifications.create({
         "type": "basic",
-        "iconUrl": chrome.extension.getURL("res/icon-128.png"),
+        "iconUrl": chrome.extension.getURL("/res/icons/icon-128.png"),
         "title": title || "UbiquityWE",
         "message": message
     });
-    CmdUtils.lastNotification = title+"/"+message;
+    CmdUtils.lastNotification = title + "/" + message;
 };
+
+var displayMessage = Utils.notify;
 
 // === {{{ CmdUtils.absUrl(data, baseUrl) }}} ===
 // Fixes relative URLs in {{{data}}} (e.g. as returned by Ajax calls).
@@ -692,6 +702,33 @@ CmdUtils.previewAjax = function(pblock, options) {
 
     return xhr = jQuery.ajax(newOptions);
 };
+
+// === {{{ CmdUtils.previewGet(pblock, url, data, callback, type) }}} ===
+// === {{{ CmdUtils.previewPost(pblock, url, data, callback, type) }}} ===
+// Does an asynchronous request to a remote web service.
+// It is used just like {{{jQuery.get()}}}/{{{jQuery.post()}}},
+// which is documented at [[http://docs.jquery.com/Ajax]].
+// The difference is that {{{previewGet()}}}/{{{previewPost()}}} is designed to
+// handle command previews, which can be cancelled by the user between the
+// time that it's requested and the time it displays.  If the preview
+// is cancelled, the given callback will not be called.
+
+for (let method of ["Get", "Post"]) {
+    let x = method
+    CmdUtils["preview" + x] = function previewXet(pblock, url, data, cb, type) {
+        if (typeof data == "function") {
+            cb = data
+            data = null
+        }
+        return this.previewAjax(pblock, {
+            type: x,
+            url: url,
+            data: data,
+            success: cb,
+            dataType: type,
+        })
+    }
+}
 
 CmdUtils.makeSearchCommand = function(options) {
     if (!("url" in options)) options.url = options.parser.url;
@@ -921,9 +958,7 @@ CmdUtils.previewList.CSS = `\
   #preview-list {margin: 0; padding: 2px; list-style-type: none}
   #preview-list > li {position: relative; min-height: 3ex; margin-right: 3px; cursor: pointer}
   #preview-list > li:hover {outline: 1px solid;}
-  #keyshifter {position:absolute; top:-9999px}
 `;
-
 
 (function ( $ ) {
     $.fn.blankify = function( url ) {

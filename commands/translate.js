@@ -22,21 +22,46 @@
         let {html} = target
         // bitbucket#29: The API doesn't like apostrophes HTML-escaped.
         ~html.indexOf('<') || (html = html.replace(/&#39;/g, "'"));
-        msTranslator("Translate", {
-            contentType: "text/html", text: html, from: from, to: to,
-        }, back)
+
+        (CmdUtils.microsoftTranslatorAPIKey? msTranslator_v3: msTranslator)
+            ("Translate", {
+                contentType: "text/html", text: html, from: from, to: to,
+            }, back);
+    }
+
+    function msTranslator_v3(method, params, back) {
+        //CmdUtils.deblog("Using Bing Translate API v3");
+        let url = "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0";
+        if (params.from)
+            url += "&from=" + params.from;
+        url += "&to=" + params.to;
+        url += "&textType=html";
+        $.ajax({
+            url: url,
+            method: "POST",
+            data: JSON.stringify([{Text: params.text}]),
+            headers: {"Content-Type": "application/json",
+                      "Ocp-Apim-Subscription-Key": CmdUtils.microsoftTranslatorAPIKey},
+            success : function (json) {
+                if (json && json.length > 0) {
+                    back(json[0].translations[0].text);
+                }
+            },
+            error   : function (e) {
+                Utils.jsLog(e);
+                CmdUtils.notify({title: "Microsoft Translator API v3", text: "(>_<)"})
+            },
+        })
     }
 
     function msTranslator(method, params, back) {
-        params.appId = CmdUtils.microsoftTranslatorAppId
-            || ("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+ Math.floor(Math.random() * 10));
-        console.log(params.appId);
+        params.appId = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"+ Math.floor(Math.random() * 10);
         $.ajax({
             url: "http://api.microsofttranslator.com/V2/Ajax.svc/" + method,
             data: params,
             success : function mst_ok(json) { back(JSON.parse(json)) },
             error   : function mst_ng() {
-                displayMessage({title: "Microsoft Translator", text: "(>_<)"})
+                CmdUtils.notify({title: "Microsoft Translator", text: "(>_<)"})
             },
         })
     }
@@ -46,7 +71,7 @@
         uuid: "43599939-571E-4EBF-AF64-8AD6F39C7B79",
         description: "Translates from one language to another using <a href='https://www.bing.com/translator'>Bing Translator</a>.",
         _namespace: "Translation",
-        icon: "res/translate_bing.ico",
+        icon: "/res/icons/translate_bing.ico",
         arguments: {
             object: noun_arb_text,
             source: noun_type_lang_microsoft,
@@ -86,7 +111,9 @@
                 CmdUtils.deblog("Error performing translation: no text or text exceeded limits");
         },
         preview: function translate_preview(pblock, {object, goal, source}) {
-            let limitExceeded = object.text.length > MS_TRANSLATOR_LIMIT;
+            let limitExceeded = CmdUtils.microsoftTranslatorAPIKey
+                ? object.text.length > MS_TRANSLATOR_LIMIT / 2
+                : object.text.length > MS_TRANSLATOR_LIMIT;
             let from = "", to = "";
 
             if (source && source.data)
@@ -121,7 +148,7 @@
         _namespace: "Translation",
         description: `Translates a whole page to the specified language using 
                         <a href="http://translate.google.com">Google Translate</a>.`,
-        icon: "res/translate_google.ico",
+        icon: "/res/icons/translate_google.ico",
         author: "satyr",
         builtIn: true,
         arguments: {

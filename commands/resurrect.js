@@ -5,7 +5,7 @@
 
 {
 
-    var resurrect_commandIcon = "res/resurrect.gif";
+    var resurrect_commandIcon = "/res/icons/resurrect.gif";
 
     var resurrect_archiveServices =
         {

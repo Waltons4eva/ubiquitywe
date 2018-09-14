@@ -52,8 +52,8 @@ Utils.getPref("lingvoApiKey", lingvoApiKey => {
     }
 });
 
-Utils.getPref("microsoftTranslatorAppId", microsoftTranslatorAppId => {
-    CmdUtils.microsoftTranslatorAppId = microsoftTranslatorAppId;
+Utils.getPref("microsoftTranslatorAPIKey", microsoftTranslatorAPIKey => {
+    CmdUtils.microsoftTranslatorAPIKey = microsoftTranslatorAPIKey;
 });
 
 Utils.getPref("suggestionMemory", suggestionMemory => {

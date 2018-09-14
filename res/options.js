@@ -12,7 +12,7 @@ function onDocumentLoad() {
             <td class="remove-item">&#xD7;</td>
             <td><input type="text" name="label" value="${Utils.escapeHtml(cmd.label)}"/></td>
             <td><input type="text" name="command"  value="${Utils.escapeHtml(cmd.command)}" disabled/></td>
-            <td><input type="checkbox" name="execute"  ${cmd.execute? "checked": ""}/><img src="res/execute.png" title="Execute"/></td>
+            <td><input type="checkbox" name="execute"  ${cmd.execute ? "checked" : ""}/><img src="icons/execute.png" title="Execute"/></td>
         </tr>`);
     }
 
@@ -57,7 +57,7 @@ function onDocumentLoad() {
 
     Utils.getPref("debugMode", debugMode => {
         if (CmdUtils.DEBUG) {
-            $("#ubiq-debug-mode, .imp-exp").show();
+            $("#ubiq-debug-mode, .imp-exp, .advanced").show();
             $("#max-search-results-row").show();
             $("h2:not(.top)").css("margin-top", "25px");
 
@@ -97,11 +97,25 @@ function onDocumentLoad() {
     });
 
     Utils.getPref("maxSuggestions", maxSuggestions => {
-        $("#max-suggestions").change(function changeMaxSuggestions() {
+        $("#max-suggestions").change(function() {
             CmdUtils.maxSuggestions = parseInt(maxSuggestions);
             Utils.setPref("maxSuggestions", this.value);
         }).val(maxSuggestions || 5);
      });
+
+    Utils.getPref("lingvoApiKey", lingvoApiKey => {
+        $("#lingvo-api-key").change(function() {
+            CmdUtils.lingvoApiKey = this.value;
+            Utils.setPref("lingvoApiKey", this.value);
+        }).val(lingvoApiKey);
+    });
+
+    Utils.getPref("microsoftTranslatorAPIKey", microsoftTranslatorAPIKey => {
+        $("#bing-translator-api-key").change(function() {
+            CmdUtils.microsoftTranslatorAPIKey = this.value;
+            Utils.setPref("microsoftTranslatorAPIKey", this.value);
+        }).val(microsoftTranslatorAPIKey);
+    });
 }
 
 function changeLanguageSettings() {

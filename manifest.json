@@ -3,7 +3,7 @@
     "short_name": "UbiquityWE",
     "homepage_url": "https://github.com/GChristensen/ubichr#readme",
     "author": "rostok, gchristnsn",
-    "version": "0.2.1.6",
+    "version": "0.2.2.0",
     "description": "WebExtension port of Ubiquity",
     "content_security_policy": "script-src 'self' 'unsafe-eval' https://maps.googleapis.com; style-src 'self' 'unsafe-inline'; object-src 'self'",
     "applications": {
@@ -26,10 +26,10 @@
           "parser/nountypes.js",
           "parser/suggestion_memory.js",
           "parser/parser.js",
-          "commands/more/nyaa.js",
-          "commands/more/javlib.js",
-          "commands/more/soviet.js",
-          "commands/more/dark-flow.js",
+          "/commands/more/nyaa.js",
+          "/commands/more/javlib.js",
+          "/commands/more/soviet.js",
+          "/commands/more/dark-flow.js",
           "commands/builtin.js",
           "commands/mail.js",
           "commands/translate.js",
@@ -43,10 +43,10 @@
     "browser_action": {
         "default_title": "Ubiquity WebExtension",
         "default_popup": "popup.html",
-        "default_icon": "res/icon-24.png"
+        "default_icon": "/res/icons/icon-24.png"
     },
     "options_ui": {
-        "page": "options.html",
+        "page": "res/options.html",
         "open_in_tab": true
     },
     "commands": {
@@ -63,7 +63,7 @@
         "matches": ["<all_urls>"],
     	"js": ["selection.js"]
     }],
-    "icons": { "128" : "res/icon-128.png" },
+    "icons": { "128" : "/res/icons/icon-128.png" },
     "permissions": [
         "<all_urls>",
         "activeTab", 

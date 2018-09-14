@@ -2,7 +2,7 @@ CmdUtils.CreateCommand({
     name: "email",
     uuid: "65947074-CF99-4114-827E-0FC7CB348CE1",
     arguments: [{role: "object", nountype: noun_arb_text, label: "body"},
-                {role: "goal",   nountype: noun_type_stored_email, label: "contact"},
+                {role: "goal",   nountype: noun_type_contact, label: "contact"},
                 {role: "source",   nountype: {default: 0, secondary: 1}, label: "account"}
     ],
     description: "Compose an email with the current selection as body using <a href='http://gmail.com'>Gmail</a>.",
@@ -24,7 +24,7 @@ CmdUtils.CreateCommand({
     builtIn: true,
     _namespace: "Mail",
     author: "g/christensen",
-    icon: "res/email.png",
+    icon: "/res/icons/email.png",
     preview: function(pblock, args, {Bin}) {
         let desc = "Send ";
 
@@ -79,7 +79,7 @@ CmdUtils.CreateCommand({
     name: "compose",
     uuid: "2C25DC63-66E0-493D-B750-D33B55999EDB",
     arguments: [{role: "object", nountype: noun_arb_text, label: "subject"},
-                {role: "goal", nountype: noun_type_stored_email, label: "contact"},
+                {role: "goal", nountype: noun_type_contact, label: "contact"},
                 {role: "time",   nountype: {default: 0, secondary: 1}, label: "account"}
     ],
     description: "Compose an empty email with the given subject using <a href='http://gmail.com'>Gmail</a>.",
@@ -98,7 +98,7 @@ CmdUtils.CreateCommand({
     builtIn: true,
     _namespace: "Mail",
     author: "g/christensen",
-    icon: "res/email.png",
+    icon: "/res/icons/email.png",
     preview: function(pblock, args, {Bin}) {
         let desc = "Compose email to ";
 
@@ -152,12 +152,12 @@ CmdUtils.CreateCommand({
 CmdUtils.CreateCommand({
     name: "forget-email",
     uuid: "C1B5C976-2BBE-4DD6-95E9-A65CC84E1B51",
-    arguments: [{role: "object", nountype: noun_type_stored_email, label: "email"}],
+    arguments: [{role: "object", nountype: noun_type_contact, label: "email"}],
     description: "Do not show the specified email in suggestions anymore.",
     builtIn: true,
     _namespace: "Mail",
     author: "g/christensen",
-    icon: "res/forget-email.png",
+    icon: "/res/icons/forget-email.png",
     preview: function(pblock, args, {Bin}) {
         if (args.object.text) {
             pblock.innerHTML = "Forget " + args.object.text + ".";
@@ -198,7 +198,7 @@ CmdUtils.CreateCommand({
     builtIn: true,
     _namespace: "Mail",
     author: "g/christensen",
-    icon: "res/forget-email.png",
+    icon: "/res/icons/forget-email.png",
     preview: function(pblock, args, {Bin}) {
         if (args.object.text) {
             if (args.object.text.toLowerCase() === "all")

@@ -282,7 +282,7 @@ var BinHandler = {
     has(target, key) {
         return key in target.__bin__;
     },
-    *enumerate(target) {
+    * enumerate(target) {
         for (let key in target.__bin__) yield key;
     },
 };

@@ -115,7 +115,7 @@
         argument: [{role: "object", nountype: noun_arb_text, label: "movie code"}],
         description: "Search for movie information at <a href='http://javlibrary.com/en'>javlibrary</a>.",
         help: `Try: <b>javlib</b> <i>star-699</i>`,
-        icon: "commands/more/jav.png",
+        icon: "/commands/more/jav.png",
         builtIn: true,
         previewDelay: 1000,
         _hidden: true,

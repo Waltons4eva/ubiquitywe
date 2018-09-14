@@ -220,7 +220,7 @@ var noun_type_email = {
 };
 
 const __STORED_EMAIL_UUID = "--stored-email-items";
-var noun_type_stored_email = {
+var noun_type_contact = {
     label: "email",
     noExternalCalls: true,
     cacheTime: -1,

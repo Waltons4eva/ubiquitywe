@@ -41,10 +41,10 @@ CmdUtils.CreateCommand(
         _hidden: true,
         _namespace: NS_MORE_COMMANDS,
         /*---------------------------------------------------------------------------*/
-        icon: "commands/more/soviet.png",
+        icon: "/commands/more/soviet.png",
         /*---------------------------------------------------------------------------*/
         popup: function (doc) {
-            CmdUtils.loadCSS(doc, "__soviet__", "commands/more/soviet.css");
+            CmdUtils.loadCSS(doc, "__soviet__", "/commands/more/soviet.css");
         },
         /*---------------------------------------------------------------------------*/
         preview: function (pblock, args) {

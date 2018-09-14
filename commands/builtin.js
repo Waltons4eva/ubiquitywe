@@ -4,12 +4,38 @@
 CmdUtils.CreateCommand({
     names: ["change-ubiquity-settings", "change-ubiquity-options"],
     uuid: "D6E7CBA7-920D-4F86-910E-63AB3C119906",
-    icon: "res/settings.png",
+    icon: "/res/icons/settings.png",
     builtIn: true,
     _namespace: "Ubiquity", // do not set this field in custom commands
     description: "Takes you to the Ubiquity <a href=options.html target=_blank>settings page</a>.",
     execute: function() {
-        CmdUtils.addTab("options.html");
+        CmdUtils.addTab("res/options.html");
+    }
+});
+
+CmdUtils.CreateCommand({
+    names: ["edit-ubiquity-settings", "edit-ubiquity-options"],
+    uuid: "3A9CD64F-3D4D-4D90-BA5A-882615672396",
+    icon: "/res/icons/debug.png",
+    builtIn: true,
+    _hidden: true,
+    _namespace: "Ubiquity",
+    description: "Live-edit Ubiquity options as text.",
+    execute: function() {
+        CmdUtils.addTab("res/edit.html?ubiquity-settings");
+    }
+});
+
+CmdUtils.CreateCommand({
+    names: ["view-api-reference"],
+    uuid: "3DB11207-1240-41F8-966C-CD77B58C6376",
+    icon: "/res/icons/debug.png",
+    builtIn: true,
+    _hidden: true,
+    _namespace: "Ubiquity",
+    description: "View UbiquityWE API reference.",
+    execute: function() {
+        CmdUtils.addTab("res/API.html");
     }
 });
 
@@ -17,22 +43,22 @@ CmdUtils.CreateCommand({
     names: ["list-ubiquity-commands", "command-list", "help"],
     uuid: "B8D3B9C2-D8DB-40F3-833F-639588A9EA8D",
     description: "Opens Ubiquity command list page.",
-    icon: "res/list_table.png",
+    icon: "/res/icons/list_table.png",
     _namespace: "Ubiquity",
     builtIn: true,
     preview: "Lists all available commands",
-    execute: function() {CmdUtils.addTab("commands.html")}
+    execute: function() {CmdUtils.addTab("res/commands.html")}
 });
 
 CmdUtils.CreateCommand({
     names: ["edit-ubiquity-commands", "hack-ubiquity"],
     uuid: "07E1ABDD-89BD-4666-8884-3E0B86611CE0",
-    icon: "res/plugin_edit.png",
+    icon: "/res/icons/plugin_edit.png",
     _namespace: "Ubiquity",
     builtIn: true,
     description: "Takes you to the Ubiquity command <a href=edit.html target=_blank>editor page</a>.",
     execute: function() {
-        CmdUtils.addTab("edit.html");
+        CmdUtils.addTab("res/edit.html");
     }
 });
 
@@ -41,7 +67,7 @@ CmdUtils.CreateCommand({
     uuid: "E9F2C758-FA25-46F1-90C4-02CB057A3269",
     _namespace: "Ubiquity",
     description: "Reloads Ubiquity extension.",
-    icon: "res/arrow_refresh.png",
+    icon: "/res/icons/arrow_refresh.png",
     builtIn: true,
     preview: "Reloads Ubiquity extension.",
     execute: function() {
@@ -56,7 +82,7 @@ CmdUtils.CreateCommand({
     _namespace: "Ubiquity",
     _hidden: true,
     builtIn: true,
-    icon: "res/debug.png",
+    icon: "/res/icons/debug.png",
     preview: "Debug the popup window in a separate tab.",
     execute: function() {CmdUtils.addTab("popup.html")}
 });
@@ -68,7 +94,7 @@ CmdUtils.CreateCommand({
     description: "Switches to the tab whose title or URL matches the input.",
     previewDelay: 100,
     _namespace: "Browser",
-    icon: "res/tab_go.png",
+    icon: "/res/icons/tab_go.png",
     builtIn: true,
     execute: function execute({object}) {
         if (object && object.data)
@@ -83,7 +109,7 @@ CmdUtils.CreateCommand({
     description: "Closes the tab whose title or URL matches the input or the current tab if no tab matches.",
     previewDelay: 100,
     _namespace: "Browser",
-    icon: "res/tab_delete.png",
+    icon: "/res/icons/tab_delete.png",
     builtIn: true,
     execute: function execute({object}) {
         if (!object || !object.data)
@@ -100,7 +126,7 @@ CmdUtils.CreateCommand({
     description: "Closes all open tabs that have the given word in common.",
     previewDelay: 100,
     _namespace: "Browser",
-    icon: "res/tab_delete.png",
+    icon: "/res/icons/tab_delete.png",
     builtIn: true,
     execute: function execute({object: {text}}) {
         if (text) {
@@ -118,7 +144,7 @@ CmdUtils.CreateCommand({
     uuid: "2909878D-DF99-4FD8-8DA6-FD2B5B7D0756",
     _namespace: "Browser",
     description: "Print the current page.",
-    icon: "res/print.gif",
+    icon: "/res/icons/print.gif",
     builtIn: true,
     preview: "Print the current page.",
     execute: function (directObj) {
@@ -132,7 +158,7 @@ CmdUtils.CreateCommand({
     _namespace: "Browser",
     description: "Inverts all colors on current page. Based on <a target=_blank href=https://stackoverflow.com/questions/4766201/javascript-invert-color-on-all-elements-of-a-page>this</a>.",
     builtIn: true,
-    icon: "res/invert.png",
+    icon: "/res/icons/invert.png",
     execute: function execute(){
         chrome.tabs.executeScript({code:`
         javascript: (
@@ -180,7 +206,7 @@ CmdUtils.CreateCommand({
     uuid: "E5C587CB-5733-463E-80DD-A6D4C085EE53",
     _namespace: "Utility",
     description: "base64decode",
-    icon: "res/encoding.png",
+    icon: "/res/icons/encoding.png",
     builtIn: true,
     author: {
         name: "rostok",
@@ -201,7 +227,7 @@ CmdUtils.CreateCommand({
     _namespace: "Utility",
     description: "base64encode",
     builtIn: true,
-    icon: "res/encoding.png",
+    icon: "/res/icons/encoding.png",
     author: {
         name: "rostok",
     },
@@ -220,7 +246,7 @@ CmdUtils.CreateCommand({
     uuid: "C042DDB6-FD05-4CD5-9356-1725C0533568",
     _namespace: "Utility",
     description: "urldecode",
-    icon: "res/encoding.png",
+    icon: "/res/icons/encoding.png",
     builtIn: true,
     author: {
         name: "rostok",
@@ -240,7 +266,7 @@ CmdUtils.CreateCommand({
     uuid: "80F43371-F330-4685-A153-9A493B07A553",
     _namespace: "Utility",
     description: "urlencode",
-    icon: "res/encoding.png",
+    icon: "/res/icons/encoding.png",
     builtIn: true,
     author: {
         name: "rostok",
@@ -281,7 +307,7 @@ CmdUtils.CreateCommand({
          <a href="http://silentmatt.com/javascript-expression-evaluator/">\
          JavaScript Expression Evaluator</a>.',
     help: "Try: <code>22/7, 3^4^5, sin(sqrt(log(PI)))</code>",
-    icon: "res/calculator.png",
+    icon: "/res/icons/calculator.png",
     _namespace: "Utility",
     builtIn: true,
     author: "satyr",
@@ -299,7 +325,7 @@ CmdUtils.CreateCommand({
     names: ["shorten-url", "bitly"],
     uuid: "6475BAAA-4547-4FF0-BCA7-EE4236F20386",
     _namespace: "Utility",
-    icon: "res/bitly.png",
+    icon: "/res/icons/bitly.png",
     builtIn: true,
     description: "Shorten your URLs with the least possible keystrokes",
     homepage: "http://bit.ly",

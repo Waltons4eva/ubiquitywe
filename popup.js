@@ -224,7 +224,7 @@ function ubiq_select_command(index) {
 
 function ubiq_decorate_icon(icon) {
     if (!icon || icon === "http://example.com/favicon.png") {
-        icon = 'res/icon-24.png';
+        icon = '/res/icons/icon-24.png';
     }
     icon = '<img src="' + icon + '" border="0" alt="" align="absmiddle"> ';
     return icon;
@@ -454,7 +454,7 @@ $(window).on('load', function() {
         chrome.tabs.create({ "url": "chrome://extensions" });
         chrome.notifications.create({
             "type": "basic",
-            "iconUrl": chrome.extension.getURL("res/icon-128.png"),
+            "iconUrl": chrome.extension.getURL("/res/icons/icon-128.png"),
             "title": "UbiquityWE",
             "message": "There is something wrong, try restarting UbiquityWE"
         });

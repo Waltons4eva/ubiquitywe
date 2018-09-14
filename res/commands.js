@@ -53,7 +53,7 @@ function formatMetaData(md) {
         + (license && authors.length > 0? ' | ': '')
         + (authors.length > 0? 'Authors: ': '')
         + span(authors, formatAuthors, "author", "createdby")
-        + (homepage? ' <a href="' + homepage + '"><img src="res/homepage.png"></a>': '')
+        + (homepage? ' <a href="' + homepage + '"><img src="/res/icons/homepage.png"></a>': '')
         + '</div>');
     return result;
 
@@ -112,7 +112,7 @@ function fillTableRowForCmd(row, cmd, className) {
 
     var cmdElement = jQuery(
         '<td class="command"><img class="favicon" src="'
-        + escapeHtml((!("icon" in cmd) || cmd["icon"] === "http://example.com/favicon.png")? "res/icon-24.png": cmd.icon) + '"/>' +
+        + escapeHtml((!("icon" in cmd) || cmd["icon"] === "http://example.com/favicon.png")? "/res/icons/icon-24.png": cmd.icon) + '"/>' +
         ('<a class="id" name="' + escapeHtml(cmd.id) + '"/>' +
             '<span class="name">' + escapeHtml(name) + '</span>') +
         '<span class="description"></span>' +
