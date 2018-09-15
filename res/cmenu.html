@@ -1,0 +1,48 @@
+<html xmlns="http://www.w3.org/1999/xhtml" style="cursor: auto ! important;" hasBrowserHandlers="true">
+<head>
+    <title>UbiquityWE Settings</title>
+    <meta charset="utf-8">
+    <link href="/res/icons/icon-24.png" rel="icon" type="image/x-png" />
+    <link rel="stylesheet" type="text/css" media="all" href="options.css"/>
+
+    <script src="/lib/jquery.min.js"></script>
+    <script src="/core.js"></script>
+    <script src="cmenu.js"></script>
+
+    <style>
+        #context-menu-container {
+            max-width: 870px;
+            display: flex;
+            flex-direction: column;
+        }
+
+    </style>
+</head>
+<body dir="ltr">
+<div class="head"><span class="large">UbiquityWE: </span>Settings</div>
+<div id="nav-container">
+    <ul id="nav">
+        <li class="selected"><a href="options.html">Settings</a></li>
+        <li><a href="commands.html">Your Commands</a></li>
+        <li><a href="cmenu.html">Context Menu</a></li>
+        <li><a href="edit.html">Command Editor</a></li>
+        <li><a href="tutorial.html">Tutorial</a></li>
+        <li><a href="API.html">API Reference</a></li>
+    </ul>
+</div>
+
+<br clear="all"/>
+<div class="page-tip">
+    <p>Add commands to context menu by pressing Ctrl+Alt+Enter in the command line.</p>
+</div>
+
+<div id="context-menu-container">
+    <h2 class="top">Context menu commands</h2>
+    <div id="context-menu-commands-wrapper"><table id="context-menu-commands"></table></div>
+    <div><input type="checkbox" id="cm-history-switch"/><label for="cm-history-switch">Do not add context menu commands to history</label></div>
+</div>
+
+<!--br clear="all"/>
+
+</body>
+</html>

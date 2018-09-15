@@ -143,7 +143,7 @@ function saveScripts() {
 
     // download link
     var a = document.getElementById("download");
-    var file = new Blob([customscripts], {type: "text/plain"});
+    var file = new Blob([customscripts], {type: "application/javascript"});
     a.href = URL.createObjectURL(file);
     a.download = scriptNamespace + (scriptNamespace === UBIQUITY_SETTINGS? ".json": ".js");
 }

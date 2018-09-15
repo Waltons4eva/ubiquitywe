@@ -113,7 +113,7 @@ h2{
   border-top: 1px solid black;
   font-variant: small-caps;
   color: black;
-  margin-top: 40px;
+  margin-top: 25px;
   padding: 10px 0;
 }
 
@@ -393,7 +393,7 @@ div.ubiq-tutorial h2 {
   width: 16px; height: 16px; margin: 0 2px -1px 0;
 }
 
-#ubiq-debug-mode, .imp-exp, .advanced {
+#ubiq-debug-mode{
   display: none;
 }
 
@@ -458,4 +458,21 @@ span.arguments {
     font-weight: 600;
     display: inline-block;
     margin-top: 10px;
+}
+
+.key-container {
+  display: flex;
+}
+
+.key-value {
+  flex: 1 1 auto;
+}
+
+.key-help {
+  display: inline-block;
+  flex: 0 1 auto;
+}
+
+.advanced {
+  margin: 5px;
 }

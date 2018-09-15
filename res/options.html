@@ -10,17 +10,8 @@
     <script src="options.js"></script>
 
     <style>
-        .warning {
-            width: 740px;
-            padding: 5px;
-            border: 1px solid #F09B9A;
-            background-color: #FFFCBA;
-        }
-
-        .prefkeys {
-            width: 88%;
-            cursor: pointer;
-            padding: 1px 0.5em
+        #file-picker {
+            display: none;
         }
     </style>
 </head>
@@ -28,12 +19,12 @@
 <div class="head"><span class="large">UbiquityWE: </span>Settings</div>
 <div id="nav-container">
     <ul id="nav">
-        <li><a href="tutorial.html">Tutorial</a></li>
         <li class="selected"><a href="options.html">Settings</a></li>
         <li><a href="commands.html">Your Commands</a></li>
-        <li><a href="API.html">API Reference</a></li>
-        <li><a href="/popup.html" target="_blank">Debug Popup</a></li>
+        <li><a href="cmenu.html">Context Menu</a></li>
         <li><a href="edit.html">Command Editor</a></li>
+        <li><a href="tutorial.html">Tutorial</a></li>
+        <li><a href="API.html">API Reference</a></li>
     </ul>
 </div>
 
@@ -43,13 +34,14 @@
     <p>You can get to this page at any time using the “change-ubiquity-settings” command.</p>
 </div>
 
-<br clear="all"/>
-
 <div class="col-five">
-    <h2 class="top">Context menu commands</h2>
-    <p>Add commands to context menu by pressing Ctrl+Alt+Enter in the command line.</p>
-    <div id="context-menu-commands-wrapper"><table id="context-menu-commands"></table></div>
-    <div><input type="checkbox" id="cm-history-switch"/><label for="cm-history-switch">Do not add context menu commands to history</label></div>
+    <h2 class="top">Web API Settings</h2>
+    <h5>ABBYY LingvoLive API Key</h5>
+    <div class="key-container"><input id="lingvo-api-key" type="text" class="key-value"/>
+        <span class="key-help">&nbsp;<a href="https://developers.lingvolive.com/en-us/Help" target="_blank">?</a></span></div>
+    <h5>Bing Translator API v3 Key</h5>
+    <div class="key-container"><input id="bing-translator-api-key" type="text"  class="key-value"/>
+        <span class="key-help">&nbsp;<a href="https://www.microsoft.com/en-us/translator/business/trial/" target="_blank">?</a></span></div>
 </div>
 
 <div class="col-four">
@@ -69,9 +61,15 @@
             <td>Maximum number of suggestions:</td>
             <td><input id="max-suggestions" size="5" style="text-align:center" type="text"/></td>
         </tr>
+        <tr id="max-search-results-row">
+            <td>Maximum number of search results<sup class="help" title="Limited by the amount of results available at your search engine page.">?</sup>:</td>
+            <td><input id="max-search-results" size="5" style="text-align:center" type="text"/></td>
+        </tr>
     </table>
-    <h2 class="advanced">Advanced Settings</h2>
-    <div class="advanced"><a href="options2.html">Advanced Ubiquity settings</a></div>
+    <h2>Import/Export</h2>
+    <div class="advanced"><a href="#" id="export-settings">Export Ubiquity settings</a></div>
+    <div class="advanced"><a href="#" id="import-settings">Import Ubiquity settings</a></div>
+    <input type="file" id="file-picker"/>
 </div>
 
 <!--br clear="all"/>

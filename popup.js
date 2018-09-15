@@ -124,8 +124,8 @@ function ubiq_execute(input) {
 }
 
 function ubiq_help() {
-    var html = "<div id='ubiq-help-wrapper'><p>Type the name of a command and press Enter to execute it. "
-        + "Use <b>help</b> command for assistance.</p>";
+    var html = "<div id='ubiq-help-wrapper'>Type the name of a command and press Enter to execute it. "
+        + "Use <b>help</b> command for assistance.";
     html += "<p>";
     html += "<div class='ubiq-help-heading'>Keyboard Shortcuts</div>";
     html += "<span class='keys'>Ctrl+C</span> - copy preview to clipboard<br>";
