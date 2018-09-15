@@ -65,8 +65,8 @@ This means, that porting of existing commands to UbiquityWE will require some ef
 
 #### Debug mode
 
-Debug mode allows to live-edit UbiquityWE settings as text with the edit-firefox-settings command, 
-which may be useful if you need to transfer them between Firefox profiles. 
+Debug mode allows to live-edit UbiquityWE settings as text with the edit-firefox-settings command. 
+This may be useful if you need to transfer them between Firefox profiles. 
 To enter tebug mode type:
 
 `debug mode on` 
@@ -81,8 +81,8 @@ to turn it off.
 Behavior of Ubiquity in the debug mode may differ from the regular one.
 
 If you have an [Azure](http://azure.com) account, you can enter Translator API v3 
-[key](https://www.microsoft.com/en-us/translator/business/trial/) in the advanced Ubiquity 
-settings to have a personal quota on translation.
+[key](https://www.microsoft.com/en-us/translator/business/trial/) in the Ubiquity 
+debug mode settings to have a personal quota on translation.
 
 #### TODO
 
