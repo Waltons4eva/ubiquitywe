@@ -7,7 +7,7 @@ CmdUtils.CreateCommand({
     icon: "/res/icons/settings.png",
     builtIn: true,
     _namespace: "Ubiquity", // do not set this field in custom commands
-    description: "Takes you to the Ubiquity <a href=options.html target=_blank>settings page</a>.",
+    description: "Takes you to the Ubiquity <a href='options.html' target=_blank>settings page</a>.",
     execute: function() {
         CmdUtils.addTab("res/options.html");
     }
@@ -56,7 +56,7 @@ CmdUtils.CreateCommand({
     icon: "/res/icons/plugin_edit.png",
     _namespace: "Ubiquity",
     builtIn: true,
-    description: "Takes you to the Ubiquity command <a href=edit.html target=_blank>editor page</a>.",
+    description: "Takes you to the Ubiquity command <a href='edit.html' target=_blank>editor page</a>.",
     execute: function() {
         CmdUtils.addTab("res/edit.html");
     }

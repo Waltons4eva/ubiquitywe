@@ -177,16 +177,16 @@ function insertNamespace(namespace, subtext, commands, table) {
 function buildTable(customscripts) {
     let table = jQuery("#commands-and-feeds-table");
 
-    var builtinCommands = CmdUtils.CommandList.filter((c) => c.builtIn).sort(compareByName);
-    var userCommands = CmdUtils.CommandList.filter((c) => !c.builtIn).sort(compareByName);
-    var commandCount = builtinCommands.length + userCommands.length;
+    let builtinCommands = CmdUtils.CommandList.filter((c) => c.builtIn).sort(compareByName);
+    let userCommands = CmdUtils.CommandList.filter((c) => !c.builtIn).sort(compareByName);
+    let commandCount = builtinCommands.length + userCommands.length;
 
     jQuery("#num-commands").text(commandCount);
 
     const BUILTIN_AUTHOR = "by Ubiquity Authors";
 
     function insertBuiltinNamespace(ns) {
-        var namespaced = CmdUtils.CommandList.filter((c) => c.builtIn && c._namespace === ns).sort(compareByName);
+        let namespaced = CmdUtils.CommandList.filter((c) => c.builtIn && c._namespace === ns).sort(compareByName);
         insertNamespace(ns, BUILTIN_AUTHOR, namespaced, table);
     }
 
@@ -205,18 +205,20 @@ function buildTable(customscripts) {
     if (builtinCommands.length > 0)
         insertNamespace("Builtin Commands", BUILTIN_AUTHOR, builtinCommands, table);
 
-    // TODO: sort categories
-    for (n in customscripts) {
+    let userCommandsByCat = {};
+
+    for (let n in customscripts) {
         if (n !== "default") {
-            var commands = CmdUtils.CommandList.filter((c) => c._namespace === n).sort(compareByName);
-//            if (commands.length > 0)
-                insertNamespace(n, '<a href="edit.html?' + encodeURI(n)
-                    + '" target="_blank">Open in editor</a>', commands, table);
+            let commands = CmdUtils.CommandList.filter((c) => c._namespace === n).sort(compareByName);
+            userCommandsByCat[n] = commands;
         }
     }
 
+    for (let n of Object.keys(userCommandsByCat).sort())
+        insertNamespace(n, '<a href="edit.html?' + encodeURI(n)
+            + '" target="_blank">Open in editor</a>', userCommandsByCat[n], table);
+
     var defaultCommands = CmdUtils.CommandList.filter((c) => c._namespace === "default").sort(compareByName);
-//    if (defaultCommands.length > 0)
     insertNamespace("Other Commands", '<a href="edit.html" target="_blank">Open in editor</a>',
         defaultCommands, table);
 

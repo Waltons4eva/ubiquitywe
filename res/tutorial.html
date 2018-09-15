@@ -271,10 +271,10 @@ CmdUtils.CreateCommand({
                 function. This takes a template string and performs the appropriate substitution given the passed-in
                 JSON object. Templates can handle a wide range of functionality, as we are currently using TrimPath's <a
                         rel="nofollow" class="external text"
-                        href="http://code.google.com/p/trimpath/wiki/JavaScriptTemplates">JavascriptTemplates</a>. You
-                should read their site for more documentation. Although JavascriptTemplates has some nice features, such
-                as ${for},
-                in the most cases it is more convenient to use ES6 template strings nowadays.
+                        href="http://code.google.com/p/trimpath/wiki/JavaScriptTemplates">JavascriptTemplates</a>.
+                Although JavascriptTemplates has some nice features, such as ${for}, in the most cases it is more
+                convenient to use ES6 template strings nowadays, although you would completely
+                lose the ability to localize your command.
             </p>
             <h3 class="in-block"><span class="mw-headline" id="A_shortcut_for_localization_and_rendering_templates">A shortcut for localization and rendering templates</span>
             </h3>
@@ -991,9 +991,9 @@ CmdUtils.CreateCommand({
   preview: function tab_preview(pblock, args) {
     var tabName = args.object.text;
     if (tabName)
-      pblock.innerHTML = `Changes to &lt;strong&gt;${tabName}&lt;/strong&gt; tab.`;
+      pblock.innerHTML = _("Changes to &lt;strong&gt;${tab}&lt;/strong&gt; tab.", {tab: tabName});
     else
-      pblock.innerHTML = "Switch to a tab by name.";
+      pblock.innerHTML = _("Switch to a tab by name.");
   }
 });
 </pre>

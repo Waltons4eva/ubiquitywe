@@ -164,7 +164,7 @@ $(() => {
     editor.on("blur", saveScripts);
     editor.on("change", saveScripts);
 
-    function setNamespaceScripts(all_scripts, namespace) {
+    function editNamespaceScripts(all_scripts, namespace) {
         let namespace_scripts = all_scripts[namespace];
         if (namespace_scripts)
             editor.setValue(namespace_scripts.scripts || "", -1);
@@ -176,7 +176,7 @@ $(() => {
         saveScripts();
         Utils.getCustomScripts(all_scripts => {
             scriptNamespace = $("#script-namespaces").val();
-            setNamespaceScripts(all_scripts, scriptNamespace);
+            editNamespaceScripts(all_scripts, scriptNamespace);
         });
     });
 
@@ -209,18 +209,20 @@ $(() => {
                         if (n.toLowerCase() == name.toLowerCase()) {
                             scriptNamespace = n;
                             $("#script-namespaces").val(n);
-                            setNamespaceScripts(all_scripts, scriptNamespace)
+                            editNamespaceScripts(all_scripts, scriptNamespace)
                             break ADD_NAME;
                         }
                     }
 
-                    editor.setValue("");
+                    editor.getSession().setValue("");
 
                     scriptNamespace = name;
                     $("#script-namespaces").append($("<option></option>")
                         .attr("value", name)
                         .text(name))
                         .val(name);
+
+
                 }
             });
         }
@@ -235,7 +237,7 @@ $(() => {
                     $('option:selected', $("#script-namespaces")).remove();
 
                     scriptNamespace = $("#script-namespaces").val();
-                    setNamespaceScripts(all_scripts, scriptNamespace);
+                    editNamespaceScripts(all_scripts, scriptNamespace);
                 });
             }
     });
@@ -291,7 +293,7 @@ $(() => {
                             .text(n));
                 $("#script-namespaces").val(scriptNamespace);
 
-                setNamespaceScripts(all_scripts, scriptNamespace);
+                editNamespaceScripts(all_scripts, scriptNamespace);
                 saveScripts();
             });
     }
