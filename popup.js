@@ -436,6 +436,22 @@ $(window).on('load', function() {
             }
         }
 
+        // in Chrome popup links are not clickable
+        if (CmdUtils.BROWSER !== "Firefox") {
+            let observer = new MutationObserver(mutations => {
+                for (let m of mutations) {
+                    for (let n of m.addedNodes) {
+                        let links = $(n).find("a");
+
+                        links.each((_, a) => {
+                            a.onclick = e => CmdUtils.addTab(a.href);
+                        });
+                    }
+                }
+            });
+            observer.observe(ubiq_preview_el(), {"childList": true, "subtree": true});
+        }
+
          CmdUtils.updateActiveTab(() => {
              ubiq_load_input(() => {
                  ubiq_show_matching_commands();
@@ -450,7 +466,7 @@ $(window).on('load', function() {
         document.addEventListener('keyup', function (e) {
             ubiq_keyup_handler(e);
         }, false);
-    } else {
+        } else {
         chrome.tabs.create({ "url": "chrome://extensions" });
         chrome.notifications.create({
             "type": "basic",

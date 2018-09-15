@@ -98,3 +98,4 @@ chrome.tabs.onHighlighted.addListener(function (higInfo) {
     //if (CmdUtils.DEBUG) console.log("onHighlighted", higInfo);
     CmdUtils.updateActiveTab();
 });
+

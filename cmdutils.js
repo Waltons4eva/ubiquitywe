@@ -4,6 +4,11 @@ if (!CmdUtils) var CmdUtils = {
     VERSION: chrome.runtime.getManifest().version,
     DEBUG: undefined,
     MORE_COMMANDS: false,
+    BROWSER: (typeof chrome !== "undefined")
+        ? ((typeof browser !== "undefined")
+            ? "Firefox"
+            : "Chrome")
+        : undefined,
     CommandList: [],
     DisabledCommands: {},
     ContextMenuCommands: [],
@@ -52,8 +57,6 @@ CmdUtils.renderTemplate = function (template, data) {
     return TrimPath.parseTemplate(template).process(data);
 };
 
-var __globId = 0;
-
 // creates command and adds it to command array, name or names must be provided and preview execute functions
 CmdUtils.CreateCommand = function CreateCommand(options) {
     if (Array.isArray(options.name)) {
@@ -64,20 +67,22 @@ CmdUtils.CreateCommand = function CreateCommand(options) {
         options.names = options.names || [options.name];
     }
 
-    options.id = options.uuid? options.uuid: options.name + __globId++;
+    let args = options.arguments || options.argument;
+    if (!args)
+        args = options.arguments = [];
 
+    options.id = options.uuid? options.uuid: Utils.hash(options.name + JSON.stringify(args));
+
+    let nounId = 0;
     function toNounType(obj, key) {
         var val = obj[key];
         if (!val) return;
         var noun = obj[key] = NounUtils.NounType(val);
-        if (!noun.id) noun.id = options.id + "#n" + __globId++;
+        if (!noun.id) noun.id = options.id + "#n" + nounId++;
     }
 
     ASSIGN_ARGUMENTS:
     {
-        let args = options.arguments || options.argument;
-        if (!args)
-            args = options.arguments = [];
         // handle simplified syntax
         if (typeof args.suggest === "function")
         // argument: noun
@@ -97,6 +102,8 @@ CmdUtils.CreateCommand = function CreateCommand(options) {
     }
 
     options._preview = options.preview;
+
+    if (CmdUtils.BROWSER)
 
     var to = parseFloat(options.timeout || options.previewDelay);
     if (to > 0) {
@@ -158,7 +165,6 @@ CmdUtils.commandHistoryPush = function(input) {
         });
     }
 };
-
 
 // helper to avoid stealing focus in preview
 CmdUtils._restoreFocusToInput = function(event) {
@@ -282,19 +288,56 @@ CmdUtils.addContextMenuCommand = function(uuid, label, command) {
     Utils.setPref("contextMenuCommands", CmdUtils.ContextMenuCommands, () => CmdUtils.createContextMenu());
 };
 
+CmdUtils._executeContextMenuItem = function(command, contextMenuCmdData) {
+    let commandDef = CmdUtils.getCommandByUUID(contextMenuCmdData.uuid);
+
+    if (!commandDef.preview || typeof commandDef.preview !== "function"
+        || contextMenuCmdData.execute) {
+        let parser = NLParser.makeParserForLanguage(CmdUtils.parserLanguage, CmdUtils.CommandList);
+        let query = parser.newQuery(command, null, CmdUtils.maxSuggestions, true);
+
+        query.onResults = () => {
+            let sent = query.suggestionList
+            && query.suggestionList.length > 0? query.suggestionList[0]: null;
+            if (sent && sent._verb.cmd.uuid.toLowerCase() === commandDef.uuid.toLowerCase()) {
+
+                Utils.callPersistent(sent._verb.cmd.uuid, sent, sent.execute);
+
+                if (CmdUtils.rememberContextMenuCommands)
+                    CmdUtils.commandHistoryPush(contextMenuCmdData.command);
+
+                if (CmdUtils.DEBUG)
+                    parser.strengthenMemory(sent);
+            }
+            else
+                CmdUtils.deblog("Context menu command/parser result mismatch")
+        };
+
+        query.run();
+        return true;
+    }
+
+    return false;
+};
+
 CmdUtils.createContextMenu = function() {
     chrome.contextMenus.removeAll();
 
     let contexts = ["selection", "link", "page", "editable"];
 
     for (let c of CmdUtils.ContextMenuCommands) {
-        let commandDef = CmdUtils.getCommandByUUID(c.uuid);
-        chrome.contextMenus.create({
+        let menuInfo = {
             id: c.command,
             title: c.label,
-            icons: {"16": commandDef && commandDef.icon? commandDef.icon: "/res/icons/icon-24.png"},
             contexts: contexts
-        });
+        };
+
+        let commandDef = CmdUtils.getCommandByUUID(c.uuid);
+
+        if (CmdUtils.BROWSER === "Firefox")
+            menuInfo.icons = {"16": commandDef && commandDef.icon? commandDef.icon: "/res/icons/icon-24.png"};
+
+        chrome.contextMenus.create(menuInfo);
     }
 
     if (CmdUtils.ContextMenuCommands.length > 0)
@@ -303,12 +346,17 @@ CmdUtils.createContextMenu = function() {
             type: "separator",
             contexts: contexts
         });
-    chrome.contextMenus.create({
+
+    let menuInfo = {
         id: "ubiquity-settings",
         title: "Ubiquity Settings",
-        icons: {"32": "/res/icons/icon-32.png"},
         contexts: contexts
-    });
+    };
+
+    if (CmdUtils.BROWSER === "Firefox")
+        menuInfo.icons = {"32": "/res/icons/icon-32.png"};
+
+    chrome.contextMenus.create(menuInfo);
 
     if (!CmdUtils.contextMenuListener) {
         CmdUtils.contextMenuListener = function(info, tab) {
@@ -327,35 +375,16 @@ CmdUtils.createContextMenu = function() {
                     }
 
                     let contextMenuCmdData = CmdUtils.getContextMenuCommand(info.menuItemId);
-
-                    if (contextMenuCmdData) {
-                        let commandDef = CmdUtils.getCommandByUUID(contextMenuCmdData.uuid);
-
-                        if (!commandDef.preview || typeof commandDef.preview !== "function" || contextMenuCmdData.execute) {
-                            let parser = NLParser.makeParserForLanguage(CmdUtils.parserLanguage, CmdUtils.CommandList);
-                            let query = parser.newQuery(info.menuItemId, null, CmdUtils.maxSuggestions, true);
-
-                            query.onResults = () => {
-                                let sent = query.suggestionList && query.suggestionList.length > 0? query.suggestionList[0]: null;
-                                if (sent && sent._verb.cmd.uuid.toLowerCase() === commandDef.uuid.toLowerCase()) {
-                                    Utils.callPersistent(sent._verb.cmd.uuid, sent, sent.execute);
-                                    if (CmdUtils.rememberContextMenuCommands)
-                                        CmdUtils.commandHistoryPush(contextMenuCmdData.command);
-                                    if (CmdUtils.DEBUG)
-                                        parser.strengthenMemory(sent);
-                                }
-                                else
-                                    CmdUtils.deblog("Context menu command/parser result mismatch")
-                            };
-
-                            query.run();
-                            return;
+                    if (contextMenuCmdData
+                            && !CmdUtils._executeContextMenuItem(info.menuItemId, contextMenuCmdData))
+                        if (CmdUtils.BROWSER === "Firefox") {
+                            CmdUtils.selectedContextMenuCommand = info.menuItemId;
+                            chrome.browserAction.openPopup();
                         }
-                    }
-                    CmdUtils.selectedContextMenuCommand = info.menuItemId;
-                    chrome.browserAction.openPopup();
+                        else
+                            CmdUtils.notify("Only command execution is supported in Google Chrome.", "Error");
             }
-        };
+        }
         chrome.contextMenus.onClicked.addListener(CmdUtils.contextMenuListener);
     }
 };
@@ -452,7 +481,7 @@ CmdUtils.loadCSS = function(doc, id, file) {
 CmdUtils.updateSelection = function (tab_id, callback) {
     try {
         chrome.tabs.executeScript(tab_id, {code: "__ubiq_get_sel()"}, function (selection) {
-            if (selection && selection.length > 0) {
+            if (selection && selection.length > 0 &&  selection[0]) {
                 CmdUtils.selectedText = selection[0].text || "";
                 CmdUtils.selectedHtml = selection[0].html || "";
             }
@@ -513,7 +542,7 @@ ContextUtils.setSelection = CmdUtils.setSelection = function setSelection(s) {
     s = s.replace(/(['"])/g, "\\$1");
     s = s.replace(/\\\\/g, "\\");
     // http://jsfiddle.net/b3Fk5/2/
-    console.log("Allahu akbar!!!");
+
     var insertCode = `
     function replaceSelectedText(replacementText) {
         var sel, range;
@@ -523,7 +552,6 @@ ContextUtils.setSelection = CmdUtils.setSelection = function setSelection(s) {
         if (activeElement.nodeName == "TEXTAREA" ||
             (activeElement.nodeName == "INPUT" && (activeElement.type.toLowerCase() == "text"
                 || activeElement.type.toLowerCase() == "search"))) {
-            console.log("subhan Allah");
                 var val = activeElement.value, start = activeElement.selectionStart, end = activeElement.selectionEnd;
                 activeElement.value = val.slice(0, start) + replacementText + val.slice(end);
         } else {
@@ -793,7 +821,7 @@ CmdUtils.makeSearchCommand.preview = function searchPreview(pblock, {object: {te
 
     function put() {
         pblock.innerHTML =
-            "<div class='search-command'>" + Array.join(arguments, "") + "</div>";
+            "<div class='search-command'>" + Array.prototype.join.call(arguments, "") + "</div>";
     }
     var {parser, global} = this, queryHtml =
         "<strong class='query'>" + Utils.escapeHtml(text) + "</strong>";

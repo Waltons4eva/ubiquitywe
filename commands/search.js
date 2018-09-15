@@ -127,6 +127,11 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
         description: "Browse pictures from Google Images.",
         url: "https://www.google.com/search?tbm=isch&q={QUERY}",
         preview: function gi_preview(pblock, {object: {text: q}}) {
+            if (CmdUtils.BROWSER !== "Firefox") {
+                pblock.innerHTML = "Only Firefox is supported."
+                return;
+            }
+
             if (!q) return void this.previewDefault(pblock)
 
             pblock.innerHTML = "..."
@@ -141,23 +146,23 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
                         `<em class=error>${xhr.status} ${xhr.statusText}</em>`
                 },
                 success: (html, status, xhr) => {
-                    var doc = xhr.responseXML
-                    // <a><img>
-                    var images = doc.querySelectorAll(".image")
-                        , info //= doc.querySelector("#topbar + div:not([id])")
+                    Utils.parseHtml(xhr.responseText, doc => {
+                        // <a><img>
+                        var images = doc.querySelectorAll(".image")
+                            , info //= doc.querySelector("#topbar + div:not([id])")
 
-                    var i = 0
-                    for (let a of images) {
-                        a.id        = i
-                        a.href      = Utils.urlToParams(a.href).imgurl
-                        a.accessKey = String.fromCharCode("A".charCodeAt() + i)
-                        let img = a.children[0]
-                        img.removeAttribute("height")
-                        img.removeAttribute("style")
-                        ++i
-                    }
-                    pblock.innerHTML = CmdUtils.renderTemplate(
-                       `<style>
+                        var i = 0
+                        for (let a of images) {
+                            a.id = i
+                            a.href = Utils.urlToParams(a.href).imgurl
+                            a.accessKey = String.fromCharCode("A".charCodeAt() + i)
+                            let img = a.children[0]
+                            img.removeAttribute("height")
+                            img.removeAttribute("style")
+                            ++i
+                        }
+                        pblock.innerHTML = CmdUtils.renderTemplate(
+                            `<style>
                         .navi, .thumbs {text-align: center}
                         .prev, .next {position: absolute}
                         .navi {font-weight: bold}
@@ -183,30 +188,31 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
                         <!--div class="info">${info}</div-->
                         <div class="thumbs">{for a in images}\${a.outerHTML}{/for}</div>
                         `, {
-                            images,
-                            info: info ? info.outerHTML : '',
-                            range: images.length
-                                ? `${data.start + 1} ~ ${data.start + images.length}`
-                                : 'x',
-                        })
+                                images,
+                                info: info ? info.outerHTML : '',
+                                range: images.length
+                                    ? `${data.start + 1} ~ ${data.start + images.length}`
+                                    : 'x',
+                            })
 
-                    if (!data.start)
-                        pblock.querySelector(".prev").disabled = true
-                    if (!doc.querySelector("#navbar > b"))
-                        pblock.querySelector(".next").disabled = true
-                    pblock.querySelector(".navi").addEventListener("click", e => {
-                        var b = e.target
-                        if (b.type !== "button") return
-                        e.preventDefault()
-                        b.disabled = true
-                        if (b.value === "<")
-                            data.start = starts.pop() || 0
-                        else {
-                            starts.push(data.start)
-                            data.start += images.length
-                        }
-                        CmdUtils.previewAjax(pblock, options)
-                    })
+                        if (!data.start)
+                            pblock.querySelector(".prev").disabled = true
+                        if (!doc.querySelector("#navbar > b"))
+                            pblock.querySelector(".next").disabled = true
+                        pblock.querySelector(".navi").addEventListener("click", e => {
+                            var b = e.target
+                            if (b.type !== "button") return
+                            e.preventDefault()
+                            b.disabled = true
+                            if (b.value === "<")
+                                data.start = starts.pop() || 0
+                            else {
+                                starts.push(data.start)
+                                data.start += images.length
+                            }
+                            CmdUtils.previewAjax(pblock, options)
+                        })
+                    });
                 },
             }
             CmdUtils.previewAjax(pblock, options)

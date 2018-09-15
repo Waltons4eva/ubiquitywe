@@ -65,8 +65,6 @@ function onDocumentLoad() {
     });
 
     $("#export-settings").mouseover((e) => {
-        //e.preventDefault();
-
         chrome.storage.local.get(undefined, (settings) => {
             var file = new Blob([JSON.stringify(settings, null, 2)], {type: "application/json"});
             e.target.href = URL.createObjectURL(file);

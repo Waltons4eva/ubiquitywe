@@ -83,7 +83,15 @@ var NounUtils = {};
         this.label = label;
         this.noExternalCalls = true;
         this.cacheTime = -1;
-        if (this.id) this.id += Utils.hashFnv32a(uneval(expected) + uneval(defaults));
+
+
+        if (this.id) {
+            let s1 = expected instanceof RegExp? expected.toString(): JSON.stringify(expected);
+            let s2 = defaults instanceof RegExp? defaults.toString(): JSON.stringify(defaults);
+
+            this.id += Utils.hash(s1 + s2);
+
+        }
         if (defaults) {
             // [[a], [b, c], ...] => [a].concat([b, c], ...) => [a, b, c, ...]
             this.default =

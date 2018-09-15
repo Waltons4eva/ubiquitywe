@@ -32,8 +32,8 @@
         <li><a href="commands.html">Your Commands</a></li>
         <li><a href="cmenu.html">Context Menu</a></li>
         <li><a href="edit.html">Command Editor</a></li>
-        <li class="selected"><a href="tutorial.html">Tutorial</a></li>
         <li><a href="API.html">API Reference</a></li>
+        <li class="selected"><a href="tutorial.html">Tutorial</a></li>
     </ul>
 </div>
 
@@ -44,9 +44,6 @@
 
     </nav>
     <div id="mw-mf-page-center">
-
-        <div id="content" class="mw-body"><p>Authors: Aza Raskin, Blair McBride, Abimanyu Raja, Jono DiCarlo, Atul
-            Varma, Gerrard Christensen</p>
 
             <div id="toc" class="toc-mobile"><h2>Contents</h2></div>
             <ul data-toc>
@@ -120,21 +117,13 @@ CmdUtils.CreateCommand({
   execute: function () { //etc }
 }
 </pre>
-            <p>means "Make an object with two attributes, 'names' and 'execute'." This object is then passed as the
+            <p>means "Make an object with three attributes, 'names', 'uuid' and 'execute'." This object is then passed as the
                 argument to <code>CmdUtils.CreateCommand</code>.
+                'names', 'uuid' and 'execute' are the only mandatory attributes for your command object. 'names' specifies
+                what the command is called, 'uuid' - is a globally (presumably) unique identifier of the command, and 'execute'
+                specifies what it does. There are plenty of other attributes that you can specify, but they are all optional.<br>
             </p>
             <h3 class="in-block"><span class="mw-headline" id="names">names</span></h3>
-            <p>'names', 'uuid' and 'execute' are the only mandatory attributes for your command object. 'names' specifies
-                what the command is called and 'execute' specifies what it does.<br>
-                'uuid' - is a globally (presumably) unique identifier of the command. Although, generally, a command will
-                run without this attribute, in this case it would not be able to store persistent data and it would be
-                not possible to add such a command to the browser context menu. An RFC 4122 v4 complaint UUID is generated
-                automatically for commands added through command editor templates. In the examples below we skip this
-                attribute for brevity.
-
-
-                There are plenty of other attributes that you can specify, but they are all optional.
-            </p>
             <p>'names' is always an array (thus the square brackets). In the case of this command we provided only one
                 name, "hello world". But we could have provided as many names as we wanted. For instance, if we had
                 said:
@@ -144,6 +133,15 @@ CmdUtils.CreateCommand({
             <p>then "say-hello" would be the normal name of the command, but Ubiquity would also recognize "greet" as a
                 synonym or alias for the command.
             </p>
+
+            <h3 class="in-block"><span class="mw-headline" id="uuid">uuid</span></h3>
+            <p> 'uuid' may be an arbitrary unique enough string, for example, homepage URL of the command.
+            Although generally, a command will run without this attribute, it would not be able to store persistent data
+            and it would be not possible to add such a command to the browser context menu. An RFC 4122 v4 complaint UUID is generated
+            automatically for commands added through command editor templates. In the examples below we omit this
+            attribute for brevity.
+            </p>
+
             <h3 class="in-block"><span class="mw-headline" id="execute">execute</span></h3>
             <p>'execute' is always a function. When the user executes your command, this is the function that will be
                 run. It can do pretty much anything you want - or at least, anything you know how to write in
@@ -1012,7 +1010,7 @@ CmdUtils.CreateCommand({
                     for you.
                 </p>
                 <h2 class="in-block"><span class="mw-headline" id="Running_on_page_load.2C_Ubiquity_load_and_startup"
-                >Running on Ubiquity load and when the extension popup-window is shown</span>
+                >Running on Ubiquity load and when Ubiquity popup is shown</span>
                 </h2>
                 There are two additional command properties may be set in CreateCommand for that purposes:
                 <ul>
@@ -1061,5 +1059,8 @@ CmdUtils.CreateCommand({
     });
 }
 </pre>
+<hr>
+                <div id="content" class="mw-body"><p>Authors: Aza Raskin, Blair McBride, Abimanyu Raja, Jono DiCarlo, Atul
+                    Varma, Gerrard Christensen</p>
 </body>
 </html>

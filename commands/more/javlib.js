@@ -20,7 +20,7 @@
         let img = page.find("#video_jacket_img").get(0);
         if (img && img.src) {
             let rect = pblock.getBoundingClientRect();
-            html += `<img id='javlib-cover' width='${rect.width - 20}' src='${img.src.replace("moz-extension:", "http:")}'/>`;
+            html += `<img id='javlib-cover' width='${rect.width - 20}' src='${img.src.replace(/^.*?-extension:/, "http:")}'/>`;
 
             let info = page.find("#video_info");
 
@@ -121,6 +121,7 @@
         _hidden: true,
         _namespace: NS_MORE_COMMANDS,
         execute: function execute({object: {text}}) {
+            Utils.openUrlInBrowser("http://www.javlibrary.com/en/vl_searchbyid.php?keyword=" + encodeURI(text.trim()));
         },
         preview: function preview(pblock, {object: {text}}) {
             if (text) {

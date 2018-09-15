@@ -164,6 +164,13 @@ $(() => {
     editor.on("blur", saveScripts);
     editor.on("change", saveScripts);
 
+    $(window).on('resize', e => {
+       editor.container.style.height = $(window).innerHeight() - $("#header").height() - $("#footer").height() - 16;
+       console.log(editor.container.style.height);
+       editor.resize();
+    });
+    $(window).resize();
+
     function editNamespaceScripts(all_scripts, namespace) {
         let namespace_scripts = all_scripts[namespace];
         if (namespace_scripts)

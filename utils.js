@@ -8,7 +8,10 @@ Utils.log = console.log;
 
 Utils.jsLog = (o) => console.log(JSON.stringify(o));
 
-Utils.trim = String.trim;
+Utils.trim = function(s) {
+    if (s)
+        return s.trim();
+};
 
 Utils.setTimeout = setTimeout;
 Utils.isArray = Array.isArray;
@@ -45,6 +48,10 @@ Utils.hashFnv32a = function (input) {
     }
 
     return hval >>> 0;
+};
+
+Utils.hash = function(s) {
+    return Utils.hashFnv32a(s);
 };
 
 Utils.parseHtml = function (htmlText, callback) {

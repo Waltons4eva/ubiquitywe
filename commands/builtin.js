@@ -336,16 +336,19 @@ CmdUtils.CreateCommand({
     license: "GPL",
     arguments: [{role: "object", nountype: noun_arb_text, label: "text"}],
     preview: async function (pblock, {object: {text}}) {
-        var words = text.split(' ');
-        var host = words[1];
-        pblock.innerHTML = "Shortens an URL (or the current tab) with bit.ly";
+        var host = text? text: CmdUtils.getLocation();
+        if (!host)
+            pblock.innerHTML = "No URL is provided.";
+        else
+            pblock.innerHTML = "Shortens " + host + " with bit.ly and copies it into clipboard.";
     },
-    execute: async function (directObject) {
+    execute: async function ({object: {text}}) {
         var url = "http://api.bit.ly/shorten?version=2.0.1&longUrl={QUERY}&login=" +
             bitly_api_user + "&apiKey=" + bitly_api_key;
-        var query = directObject.text;
+        var query = text;
         // Get the url from current open tab if none specified
-        if (!query || query == "") query = CmdUtils.getLocation();
+        if (!query) query = CmdUtils.getLocation();
+        if (!query) return;
         var urlString = url.replace("{QUERY}", query);
 
         var url = "http://api.bit.ly/shorten?version=2.0.1&longUrl={QUERY}&login=" + bitly_api_user + "&apiKey=" + bitly_api_key;
@@ -362,9 +365,10 @@ CmdUtils.CreateCommand({
         }
 
         var short_url = ajax.results[query].shortUrl;
-        CmdUtils.setPreview('<br/><p style="font-size: 24px; font-weight: bold; color: #ddf">' +
-            '<a target=_blank href="' + short_url + '">' + short_url + '</a>' +
-            '</p>');
         CmdUtils.setClipboard(short_url);
+
+        // CmdUtils.setPreview('<br/><p style="font-size: 24px; font-weight: bold; color: #ddf">' +
+        //     '<a target=_blank href="' + short_url + '">' + short_url + '</a>' +
+        //     '</p>');
     }
 });

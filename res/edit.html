@@ -26,8 +26,9 @@
 
         #code {
             width: 100%;
-            height: 95%;
-            padding-top: 5px;
+            height: 100%;
+
+            /*position: absolute; top: 40px; padding: 5px; left:0; bottom:0; right: 0;*/
         }
 
         #toolbar {
@@ -46,6 +47,9 @@
 
         #footer {
             margin-top: 5px;
+            padding-right: 30px;
+            margin-bottom: 5px;
+            flex: 0 1 auto;
         }
 
         #buttons {
@@ -72,6 +76,7 @@
 
 </head>
 <body dir="ltr">
+<div id="header">
 <div class="head"><span class="large">UbiquityWE: </span>Command Editor</div>
 <div id="nav-container">
     <ul id="nav">
@@ -79,8 +84,8 @@
         <li><a href="commands.html">Your Commands</a></li>
         <li><a href="cmenu.html">Context Menu</a></li>
         <li class="selected"><a href="edit.html">Command Editor</a></li>
-        <li><a href="tutorial.html">Tutorial</a></li>
         <li><a href="API.html">API Reference</a></li>
+        <li><a href="tutorial.html">Tutorial</a></li>
     </ul>
 </div>
 
@@ -99,17 +104,17 @@
     </select>
     <span id="ns-label">Category:&nbsp;</span>
 </div>
+</div>
 <div id="panel">
-
     <div id="code" name="code"></div>
-    <div id="footer">
-        <div id="info">Add and modify your custom commands. Saving is done automatically.</div>
-        <div id="buttons">
-             Insert template commands:
-            <a href=# id="insertsimplecommandstub">SIMPLE</a> |
-            <a href=# id="insertcommandstub">ALL FEATURES</a> |
-            <a href=# id="insertsearchstub">SEARCH</a>
-        </div>
+</div>
+<div id="footer">
+    <div id="info">Saving is done automatically.</div>
+    <div id="buttons">
+        Insert template commands:
+        <a href=# id="insertsimplecommandstub">SIMPLE</a> |
+        <a href=# id="insertcommandstub">ALL FEATURES</a> |
+        <a href=# id="insertsearchstub">SEARCH</a>
     </div>
 </div>
 </body>
