@@ -154,7 +154,7 @@ function ubiq_make_context_menu_cmd() {
         let command = ubiq_selected_sent.completionText.trim();
 
         if (!CmdUtils.getContextMenuCommand(command)) {
-            CmdUtils.addContextMenuCommand(ubiq_selected_sent._verb.cmd.uuid, input.trim(), command);
+            CmdUtils.addContextMenuCommand(ubiq_selected_sent._verb.cmd, input.trim(), command);
         }
     }
 }

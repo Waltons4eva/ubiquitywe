@@ -278,9 +278,10 @@ CmdUtils.getContextMenuCommand = function(input) {
     return CmdUtils.ContextMenuCommands.find(c => c.command.toLowerCase() === input.toLowerCase());
 };
 
-CmdUtils.addContextMenuCommand = function(uuid, label, command) {
+CmdUtils.addContextMenuCommand = function(cmdDef, label, command) {
     CmdUtils.ContextMenuCommands.push({
-        uuid: uuid,
+        uuid: cmdDef.uuid,
+        icon: cmdDef.icon,
         label: label,
         command: command
     });

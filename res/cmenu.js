@@ -8,9 +8,11 @@ function onDocumentLoad() {
     for (let cmd of CmdUtils.ContextMenuCommands) {
         commandList.append(`<tr id="${cmd.uuid}">
             <td class="remove-item" title="Remove item">&#xD7;</td>
-            <td><input type="text" name="label" title="Menu item label" value="${Utils.escapeHtml(cmd.label)}"/></td>
+            <td class="item-icon"><img height="16px" width="16px" src="${cmd.icon}"/></td>
+            <td class="item-label"><input type="text" name="label" title="Menu item label" value="${Utils.escapeHtml(cmd.label)}"/></td>
             <td><input type="text" name="command" title="Menu item command" value="${Utils.escapeHtml(cmd.command)}" disabled/></td>
-            <td><input type="checkbox" name="execute" title="Execute" ${cmd.execute ? "checked" : ""}/><img src="icons/execute.png" title="Execute"/></td>
+            <td class="execute-item"><input type="checkbox" name="execute" title="Execute" ${cmd.execute ? "checked" : ""}/>
+            <img src="icons/execute.png" title="Execute"/></td>
         </tr>`);
     }
 

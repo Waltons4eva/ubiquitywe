@@ -403,34 +403,6 @@ div.ubiq-tutorial h2 {
   position: relative;
 }
 
-#context-menu-commands-wrapper {
-    border-bottom: 1px solid black;
-    padding-bottom: 10px;
-    margin-bottom: 5px;
-}
-
-#context-menu-commands {
-    width: 100%;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-#context-menu-commands td:nth-child(2) {
-    width: 30%;
-}
-
-#context-menu-commands td:nth-child(4) {
-    width: 50px;
-}
-
-#context-menu-commands input[type="text"] {
-    width: 100%;
-}
-
-#context-menu-commands .remove-item{
-    cursor: pointer;
-}
-
 .help {
     cursor: help;
 }

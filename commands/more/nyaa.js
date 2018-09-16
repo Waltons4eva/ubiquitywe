@@ -59,13 +59,20 @@
 
                             let link_t = jrow.find("td:nth-child(2) i.fa-download").get(0);
                             if (link_t) {
-                                link_t.innerHTML = "T";
-                                link_t.parentElement.href = link_t.parentElement.href;
+                                link_t = link_t.parentNode;
+                                link_t.href = link_t.href;
+                                $(link_t).css("text-decoration", "none");
+                                $(link_t).css("font-weight", "normal");
+                                link_t.innerHTML = "<span class='u-link-download'></span>";
                             }
 
                             let link_m = jrow.find("td:nth-child(2) i.fa-magnet").get(0);
-                            if (link_m)
-                                link_m.innerHTML = "U";
+                            if (link_m) {
+                                link_m = link_m.parentNode;
+                                $(link_m).css("text-decoration", "none");
+                                $(link_m).css("font-weight", "normal");
+                                link_m.innerHTML = "<span class='u-link-magnet'></span>";
+                            }
 
                             let size = jrow.find("td:nth-child(3)").get(0);
                             size.style.whiteSpace = "nowrap";
@@ -141,14 +148,16 @@
                             title.style.color = "#ff8533";
                             title.href = title.href;
 
+                            let link_td = jrow.find("td:nth-child(2)");
+                            link_td.css("white-space", "nowrap");
+
                             let link_t = jrow.find("td:nth-child(2) .icon-floppy");
                             if (link_t) {
                                 let a = link_t.get(0).parentNode;
                                 a.href = a.href;
-                                jQuery(a).css("display", "inline-block");
-                                //jQuery(a).css("margin-left", "3px");
-                                jQuery(a).css("font-style", "italic");
-                                a.innerHTML = "T";
+                                $(a).css("text-decoration", "none");
+                                $(a).css("font-weight", "normal");
+                                a.innerHTML = "<span class='u-link-download'></span>";
                                 if (server !== "www")
                                     a.remove();
                             }
@@ -156,13 +165,13 @@
                             let link_m = jrow.find("td:nth-child(2) .icon-magnet");
                             if (link_m) {
                                 let a = link_m.get(0).parentNode;
-                                jQuery(a).css("font-style", "italic");
+                                $(a).css("text-decoration", "none");
+                                $(a).css("font-weight", "normal");
+                                a.innerHTML = "<span class='u-link-magnet'></span>";
 
                                 let parent = a.parentNode;
                                 parent.removeChild(a);
                                 parent.appendChild(a);
-
-                                a.innerHTML = "U";
                             }
 
                             let dlinks = jrow.find("td:nth-child(2)").get(0);
@@ -259,6 +268,10 @@
             _failureMessage: "Error.",
             /*---------------------------------------------------------------------------*/
             _perform_check: get_releases,
+            /*---------------------------------------------------------------------------*/
+            popup: function (doc) {
+                CmdUtils.loadCSS(doc, "__soviet__", "/commands/more/fontawesome.css");
+            },
             /*---------------------------------------------------------------------------*/
             preview: function (pblock, {object: {text}}) {
                 pblock.innerHTML = tableTemplate;
