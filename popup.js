@@ -353,7 +353,7 @@ function ubiq_keydown_handler(evt) {
         let items = jQuery("[accessKey='" + String.fromCharCode(kc).toLowerCase() + "']");
         if (items.length > 0) {
             if (items[0].href)
-                CmdUtils.addTab(items[0].href);
+                chrome.tabs.create({ "url": items[0].href, active: false });
             else
                 items.click();
         }

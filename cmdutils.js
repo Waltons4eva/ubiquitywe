@@ -246,7 +246,7 @@ CmdUtils.getLocation = function getLocation() {
 
 // opens new tab with provided url
 Utils.openUrlInBrowser = CmdUtils.addTab = function addTab(url, callback) {
-    chrome.tabs.create({ "url": url }, tab => {if (callback) callback(tab)});
+    chrome.tabs.create({ "url": url, active: false }, tab => {if (callback) callback(tab)});
 };
 
 // opens new tab with post request and provided data
