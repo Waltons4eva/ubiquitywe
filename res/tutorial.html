@@ -556,7 +556,8 @@ CmdUtils.CreateCommand({
                 </p>
                 <p>For the "echo" command, we wanted the object-role argument to accept any text whatsoever, so for its
                     nountype we passed in the predefined <code>noun_arb_text</code> object. This object accepts any
-                    arbitrary text as a valid argument and passes it to the command unchanged.
+                    arbitrary text as a valid argument and passes it to the command unchanged.<br>
+                    Note: unexpected things may happen if a command contains more than one argument of this type.
                 </p>
                 <p>This is OK for very simple commands, like echoing back the user's input. But for commands that take
                     structured data, you will want to use more specific nountypes.
