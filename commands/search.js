@@ -127,11 +127,6 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
         description: "Browse pictures from Google Images.",
         url: "https://www.google.com/search?tbm=isch&q={QUERY}",
         preview: function gi_preview(pblock, {object: {text: q}}) {
-            if (CmdUtils.BROWSER !== "Firefox") {
-                pblock.innerHTML = "Only Firefox is supported.";
-                return;
-            }
-
             if (!q) return void this.previewDefault(pblock)
 
             pblock.innerHTML = "..."
@@ -151,11 +146,28 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
                         var images = doc.querySelectorAll(".image")
                             , info //= doc.querySelector("#topbar + div:not([id])")
 
+                        if (images.length === 0) {
+                            let meta = doc.querySelectorAll("div.rg_meta");
+                            images = [];
+
+                            meta.forEach(m => {
+                               let json = JSON.parse(m.textContent);
+                               let a = document.createElement("a");
+                               a.setAttribute("href", json["ou"]);
+                               let img = document.createElement("img");
+                               img.src = json["tu"];
+                               a.appendChild(img);
+                               images.push(a);
+                            });
+                        }
                         var i = 0
                         for (let a of images) {
-                            a.id = i
-                            a.href = Utils.urlToParams(a.href).imgurl
-                            a.accessKey = String.fromCharCode("A".charCodeAt() + i)
+                            a.id = i;
+                            let params = Utils.urlToParams(a.href);
+                            if (params && params.imgurl)
+                                a.href = params.imgurl;
+                            if (i < 32)
+                                a.accessKey = String.fromCharCode("a".charCodeAt() + i)
                             let img = a.children[0]
                             img.removeAttribute("height")
                             img.removeAttribute("style")
@@ -179,6 +191,10 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
                           opacity: 0.5; color: #fff; background-color: #000;
                           font:bold medium monospace;
                         }
+                        img {
+                            max-width: 150px;
+                            max-height: 150px;
+                        }
                         </style>
                         <div class="navi">
                           \${range}
@@ -200,6 +216,7 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
                         if (!doc.querySelector("#navbar > b"))
                             pblock.querySelector(".next").disabled = true
                         pblock.querySelector(".navi").addEventListener("click", e => {
+                            CmdUtils.deblog("uuu");
                             var b = e.target
                             if (b.type !== "button") return
                             e.preventDefault()
