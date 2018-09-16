@@ -270,7 +270,7 @@
             _perform_check: get_releases,
             /*---------------------------------------------------------------------------*/
             popup: function (doc) {
-                CmdUtils.loadCSS(doc, "__soviet__", "/commands/more/fontawesome.css");
+                CmdUtils.loadCSS(doc, "__nyaa__", "/commands/more/fontawesome.css");
             },
             /*---------------------------------------------------------------------------*/
             preview: function (pblock, {object: {text}}) {

@@ -73,14 +73,26 @@ CmdUtils.CreateCommand(
                 }
             });
         },
+        _color_links: function(pblock) {
+            let rows = $(pblock).find("tr");
+            for (let row of rows) {
+                let jrow = $(row);
+                let num = jrow.find("td:nth-child(1)");
+                if (parseInt(num.text()) % 2 === 1) {
+                    let a = jrow.find("a");
+                    a.css("color", "#484848");
+                }
+
+            }
+        },
         _get_data: function (pblock, type, sport, division) {
             if (!sport)
                 return;
-
+            let self = this;
             let url = rootURL;
             switch (sport.toLowerCase()) {
                 case "football":
-                    url += "football/"
+                    url += "football/";
                     if (type) {
                         if (division === "england")
                             url += "world/england";
@@ -93,6 +105,7 @@ CmdUtils.CreateCommand(
                                 switch (type.toLowerCase()) {
                                     case "position":
                                         pblock.innerHTML = tables[0].outerHTML;
+                                        self._color_links(pblock);
                                         break;
                                     case "schedule":
                                         pblock.innerHTML = tables[1].outerHTML;
@@ -110,6 +123,7 @@ CmdUtils.CreateCommand(
                             switch (type.toLowerCase()) {
                                 case "position":
                                     pblock.innerHTML = tables[1].outerHTML;
+                                    self._color_links(pblock);
                                     break;
                                 case "schedule":
                                     pblock.innerHTML = tables[0].outerHTML;

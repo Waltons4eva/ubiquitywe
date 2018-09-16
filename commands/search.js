@@ -128,7 +128,7 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
         url: "https://www.google.com/search?tbm=isch&q={QUERY}",
         preview: function gi_preview(pblock, {object: {text: q}}) {
             if (CmdUtils.BROWSER !== "Firefox") {
-                pblock.innerHTML = "Only Firefox is supported."
+                pblock.innerHTML = "Only Firefox is supported.";
                 return;
             }
 
