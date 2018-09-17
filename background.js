@@ -57,13 +57,17 @@ Utils.getPref("microsoftTranslatorAPIKey", microsoftTranslatorAPIKey => {
 });
 
 Utils.getPref("suggestionMemory", suggestionMemory => {
-    CmdUtils.suggestionMemory = suggestionMemory || {__proto__: null};
+    Utils.suggestionMemory = suggestionMemory || {__proto__: null};
 });
 
 Utils.getPref("contextMenuCommands", contextMenuCommands => {
     if (contextMenuCommands)
         CmdUtils.ContextMenuCommands = contextMenuCommands;
     CmdUtils.createContextMenu();
+});
+
+Utils.getPref("enableOriginalParser", enableOriginalParser => {
+    CmdUtils.parserVersion = enableOriginalParser? 2: 3;
 });
 
 // setup selection event sink

@@ -30,4 +30,3 @@ switch(window.location.protocol) {
 //var backgroundPage = chrome.extension.getBackgroundPage();
 var Utils = backgroundPage.Utils;
 var CmdUtils = backgroundPage.CmdUtils;
-var NLParser = backgroundPage.NLParser;

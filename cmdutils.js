@@ -9,6 +9,7 @@ if (!CmdUtils) var CmdUtils = {
             ? "Firefox"
             : "Chrome")
         : undefined,
+    parserVersion: 3,
     CommandList: [],
     DisabledCommands: {},
     ContextMenuCommands: [],
@@ -23,6 +24,9 @@ if (!CmdUtils) var CmdUtils = {
     active_tab: null,   // tab that is currently active, updated via background.js 
     selectedText: "",   // currently selected text, update via content script selection.js
     selectedHTML: "",   // currently selected html, update via content script selection.js
+    get nlParser() {
+        return (CmdUtils.parserVersion === 2 ? NLParser2: NLParser3);
+    },
     setPreview: function(message, prepend) { console.log(message); },
 };
 
@@ -55,6 +59,10 @@ CmdUtils.deblog = function () {
 
 CmdUtils.renderTemplate = function (template, data) {
     return TrimPath.parseTemplate(template).process(data);
+};
+
+CmdUtils.makeParser = function() {
+    return CmdUtils.nlParser.makeParserForLanguage(CmdUtils.parserLanguage, CmdUtils.CommandList);
 };
 
 // creates command and adds it to command array, name or names must be provided and preview execute functions
@@ -246,7 +254,7 @@ CmdUtils.getLocation = function getLocation() {
 
 // opens new tab with provided url
 Utils.openUrlInBrowser = CmdUtils.addTab = function addTab(url, callback) {
-    chrome.tabs.create({ "url": url, active: false }, tab => {if (callback) callback(tab)});
+    chrome.tabs.create({ "url": url }, tab => {if (callback) callback(tab)});
 };
 
 // opens new tab with post request and provided data
@@ -294,15 +302,15 @@ CmdUtils._executeContextMenuItem = function(command, contextMenuCmdData) {
 
     if (!commandDef.preview || typeof commandDef.preview !== "function"
         || contextMenuCmdData.execute) {
-        let parser = NLParser.makeParserForLanguage(CmdUtils.parserLanguage, CmdUtils.CommandList);
+        let parser = CmdUtils.makeParser();
         let query = parser.newQuery(command, null, CmdUtils.maxSuggestions, true);
 
         query.onResults = () => {
             let sent = query.suggestionList
             && query.suggestionList.length > 0? query.suggestionList[0]: null;
-            if (sent && sent._verb.cmd.uuid.toLowerCase() === commandDef.uuid.toLowerCase()) {
+            if (sent && sent.getCommand().uuid.toLowerCase() === commandDef.uuid.toLowerCase()) {
 
-                Utils.callPersistent(sent._verb.cmd.uuid, sent, sent.execute);
+                Utils.callPersistent(sent.getCommand().uuid, sent, sent.execute);
 
                 if (CmdUtils.rememberContextMenuCommands)
                     CmdUtils.commandHistoryPush(contextMenuCmdData.command);

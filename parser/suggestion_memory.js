@@ -1,5 +1,5 @@
 function SuggestionMemory() {
-    this._table = CmdUtils.suggestionMemory;
+    this._table = Utils.suggestionMemory;
 }
 
 SuggestionMemory.prototype = {

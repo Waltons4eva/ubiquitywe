@@ -72,6 +72,23 @@ Utils.parseHtml = function (htmlText, callback) {
 
 // borrowed from utils.js of original Ubiquity
 
+// === {{{ Utils.extend(target, object1, [objectN ...]) }}} ===
+// Extends {{{target}}} by copying properties from the rest of arguments.
+// Deals with getters/setters properly. Returns {{{target}}}.
+
+Utils.extend = function(target) {
+    for (let i = 1, l = arguments.length; i < l; ++i) {
+        let obj = arguments[i];
+        for (let key of Object.keys(obj)) {
+            let g, s;
+            (g = Object.getOwnPropertyDescriptor(obj, key).get) && Object.defineProperty(target, key, {get: g});
+            (s = Object.getOwnPropertyDescriptor(obj, key).set) && Object.defineProperty(target, key, {set: s});
+            g || s || (target[key] = obj[key]);
+        }
+    }
+    return target;
+};
+
 // === {{{ Utils.paramsToString(params, prefix = "?") }}} ===
 // Takes the given object containing keys and values into a query string
 // suitable for inclusion in an HTTP GET or POST request.
@@ -173,10 +190,15 @@ Utils.escapeHtml.fn = function escapeHtml_sub($) {
     }
 };
 
+// === {{{ Utils.keys(object) }}} ===
+// Returns an array of all own, enumerable property names of {{{object}}}.
+
+Utils.keys = function(obj) { return Object.keys(Object(obj)) }
+
 // === {{{ Utils.isEmpty(value) }}} ===
 // Returns whether or not the {{{value}}} has no own properties.
 
-Utils.isEmpty = function(val) { return !keys(val).length }
+Utils.isEmpty = function(val) { return !Utils.keys(val).length }
 
 // === {{{ Utils.classOf(value) }}} ===
 // Returns the internal {{{[[Class]]}}} property of the {{{value}}}.
@@ -202,26 +224,84 @@ Utils.regexp = function(pattern, flags) {
     try {
         return RegExp(pattern, flags);
     } catch (e) {
-        return RegExp(regexp.quote(pattern), flags);
+        if (e instanceof SyntaxError)
+            return RegExp(regexp.quote(pattern), flags);
     }
 };
 
-// === {{{ Utils.extend(target, object1, [objectN ...]) }}} ===
-// Extends {{{target}}} by copying properties from the rest of arguments.
-// Deals with getters/setters properly. Returns {{{target}}}.
+// === {{{ Utils.regexp.quote(string) }}} ===
+// Returns the {{{string}}} with all regexp meta characters in it backslashed.
 
-Utils.extend = function(target) {
-    for (let i = 1, l = arguments.length; i < l; ++i) {
-        let obj = arguments[i];
-        for (let key of Object.keys(obj)) {
-            let g, s;
-            (g = Object.getOwnPropertyDescriptor(obj, key).get) && Object.defineProperty(target, key, {get: g});
-            (s = Object.getOwnPropertyDescriptor(obj, key).set) && Object.defineProperty(target, key, {set: s});
-            g || s || (target[key] = obj[key]);
+Utils.regexp.quote = function re_quote(string) {
+    return String(string).replace(/[.?*+^$|()\{\[\\]/g, "\\$&");
+};
+
+// === {{{ Utils.regexp.Trie(strings, asPrefixes) }}} ===
+// Creates a {{{RegexpTrie}}} object that builds an efficient regexp
+// matching a specific set of {{{strings}}}.
+// This is a JS port of
+// [[http://search.cpan.org/~dankogai/Regexp-Trie-0.02/lib/Regexp/Trie.pm]]
+// with a few additions.
+//
+// {{{strings}}} is an optional array of strings to {{{add()}}}
+// (or {{{addPrefixes()}}} if {{{asPrefixes}}} evaluates to {{{true}}})
+// on initialization.
+
+Utils.regexp.Trie = function RegexpTrie(strings, asPrefixes) {
+    var me = {$: {__proto__: null}, __proto__: RegexpTrie.prototype};
+    if (strings) {
+        let add = asPrefixes ? "addPrefixes" : "add";
+        for (let str of strings) me[add](str);
+    }
+    return me;
+};
+Utils.extend(Utils.regexp.Trie.prototype, {
+        // ** {{{ RegexpTrie#add(string) }}} **\\
+        // Adds {{{string}}} to the Trie and returns self.
+        add: function RegexpTrie_add(string) {
+            var ref = this.$;
+            for (let char of string)
+            ref = ref[char] || (ref[char] = {__proto__: null});
+            ref[""] = 1; // {"": 1} as terminator
+            return this;
+        },
+        // ** {{{ RegexpTrie#addPrefixes(string) }}} **\\
+        // Adds every prefix of {{{string}}} to the Trie and returns self. i.e.:
+        // {{{
+        // RegexpTrie().addPrefixes("ab") == RegexpTrie().add("a").add("ab")
+        // }}}
+        addPrefixes: function RegexpTrie_addPrefixes(string) {
+            var ref = this.$;
+            for (let char of string)
+            ref = ref[char] || (ref[char] = {"": 1, __proto__: null});
+            return this;
+        },
+        // ** {{{ RegexpTrie#toString() }}} **\\
+        // Returns a string representation of the Trie.
+        toString: function RegexpTrie_toString() { return this._regexp(this.$) },
+    // ** {{{ RegexpTrie#toRegExp(flag) }}} **\\
+    // Returns a regexp representation of the Trie with {{{flag}}}.
+    toRegExp: function RegexpTrie_toRegExp(flag) { return RegExp(this, flag) },
+    _regexp: function RegexpTrie__regexp($) {
+    LEAF_CHECK: if ("" in $) {
+        for (let k in $) if (k) break LEAF_CHECK;
+        return "";
+    }
+    var {quote} = Utils.regexp, alt = [], cc = [], q;
+    for (let char in $) {
+        if ($[char] !== 1) {
+            let recurse = RegexpTrie__regexp($[char]);
+            (recurse ? alt : cc).push(quote(char) + recurse);
         }
+        else q = 1;
     }
-    return target;
-};
+    var cconly = !alt.length;
+    if (cc.length) alt.push(1 in cc ?  "[" + cc.join("") + "]" : cc[0]);
+    var result = 1 in alt ? "(?:" + alt.join("|") + ")" : alt[0];
+    if (q) result = cconly ? result + "?" : "(?:" + result + ")?";
+    return result || "";
+},
+});
 
 // === {{{ Utils.seq(lead_or_count, end, step = 1) }}} ===
 // Creates an iterator of simple number sequence.
@@ -258,6 +338,34 @@ Utils.extend(Sequence.prototype, {
         "[object Sequence(" + this.lead + "," + this.end + "," + this.step + ")]"
     ) },
 });
+
+// === {{{ Utils.powerSet(set) }}} ===
+// Creates a [[http://en.wikipedia.org/wiki/Power_set|power set]] of
+// an array like {{{set}}}. e.g.:
+// {{{
+// powerSet([0,1,2]) // [[], [0], [1], [0,1], [2], [0,2], [1,2], [0,1,2]]
+// powerSet("ab")    // [[], ["a"], ["b"], ["a","b"]]
+// }}}
+
+Utils.powerSet = function(arrayLike) {
+    var ps = [[]];
+    for (let i = 0, l = arrayLike.length; i < l; ++i) {
+        let next = [arrayLike[i]];
+        for (let j = 0, ll = ps.length; j < ll; ++j)
+            ps.push(ps[j].concat(next));
+    }
+    return ps;
+};
+
+// === {{{ Utils.dump(a, b, c, ...) }}} ===
+// A nicer {{{dump()}}} variant that
+// displays caller's name, concats arguments and appends a line feed.
+
+Utils.dump = function niceDump() {
+    var {caller} = arguments.callee;
+    dump((caller ? caller.name + ": " : "") +
+        Array.join(arguments, " ") + "\n");
+};
 
 // == Bin ==
 // A simple interface to access the feed's persistent JSON storage.
@@ -342,12 +450,21 @@ Utils.callPersistent = function (uuid, obj, f) {
 };
 
 Utils.easterListener = function(input) {
-    if (input.trim().toLowerCase() === "debug mode on") {
+    if (input.trim().toLowerCase() === "enable debug mode") {
         Utils.setPref("debugMode", true, () => chrome.runtime.reload());
         return true;
     }
-    else if (input.trim().toLowerCase() === "debug mode off") {
+    else if (input.trim().toLowerCase() === "disable debug mode") {
         Utils.setPref("debugMode", false, () => chrome.runtime.reload());
+        return true;
+    }
+
+    if (input.trim().toLowerCase() === "enable original parser") {
+        Utils.setPref("enableOriginalParser", true, () => chrome.runtime.reload());
+        return true;
+    }
+    else if (input.trim().toLowerCase() === "disable original parser") {
+        Utils.setPref("enableOriginalParser", false, () => chrome.runtime.reload());
         return true;
     }
 

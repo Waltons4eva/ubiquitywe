@@ -10,6 +10,7 @@
 var ubiq_selected_command = 0;
 var ubiq_selected_sent;
 var ubiq_suggestions;
+var ubiq_parser;
 
 // closes ubiquity popup, it's needed to be defined here to work in Firefox
 CmdUtils.closePopup = function closePopup(w) {
@@ -78,7 +79,7 @@ function ubiq_show_preview(sent, args) {
     if (sent == null)
         return;
 
-    var commandDef = sent._verb.cmd;
+    var commandDef = sent.getCommand();
     if (!commandDef || !commandDef.preview)
         return;
 
@@ -119,7 +120,7 @@ function ubiq_execute(input) {
     if (ubiq_selected_sent) {
         CmdUtils.commandHistoryPush(input);
         CmdUtils.closePopup();
-        Utils.callPersistent(ubiq_selected_sent._verb.cmd.uuid, ubiq_selected_sent, ubiq_selected_sent.execute);
+        Utils.callPersistent(ubiq_selected_sent.getCommand().uuid, ubiq_selected_sent, ubiq_selected_sent.execute);
     }
 }
 
@@ -154,7 +155,7 @@ function ubiq_make_context_menu_cmd() {
         let command = ubiq_selected_sent.completionText.trim();
 
         if (!CmdUtils.getContextMenuCommand(command)) {
-            CmdUtils.addContextMenuCommand(ubiq_selected_sent._verb.cmd, input.trim(), command);
+            CmdUtils.addContextMenuCommand(ubiq_selected_sent.getCommand(), input.trim(), command);
         }
     }
 }
@@ -217,7 +218,7 @@ function ubiq_select_command(index) {
         elt.parent().addClass('selected');
 
         ubiq_autocomplete();
-        ubiq_set_preview(ubiq_selected_sent._verb.cmd.description);
+        ubiq_set_preview(ubiq_selected_sent.getCommand().description);
         ubiq_show_preview(ubiq_selected_sent);
     }
 }
@@ -242,7 +243,7 @@ function ubiq_show_matching_commands(text) {
     if (!text) text = ubiq_get_input();
 
     if (text) {
-        var query = NLParser.instance.newQuery(text, null, CmdUtils.maxSuggestions, true);
+        var query = ubiq_parser.newQuery(text, null, CmdUtils.maxSuggestions, true);
 
         query.onResults = () => {
             ubiq_suggestions = query.suggestionList;
@@ -256,7 +257,7 @@ function ubiq_show_matching_commands(text) {
 
                 if (ubiq_selected_sent && !ubiq_suggestions[ubiq_selected_command].equalCommands(ubiq_selected_sent)
                         || !ubiq_selected_sent) {
-                    ubiq_set_preview(ubiq_suggestions[ubiq_selected_command]._verb.cmd.description);
+                    ubiq_set_preview(ubiq_suggestions[ubiq_selected_command].getCommand().description);
                 }
                 ubiq_show_preview(ubiq_suggestions[ubiq_selected_command]);
 
@@ -362,7 +363,7 @@ function ubiq_keydown_handler(evt) {
 
     // Ctrl+C copies preview to clipboard
     if (kc == 67 && evt.ctrlKey) {
-        backgroundPage.console.log("copy to clip");
+        //ackgroundPage.console.log("copy to clip");
         var el = ubiq_preview_el();
         if (!el) return;
         CmdUtils.setClipboard( el.innerText );
@@ -423,7 +424,7 @@ $(window).on('load', function() {
         CmdUtils.setPreview = ubiq_set_preview;
         CmdUtils.popupWindow = window;
 
-        NLParser.instance = NLParser.makeParserForLanguage(CmdUtils.parserLanguage, CmdUtils.CommandList);
+        ubiq_parser = CmdUtils.makeParser();
 
         for (cmd of CmdUtils.CommandList) {
             try {
@@ -482,5 +483,5 @@ $(window).on('unload', function() {
     CmdUtils.selectedHtml = "";
     CmdUtils.commandHistoryPush(ubiq_get_input());
     if (CmdUtils.DEBUG && ubiq_selected_sent)
-        NLParser.instance.strengthenMemory(ubiq_selected_sent);
+        ubiq_parser.strengthenMemory(ubiq_selected_sent);
 });

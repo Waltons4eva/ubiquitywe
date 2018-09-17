@@ -38,14 +38,14 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-NLParser = {};
+var NLParser3 = {};
 
-(function () {
+{
 
     var PLUGINS = [];
     var FLAG_DEFAULT = 1;
 
-    NLParser.ParserRegistry = {
+    NLParser3.ParserRegistry = {
         "en": {
             "name": "English",
             "anaphora": [
@@ -292,14 +292,14 @@ NLParser = {};
         parseSentence: parseSentence,
     };
 
-    NLParser.makeParserForLanguage =
+    NLParser3.makeParserForLanguage =
         function makeParserForLanguage(languageCode, verbList) {
             let plugin = PLUGINS[languageCode]
             if (!plugin) {
                 plugin = PLUGINS[languageCode] = {parseSentence: EnParser.parseSentence}
-                let parser = NLParser.ParserRegistry[languageCode]
+                let parser = NLParser3.ParserRegistry[languageCode]
                 if (!parser)
-                    parser = NLParser.ParserRegistry['en']
+                    parser = NLParser3.ParserRegistry['en']
                 plugin.roleMap = parser.roles
                 plugin.PRONOUNS = parser.anaphora
                 plugin.pronouns = parser.anaphora.map(a =>
@@ -633,9 +633,13 @@ NLParser = {};
         },
 
         equalCommands: function PS_equalCommands(other) {
-            if (!other || other && other._verb.cmd !== this._verb.cmd)
+            if (!other || other && other._verb.id !== this._verb.id)
                 return false;
             return true;
+        },
+
+        getCommand: function() {
+            return this._verb.cmd;
         },
 
         equals: function PS_equals(other) {
@@ -1080,4 +1084,4 @@ NLParser = {};
 
     hagureMetal.nonWord = /^\W/;
 
-})();
+}

@@ -20,8 +20,8 @@ function onDocumentLoad() {
   Utils.getPref("parserLanguage", parserLanguage => {
 
       var $langSelect = $("#language-select");
-      for (let code in NLParser.ParserRegistry) {
-          let $opt = $("<option>", {val: code, text: NLParser.ParserRegistry[code].name});
+      for (let code in CmdUtils.nlParser.ParserRegistry) {
+          let $opt = $("<option>", {val: code, text: CmdUtils.nlParser.ParserRegistry[code].name});
           $opt[0].selected = code === parserLanguage;
           $langSelect.append($opt);
       }
