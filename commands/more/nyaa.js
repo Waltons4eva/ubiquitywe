@@ -39,6 +39,8 @@
                     elt = doc.querySelector(".torrent-list");
                     let jelt = jQuery(elt);
 
+                    jQuery(doc.querySelector(".torrent-list")).css("width", "100%");
+
                     jelt.find("thead, td:nth-child(1), td:nth-child(5), .comments").remove();
 
                     jelt.find("td:nth-child(4)").each((i, cell) => {

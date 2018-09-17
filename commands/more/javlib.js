@@ -1,6 +1,4 @@
 {
-    let retry_ctr = 0;
-
     function fix_href(a, return_url) {
         if (a) {
             let tail = a.href.split("/");
@@ -49,7 +47,8 @@
                 jQuery(pblock).find("#javlib-cover").width(538);
         }
         else if (page.find(".videos .video").length > 0) {
-            page.find(".videos .video > a > .id").map((_, id) => html += `<a href='${fix_href(id.parentNode, true)}'>${id.textContent}</a> `);
+            page.find(".videos .video > a > .id")
+                .map((_, id) => html += `<a href='${fix_href(id.parentNode, true)}'>${id.textContent}</a> `);
             pblock.innerHTML = html;
             jQuery(pblock).find("a").click((e) => {
                 e.preventDefault();
@@ -66,14 +65,11 @@
             url: url,
             dataType: "html",
             success: function (data) {
-                retry_ctr = 0;
                 get_data(pblock, data, this);
             },
             statusCode: {
                 503: function (xhr) {
                     pblock.innerHTML = "Waiting for Cloudflare... When stuck, try to clear the recent history.";
-                    if (retry_ctr < 2) {
-                        retry_ctr += 1;
                         chrome.tabs.create({active: false, url: "http://javlibrary.com/en"}, new_tab => {
                             let retries = 0;
                             function checkForTitle() {
@@ -82,27 +78,29 @@
                                             ___title && ___title.length > 0? ___title[0].textContent: ''`},
                                     function (title) {
                                         if (title && title.length > 0 && title[0].toLowerCase().indexOf("javlibrary") >= 0) {
-                                            chrome.tabs.remove(new_tab.id);
                                             retries = 100;
-                                            CmdUtils.previewAjax(pblock, options);
+                                            setTimeout(() => {
+                                                chrome.tabs.remove(new_tab.id);
+                                                CmdUtils.previewAjax(pblock, options);
+                                            }, 2000);
                                         }
                                     });
 
                                 if (retries < 12) {
                                     retries += 1;
-                                    setTimeout(checkForTitle, 1000);
+                                    timeout = setTimeout(checkForTitle, 1000);
                                 }
+                                else
+                                    retries = 0;
                             }
 
                             checkForTitle();
                         });
-                    }
-                    else
-                        pblock.innerHTML = "Error.";
                 }
             },
             error: function (xhr) {
                 pblock.innerHTML = "Error.";
+                Utils.jsLog(xhr)
             }
         };
 

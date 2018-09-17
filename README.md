@@ -2,13 +2,13 @@
 
 A natural language interface for web browsers.
 
-[DOWNLOAD (Firefox Add-On)](https://github.com/GChristensen/ubichr/releases/download/v0.2.2.5/ubiquity_webeextension.xpi) :: [VIDEO MANUAL](https://youtu.be/YEdsVDZhcoQ)
+[DOWNLOAD (Firefox Add-On)](https://github.com/GChristensen/ubichr/releases/download/v0.2.2.6/ubiquity_webeextension.xpi) :: [VIDEO MANUAL](https://youtu.be/YEdsVDZhcoQ)
 
 ![screen](screen.png?raw=true)
 
 SEE ALSO: [Enso Portable](https://github.com/GChristensen/enso-portable#readme), [Dark Flow](https://github.com/GChristensen/dark-flow#readme), [Add Torrent](https://github.com/GChristensen/torrent-add#readme)
 
-UbiquityWE is a browser add-on available through Ctrl+Space key combination
+UbiquityWE is a browser add-on available by Ctrl+Space key combination
 that lets you give commands to a browser by entering text into a special input box.
 Commands are shortcuts for things that you commonly do on the Web; they can eliminate
 repetitive tasks and let you get more done, faster.
@@ -29,7 +29,7 @@ Nevertheless, Ubiquity is still immensely useful if
 you are able to write JavaScript to automate things you have (web)API for, to make intricate org-mode protocol capture
 schemes, etc., etc.
 
-After Mozilla introduced breaking changes into Firefox APIs, Satoshi Murakami
+After Mozilla had introduced breaking changes into Firefox APIs, Satoshi Murakami
 ([satyr](http://profile.hatena.ne.jp/murky-satyr/) - one of the creators of Ubiquity) became a maintainer who galvanized 
 Ubiquity until the last days of Firefox as we knew it (i.e. with "legacy" addon support).   
  
@@ -38,10 +38,10 @@ Unfortunately, almost all codebase of the original ubiquity is not functional in
 the new Firefox Quantum. The first attempts to resurrect Ubiquity came from the users 
 of Opera browser ([ubiquity-opera](https://github.com/cosimo/ubiquity-opera/blob/master/ubiquity.js))
  and continued on Google Chrome ([UbiChr](https://github.com/rostok/ubichr)).
-But their downside was the lack of natural language parser, which gave Ubiquity all
+But they lacked the natural language parser which gave Ubiquity all
 its superpowers. So, I have taken UbiChr (which is simple as AK-47 internally), 
 parser from the latest Ubiquity, combined them, added bells and whistles, and the fully functional 
-new Ubiquity went back to Firefox with this incarnation, 
+new Ubiquity went back to Firefox in the incarnation of UbuquityWE, 
 which means that it is now possible to port any "legacy" commands that are still compatible with
 WebExtension APIs with minimal changes. 
  
@@ -57,9 +57,9 @@ WebExtension APIs with minimal changes.
 Just out of curiosity I have ported two parsers: [Parser 2](https://wiki.mozilla.org/Labs/Ubiquity/Parser_2) 
 of the original Ubiquity and satyr's parser (which I call Parser 3). The former is not so
 good in the terms of usability but supperrior in some linguistic aspects, so you only can
-enable it if you are an interested developer. Parser 3 is more handy and enabled by default, 
-although it does not allow commands with whitespaces and uses "Hagure Metal" function to score suggestions
-(if you want to know how it works, ask satyr).
+enable it if you are an interested developer. Parser 3 is more handy and is enabled by default, 
+although it does not allow command names with whitespaces and uses "Hagure Metal" function to score suggestions
+(if you want to know how exactly it works, ask satyr).
 
  
 #### Additional functionality not found in the original Ubiquity
