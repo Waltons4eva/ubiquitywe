@@ -62,7 +62,9 @@ CmdUtils.renderTemplate = function (template, data) {
 };
 
 CmdUtils.makeParser = function() {
-    return CmdUtils.nlParser.makeParserForLanguage(CmdUtils.parserLanguage, CmdUtils.CommandList);
+    return CmdUtils.nlParser
+        .makeParserForLanguage(CmdUtils.parserLanguage, CmdUtils.CommandList, ContextUtils,
+            new SuggestionMemory("main_parser"));
 };
 
 // creates command and adds it to command array, name or names must be provided and preview execute functions

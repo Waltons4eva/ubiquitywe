@@ -2,7 +2,7 @@
 
 A natural language interface for web browsers.
 
-[DOWNLOAD (Firefox Add-On)](https://github.com/GChristensen/ubichr/releases/download/v0.2.2.4/ubiquity_webeextension.xpi) :: [VIDEO MANUAL](https://youtu.be/H3lPeXulqI4)
+[DOWNLOAD (Firefox Add-On)](https://github.com/GChristensen/ubichr/releases/download/v0.2.2.4/ubiquity_webeextension.xpi) :: [VIDEO MANUAL](https://youtu.be/YEdsVDZhcoQ)
 
 ![screen](screen.png?raw=true)
 
@@ -19,30 +19,59 @@ settings pages.
 
 #### History
 
-The [original Ubiquity](https://wiki.mozilla.org/Labs/Ubiquity) was a promising project aimed to familiarize masses with 
-natural language user interfaces. But eventually, it went popular 
-only within a community of handful of geeks, although, the [impressive repository](https://wiki.mozilla.org/Labs/Ubiquity/Commands_In_The_Wild) 
-of commands was created (due to the volatile nature of the Web, you will hardly find a working
-command there). Because "legacy" Firefox addons were able to do pretty 
-anything with the browser, there was much sense and joy in it. 
-Firefox Quantum has the more restrictive nature, and its extensions can do notable less currently,
-but Ubiquity is still immensely useful if you are able to write JavaScript to automate
-things you have (web)API for, to make intricate org-mode protocol capture schemes, etc., etc.     
+The [original Ubiquity](https://wiki.mozilla.org/Labs/Ubiquity) was a promising project by Mozilla aimed to familiarize
+masses with natural language user interfaces. But eventually, it went popular only within a community of handful of
+geeks and has been abandoned, although, the [impressive
+repository](https://wiki.mozilla.org/Labs/Ubiquity/Commands_In_The_Wild) of commands was created. 
+You have been meant to subscribe them to get updates automatically, but subscription model has ceased
+with the original ubiquity, and due to the volatile nature of the Web, you will hardly find a working command there.
+Nevertheless, Ubiquity is still immensely useful if
+you are able to write JavaScript to automate things you have (web)API for, to make intricate org-mode protocol capture
+schemes, etc., etc.
+
+After Mozilla introduced breaking changes into Firefox APIs, Satoshi Murakami
+([satyr](http://profile.hatena.ne.jp/murky-satyr/) - one of the creators of Ubiquity) became a maintainer who galvanized 
+Ubiquity until the last days of Firefox as we knew it (i.e. with "legacy" addon support).   
  
 
 Unfortunately, almost all codebase of the original ubiquity is not functional in 
-Firefox Quantum. There were several attempts to resurrect it, and this is a fork of 
-the Chrome Ubiquity addon (UbiChr) by [rostok](https://github.com/rostok/ubichr) 
-which lacked parser. UbiquityWE introduces parser from the last version 
-of "legacy" Ubiquity by [satyr](https://bitbucket.org/satyr/ubiquity), which means
-that you can port any "legacy" Ubiquity commands that are still compatible with
-the WebExtension API with minimal changes. UbiqutyWE improves user experience in many 
-other ways (see the video above for more details).
+the new Firefox Quantum. The first attempts to resurrect Ubiquity came from the users 
+of Opera browser ([ubiquity-opera](https://github.com/cosimo/ubiquity-opera/blob/master/ubiquity.js))
+ and continued on Google Chrome ([UbiChr](https://github.com/rostok/ubichr)).
+But their downside was the lack of natural language parser, which gave Ubiquity all
+its superpowers. So, I have taken UbiChr (which is simple as AK-47 internally), 
+parser from the latest Ubiquity, combined them, added bells and whistles, and the fully functional 
+new Ubiquity went back to Firefox with this incarnation, 
+which means that it is now possible to port any "legacy" commands that are still compatible with
+WebExtension APIs with minimal changes. 
+ 
+
+#### Source code
+
+* Source code of the original Ubiquity by Mozilla: https://github.com/mozilla/ubiquity
+* Source code of the latest Ubiquity by satyr: https://bitbucket.org/satyr/ubiquity
+* Source code of the original UbiChr: https://github.com/rostok/ubichr
+
+#### NL Parsers
+
+Just out of curiosity I have ported two parsers: [Parser 2](https://wiki.mozilla.org/Labs/Ubiquity/Parser_2) 
+of the original Ubiquity and satyr's parser (which I call Parser 3). The former is not so
+good in the terms of usability but supperrior in some linguistic aspects, so you only can
+enable it if you are an interested developer. Parser 3 is more handy and enabled by default, 
+although it does not allow commands with whitespaces and uses "Hagure Metal" function to score suggestions
+(if you want to know how it works, ask satyr).
+
  
 #### Additional functionality not found in the original Ubiquity
 
 * Ability to add commands to browser context menu.
 * User command categories.
+
+#### Additional functionality not found in the original UbiChr
+
+* Natural language parser from the original ubiquity.
+* Elaborate settings pages/tutorial/API reference.
+* Command history.
 
 #### Differences with the original Ubiquity
 
@@ -61,6 +90,11 @@ Insert the "full-featured" command template at UbiquityWE command editor for an 
 in Firefox Quantum or no easily reachable/public web API available anymore (which 
 was used, for example, by some built-in noun types). 
 This means, that porting of existing commands to UbiquityWE will require some effort.
+
+#### Differences with the original UbiChr
+
+* No backward compatibility with existing parserless UbiChr commands (although, it
+should be pretty easy to port one).
 
 #### TODO
 

@@ -6,14 +6,14 @@ CmdUtils.CreateCommand(
         names: ["soviet"],
         uuid: "BB563505-67B7-4E00-AE6A-547636EFF053",
         /*---------------------------------------------------------------------------*/
-        argument: [{role: "object", nountype: ["position", "schedule"], label: "table", default: "position"},
+        argument: [{role: "object", nountype: ["standings", "schedule"], label: "table", default: "standings"},
             {role: "modifier", nountype: ["football", "formula1"], label: "sport", default: "formula1"},
             {role: "format", nountype: ["premier", "first", "england"], label: "division", default: "premier"}],
         /*---------------------------------------------------------------------------*/
         description: "Get the latest soviet information about sport events.",
         help: `<span class="syntax">Syntax</span>
                 <ul class="syntax">
-                    <li><b>soviet</b> {<b>position</b> | <b>schedule</b>} <b>of</b> <i>sport</i> [<b>in</b> <i>division</i>]</li>
+                    <li><b>soviet</b> {<b>standings</b> | <b>schedule</b>} <b>of</b> <i>sport</i> [<b>in</b> <i>division</i>]</li>
                 </ul>
                 <span class="arguments">Arguments</span><br>
                 <ul class="syntax">
@@ -33,7 +33,7 @@ CmdUtils.CreateCommand(
                 </ul>
                 <span class="arguments">Example</span>
                 <ul class="syntax">
-                    <li><b>soviet</b> <i>position</i> <b>of</b> <i>football</i> <b>in</b> <i>england</i></li>
+                    <li><b>soviet</b> <i>standings</i> <b>of</b> <i>football</i> <b>in</b> <i>england</i></li>
                 </ul>`,
 
         previewDelay: 1000,
@@ -103,7 +103,7 @@ CmdUtils.CreateCommand(
                         this._get_url(pblock, url, function (tables) {
                             if (tables.length > 0) {
                                 switch (type.toLowerCase()) {
-                                    case "position":
+                                    case "standings":
                                         pblock.innerHTML = tables[0].outerHTML;
                                         self._color_links(pblock);
                                         break;
@@ -121,7 +121,7 @@ CmdUtils.CreateCommand(
                     this._get_url(pblock, url, function (tables) {
                         if (tables.length > 0) {
                             switch (type.toLowerCase()) {
-                                case "position":
+                                case "standings":
                                     pblock.innerHTML = tables[1].outerHTML;
                                     self._color_links(pblock);
                                     break;

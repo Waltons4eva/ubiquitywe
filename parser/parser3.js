@@ -293,7 +293,7 @@ var NLParser3 = {};
     };
 
     NLParser3.makeParserForLanguage =
-        function makeParserForLanguage(languageCode, verbList) {
+        function makeParserForLanguage(languageCode, verbList, contextUtils, suggestionMemory) {
             let plugin = PLUGINS[languageCode]
             if (!plugin) {
                 plugin = PLUGINS[languageCode] = {parseSentence: EnParser.parseSentence}
@@ -305,7 +305,7 @@ var NLParser3 = {};
                 plugin.pronouns = parser.anaphora.map(a =>
                     RegExp(a.replace(/\W/g, "\\$&").replace(/^\b|\b$/g, "\\b"), "i"))
             }
-            return new Parser(verbList, plugin, ContextUtils, new SuggestionMemory("main_parser"));
+            return new Parser(verbList, plugin, contextUtils, suggestionMemory);
         };
 
     // ParserQuery: An object that wraps a request to the parser for suggestions
@@ -395,9 +395,9 @@ var NLParser3 = {};
         },
     };
 
-    function Parser(verbList, languagePlugin, ContextUtils, suggestionMemory) {
+    function Parser(verbList, languagePlugin, contextUtils, suggestionMemory) {
         this._languagePlugin = languagePlugin;
-        this._ContextUtils = ContextUtils;
+        this._ContextUtils = contextUtils;
         this._suggestionMemory = suggestionMemory;
         this.setCommandList(verbList);
     }

@@ -65,7 +65,7 @@ var NLParser2 = {
             branching: "right",
             verbFinalMultiplier: 0.3
         })},
-    makeParserForLanguage: function(languageCode, verbList) {
+    makeParserForLanguage: function(languageCode, verbList, contextUtils, suggestionMemory) {
         if (!(languageCode in NLParser2.parserFactories)) {
             languageCode = "en";
         }
@@ -78,8 +78,8 @@ var NLParser2 = {
          * Normally I would do this in the constructor, but because we use
          * parserFactories[]() it's easier to do it here:
          */
-        parser._contextUtils = ContextUtils;
-        parser._suggestionMemory = new SuggestionMemory();
+        parser._contextUtils = contextUtils;
+        parser._suggestionMemory = suggestionMemory;
 
         return parser;
     }
