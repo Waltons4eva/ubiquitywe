@@ -299,17 +299,17 @@ function ubiq_keydown_handler(evt) {
 	CmdUtils.inputUpdateTime = performance.now();
 
     if (!evt) return;
-    var kc = evt.keyCode;
+    let kc = evt.keyCode;
 
     // On TAB, autocomplete
-    if (kc == 9) {
+    if (kc === 9) {
         evt.preventDefault();
         ubiq_autocomplete();
         return;
     }
 
     // On ENTER, execute the given command
-    if (kc == 13) {
+    if (kc === 13) {
         let input = ubiq_get_input()
         if (Utils.easterListener(input))
             return;
@@ -323,27 +323,28 @@ function ubiq_keydown_handler(evt) {
         return;
     }
 
-    if (kc == 220) {
+    if (kc === 220) {
         if (evt.ctrlKey && evt.altKey) {
             ubiq_show_command_history();
+            return;
         }
     }
 
     // On F5 restart extension
-    if (kc == 116) {
+    if (kc === 116) {
         chrome.runtime.reload();
         return;
     }
 
     // Cursor up
-    if (kc == 38) {
+    if (kc === 38) {
         evt.preventDefault();
         lcmd = "";
         ubiq_select_command(get_next_comand_index(false));
         return;
     }
     // Cursor Down
-    else if (kc == 40) {
+    else if (kc === 40) {
         evt.preventDefault();
         lcmd = "";
         ubiq_select_command(get_next_comand_index(true));
@@ -362,12 +363,17 @@ function ubiq_keydown_handler(evt) {
     }
 
     // Ctrl+C copies preview to clipboard
-    if (kc == 67 && evt.ctrlKey) {
+    if (kc === 67 && evt.ctrlKey) {
         //ackgroundPage.console.log("copy to clip");
         var el = ubiq_preview_el();
         if (!el) return;
         CmdUtils.setClipboard( el.innerText );
         return;
+    }
+
+    if (kc === 33 || kc === 34) {
+        let pblock = ubiq_preview_el();
+        pblock.scrollBy(0, (kc === 33? -1: 1) * pblock.clientHeight - 20);
     }
 
     lcmd = ubiq_get_input();
@@ -420,7 +426,7 @@ function ubiq_load_input(callback) {
 }
 
 $(window).on('load', function() {
-        if (typeof CmdUtils !== 'undefined' && typeof Utils !== 'undefined' && typeof backgroundPage !== 'undefined' ) {
+    if (typeof CmdUtils !== 'undefined' && typeof Utils !== 'undefined' && typeof backgroundPage !== 'undefined' ) {
         CmdUtils.setPreview = ubiq_set_preview;
         CmdUtils.popupWindow = window;
 
@@ -467,7 +473,8 @@ $(window).on('load', function() {
         document.addEventListener('keyup', function (e) {
             ubiq_keyup_handler(e);
         }, false);
-        } else {
+    }
+    else {
         chrome.tabs.create({ "url": "chrome://extensions" });
         chrome.notifications.create({
             "type": "basic",
