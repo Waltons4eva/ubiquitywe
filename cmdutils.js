@@ -931,9 +931,12 @@ CmdUtils.makeSearchCommand.preview = function searchPreview(pblock, {object: {te
         var list = "", i = 0, max = parser.maxResults || 10;
         for (let {title, href, body, thumbnail} of results) if (title) {
             if (href) {
-                let key = i + 1;
-                title = ("<kbd >" + key + "</kbd>. <a href='" + href +
-                     "' accesskey='" + key + "'>" + title + "</a>");
+                // let key = i + 1;
+                // title = ("<kbd >" + key + "</kbd>. <a href='" + href +
+                //      "' accesskey='" + key + "'>" + title + "</a>");
+                let key = i < 35 ? (i+1).toString(36) : "-";
+                title = ("<kbd>" + key + "</kbd>. <a href='" + href +
+                    "' accesskey='" + key + "'>" + title + "</a>");
             }
             list += "<dt class='title'>" + title + "</dt>";
             if (thumbnail)

@@ -1,4 +1,6 @@
 {
+    const JAVLIB_SEARCH_URL = "http://www.javlibrary.com/en/vl_searchbyid.php?keyword=";
+
     function fix_href(a, return_url) {
         if (a) {
             let tail = a.href.split("/");
@@ -18,7 +20,8 @@
         let img = page.find("#video_jacket_img").get(0);
         if (img && img.src) {
             let rect = pblock.getBoundingClientRect();
-            html += `<img id='javlib-cover' width='${rect.width - 20}' src='${img.src.replace(/^.*?-extension:/, "http:")}'/>`;
+            html += `<img id='javlib-cover' width='${rect.width - 20}' 
+                        src='${img.src.replace(/^.*?-extension:/, "http:")}'/>`;
 
             let info = page.find("#video_info");
 
@@ -30,7 +33,8 @@
                 let maker = fix_href(info.find("#video_maker .maker a")[0]);
                 let label = fix_href(info.find("#video_label .label a")[0]);
 
-                html += `<div><a href='${xhr.url}'>${movie_id}</a> | ${release_date} | ${video_length}${director ? "| By " + director : ""} | ${maker}/${label}</div>`;
+                html += `<div><a href='${xhr.url}'>${movie_id}</a> | ${release_date} 
+                        | ${video_length}${director ? "| By " + director : ""} | ${maker}/${label}</div>`;
 
                 html += `<div style='padding-top: 5px'>Genres: `;
                 info.find("#video_genres .genre a").map((_, g) => html += fix_href(g) + " ");
@@ -61,6 +65,8 @@
     }
 
     function make_request(pblock, url) {
+        let reentry = false;
+
         let options = {
             url: url,
             dataType: "html",
@@ -69,18 +75,23 @@
             },
             statusCode: {
                 503: function (xhr) {
-                    pblock.innerHTML = "Waiting for Cloudflare... When stuck, try to clear the recent history.";
-                        chrome.tabs.create({active: false, url: "http://javlibrary.com/en"}, new_tab => {
+                    if (reentry)
+                        return;
+
+                    pblock.innerHTML = "Waiting for Cloudflare...";
+                        chrome.tabs.create({active: false, url: JAVLIB_SEARCH_URL}, new_tab => {
                             let retries = 0;
                             function checkForTitle() {
                                 chrome.tabs.executeScript(new_tab.id,
                                     {code: `___title = document.getElementsByTagName('title'); 
                                             ___title && ___title.length > 0? ___title[0].textContent: ''`},
                                     function (title) {
-                                        if (title && title.length > 0 && title[0].toLowerCase().indexOf("javlibrary") >= 0) {
+                                        if (title && title.length > 0
+                                                && title[0].toLowerCase().indexOf("javlibrary") >= 0) {
                                             retries = 100;
                                             setTimeout(() => {
                                                 chrome.tabs.remove(new_tab.id);
+                                                reentry = true;
                                                 CmdUtils.previewAjax(pblock, options);
                                             }, 2000);
                                         }
@@ -99,8 +110,7 @@
                 }
             },
             error: function (xhr) {
-                pblock.innerHTML = "Error.";
-                Utils.jsLog(xhr)
+                pblock.innerHTML = "Error. Try to wipe javlibrary.com cookies.";
             }
         };
 
@@ -119,11 +129,11 @@
         _hidden: true,
         _namespace: NS_MORE_COMMANDS,
         execute: function execute({object: {text}}) {
-            Utils.openUrlInBrowser("http://www.javlibrary.com/en/vl_searchbyid.php?keyword=" + encodeURI(text.trim()));
+            Utils.openUrlInBrowser(JAVLIB_SEARCH_URL + encodeURI(text.trim()));
         },
         preview: function preview(pblock, {object: {text}}) {
             if (text) {
-                make_request(pblock, "http://www.javlibrary.com/en/vl_searchbyid.php?keyword=" + encodeURI(text.trim()));
+                make_request(pblock, JAVLIB_SEARCH_URL + encodeURI(text.trim()));
             }
         },
     });
