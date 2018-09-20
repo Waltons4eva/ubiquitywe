@@ -76,7 +76,7 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
             CmdUtils.previewAjax(pblock, {
                 url: "https://www.googleapis.com/youtube/v3/search",
                 data: {
-                    part: "snippet", type: "video", q: text,
+                    part: "snippet", type: "video", q: text, maxResults: CmdUtils.maxSearchResults,
                     key: "AIzaSyD0NFadBBZ8qJmWMmNknyxeI0EmIalWVeI",
                 },
                 dataType: "json",
@@ -86,8 +86,10 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
                            Found <b>\${numresults}</b> YouTube Videos matching <b>\${query}</b>
                           </p>
                           {for entry in results}
-                          <div style="clear: both; font-size: x-small">
+                          <div style="clear: both; font-size: small">
+                           <kbd>\${(+entry_index < 35) ? (+entry_index + 1).toString(36) : "-"}</kbd>.
                            <a style="font-size: small; font-weight:bold"
+                              accessKey="\${(+entry_index < 35) ? (+entry_index + 1).toString(36) : "-"}"
                               href="https://www.youtube.com/watch?v=\${entry.id.videoId}">
                            <img style="float:left; margin: 0 10px 5px 0; border: none"
                                 src="\${entry.snippet.thumbnails.default.url}" />
