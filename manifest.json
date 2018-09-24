@@ -75,6 +75,7 @@
         "clipboardWrite", 
         "notifications", 
         "storage",
-        "contextMenus"
+        "contextMenus",
+        "history"
     ]
 }

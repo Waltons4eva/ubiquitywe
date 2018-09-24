@@ -49,6 +49,13 @@
 
             if (pblock.scrollHeight === pblock.clientHeight)
                 jQuery(pblock).find("#javlib-cover").width(538);
+
+            let alt_img = img.getAttribute("onerror");
+            if (alt_img) {
+                let alt_url_match = alt_img.match(/['"](https?:)?(\/\/)?([^'"]+)['"]/);
+                if (alt_url_match)
+                    $(pblock).find("#javlib-cover").on("error", (e) => {e.target.src = "http://" + alt_url_match[3]});
+            }
         }
         else if (page.find(".videos .video").length > 0) {
             page.find(".videos .video > a > .id")

@@ -65,7 +65,8 @@ var NLParser3 = {};
                 "instrument": "with",
                 "format": "in",
                 "modifier": "of",
-                "alias": "as"
+                "alias": "as",
+                "cause": "by"
             }
         },
         "pt": {

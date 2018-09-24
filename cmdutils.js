@@ -980,8 +980,8 @@ CmdUtils.previewList = function(block, htmls, callback, css) {
     var {escapeHtml} = Utils, list = "", num = 0, CU = this;
     for (let key in htmls) {
         let k = ++num < 36 ? num.toString(36) : "-";
-        list += ('<li key="' + escapeHtml(key) + '" accesskey="' + k + '"><span id="' + num +
-            '">' + k + '</span>. ' + htmls[key] + '</li>');
+        list += ('<li key="' + escapeHtml(key) + '" accesskey="' + k + '" class="preview-list-item"><span>'
+            + k + '.&nbsp;</span><span class="preview-item-text">' + htmls[key] + '</span></li>');
     }
     block.innerHTML = (
         '<ol id="preview-list">' +
@@ -989,10 +989,12 @@ CmdUtils.previewList = function(block, htmls, callback, css) {
     var ol = block.firstChild, start = 0;
     callback && ol.addEventListener("click", function onPreviewListClick(ev) {
         var {target} = ev;
-        if (target.tagName !== "LI") return;
         ev.preventDefault();
-        if (callback)
+        if (callback) {
+            if (target.tagName != "LI")
+                target = target.parentNode
             callback.call(this, target.getAttribute("key"), ev);
+        }
     }, false);
     return ol;
 };

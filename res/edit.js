@@ -37,6 +37,7 @@ function insertExampleStub() {
               //{role: "format",     nountype: noun_arb_text, label: "text"}, // in
               //{role: "modifier",   nountype: noun_arb_text, label: "text"}, // of
               //{role: "alias",      nountype: noun_arb_text, label: "text"}, // as
+              //{role: "cause",      nountype: noun_arb_text, label: "text"}, // by
     ],
     description: "A short description of your command.",
     help: "This text is displayed at the command list page.",

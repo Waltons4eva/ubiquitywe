@@ -366,9 +366,37 @@ CmdUtils.CreateCommand({
 
         var short_url = ajax.results[query].shortUrl;
         CmdUtils.setClipboard(short_url);
+    }
+});
 
-        // CmdUtils.setPreview('<br/><p style="font-size: 24px; font-weight: bold; color: #ddf">' +
-        //     '<a target=_blank href="' + short_url + '">' + short_url + '</a>' +
-        //     '</p>');
+CmdUtils.CreateCommand({
+    name: "isdown",
+    uuid: "48449987-B873-49F5-99B4-7F99662BCA99",
+    _namespace: "Utility",
+    arguments: [{role: "object", nountype: noun_arb_text, label: "URL"}],
+    builtIn: true,
+    previewDelay: 1000,
+    icon: "/res/icons/isdown.ico",
+    description: "Check if selected/typed URL is down.",
+    preview: function (pblock, {object: {text}}) {
+        if (!text)
+            text = CmdUtils.getLocation();
+
+        if (!text)
+            return;
+
+        pblock.innerHTML = "Checking <b>" + text + "</b>";
+        var urlString = "http://downforeveryoneorjustme.com/" + encodeURI(text);
+
+        CmdUtils.previewGet(pblock, urlString, (resp) => {
+            if (!resp) return;
+            if (resp.match('is up.')) {
+                CmdUtils.setPreview('It\'s just you. The site is <b>up!</b>');
+            } else {
+                CmdUtils.setPreview('It\'s <b>not</b> just you. The site is <b>down!</b>');
+            }
+        });
+    },
+    execute: async function ({object: {text}}) {
     }
 });

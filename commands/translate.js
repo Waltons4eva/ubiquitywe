@@ -48,7 +48,6 @@
                 }
             },
             error   : function (e) {
-                Utils.jsLog(e);
                 CmdUtils.notify({title: "Microsoft Translator API v3", text: "(>_<)"})
             },
         })
