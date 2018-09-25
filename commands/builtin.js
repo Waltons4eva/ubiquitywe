@@ -398,5 +398,12 @@ CmdUtils.CreateCommand({
         });
     },
     execute: async function ({object: {text}}) {
+        if (!text)
+            text = CmdUtils.getLocation();
+
+        if (!text)
+            return;
+
+        CmdUtils.addTab("http://downforeveryoneorjustme.com/" + encodeURI(text));
     }
 });

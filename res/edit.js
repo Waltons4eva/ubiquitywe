@@ -29,6 +29,7 @@ function insertExampleStub() {
     name: "my-command",
     uuid: "%%UUID%%",
     arguments: [{role: "object",     nountype: noun_arb_text, label: "text"},
+              //{role: "subject",    nountype: noun_arb_text, label: "text"}, // for
               //{role: "goal",       nountype: noun_arb_text, label: "text"}, // to
               //{role: "source",     nountype: noun_arb_text, label: "text"}, // from
               //{role: "location",   nountype: noun_arb_text, label: "text"}, // near

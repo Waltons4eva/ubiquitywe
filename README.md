@@ -2,7 +2,12 @@
 
 A natural language interface for web browsers.
 
-[DOWNLOAD (Firefox Add-On)](https://github.com/GChristensen/ubichr/releases/download/v0.2.2.6/ubiquity_webeextension.xpi) :: [VIDEO MANUAL](https://youtu.be/YEdsVDZhcoQ)
+![Firefox](https://github.com/GChristensen/gchristensen.github.io/blob/master/firefox.png?raw=true)
+[Firefox Add-On](https://github.com/GChristensen/ubichr/releases/download/v0.2.4.1/ubiquity_webeextension.xpi) 
+:: ![Chrome](https://github.com/GChristensen/gchristensen.github.io/blob/master/chrome.png?raw=true)
+[Chrome Extension](https://chrome.google.com/webstore/detail/ubiquity-webextension/pideamopjihhbgieeeeamcbfllmgjfkb)
+:: ![Youtube](https://github.com/GChristensen/gchristensen.github.io/blob/master/youtube.png?raw=true) 
+[Video Manual](https://youtu.be/YEdsVDZhcoQ)
 
 ![screen](screen.png?raw=true)
 
@@ -40,10 +45,10 @@ of Opera browser ([ubiquity-opera](https://github.com/cosimo/ubiquity-opera/blob
  and continued on Google Chrome ([UbiChr](https://github.com/rostok/ubichr)).
 But they lacked the natural language parser which gave Ubiquity all
 its superpowers. So, I have taken UbiChr (which is simple as AK-47 internally), 
-parser from the latest Ubiquity, combined them, added bells and whistles, and the fully functional 
-new Ubiquity went back to Firefox in the incarnation of UbuquityWE, 
-which means that it is now possible to port any "legacy" commands that are still compatible with
-WebExtension APIs with minimal changes. 
+NL-parser from the latest Ubiquity, combined them, added bells and whistles, and the fully functional 
+new Ubiquity went back to Firefox in the incarnation of UbuquityWE. 
+This means that it is now possible to port any "legacy" commands (that are still compatible with WebExtension APIs) 
+to Firefox Quantum with minimal changes. 
  
 
 #### Source code
@@ -56,7 +61,7 @@ WebExtension APIs with minimal changes.
 
 Just out of curiosity I have ported two parsers: [Parser 2](https://wiki.mozilla.org/Labs/Ubiquity/Parser_2) 
 of the original Ubiquity and satyr's parser (which I call Parser 3). The former is not so
-good in the terms of usability but supperrior in some linguistic aspects, so you only can
+good in the terms of usability but superior in some linguistic aspects, so you only can
 enable it if you are an interested developer. Parser 3 is more handy and is enabled by default, 
 although it does not allow command names with whitespaces and uses "Hagure Metal" function to score suggestions
 (if you want to know how exactly it works, ask satyr).
@@ -64,6 +69,7 @@ although it does not allow command names with whitespaces and uses "Hagure Metal
  
 #### Additional functionality not found in the original Ubiquity
 
+* New parser prepositions: 'by' (cause) and 'for' (subject).
 * Ability to add commands to browser context menu.
 * User command categories.
 
@@ -95,6 +101,18 @@ This means, that porting of existing commands to UbiquityWE will require some ef
 
 * No backward compatibility with existing parserless UbiChr commands (although, it
 should be pretty easy to port one).
+
+#### Change Log
+[Full changelog](changelog.txt)
+
+##### 25.09.2018 (v.0.2.4.1)
+
+* Added keyboard shortcuts to 'YouTube' command.
+* New parser prepositions: 'by' and 'for'.
+* Added new commands:
+  * history
+  * isdown
+
 
 #### TODO
 

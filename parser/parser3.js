@@ -66,6 +66,7 @@ var NLParser3 = {};
                 "format": "in",
                 "modifier": "of",
                 "alias": "as",
+                "subject": "for",
                 "cause": "by"
             }
         },

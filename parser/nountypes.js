@@ -664,3 +664,42 @@ var noun_type_lang_lingvo = CmdUtils.NounType("language", {
     "Turkish": [1055, "tr"],
     "Ukrainian": [1058, "uk"]
 });
+
+var noun_type_history_date = {
+    label: "day",
+    noExternalCalls: true,
+    cacheTime: -1,
+    suggest: function (text, html, cb, selectionIndices) {
+        let predefs = ["today", "yesterday"];
+        let matcher = new RegExp(text, "i");
+        let suggs;
+
+        let matchingPredefs = predefs.map(p => ({label: p})).filter(p => {
+            p.match = matcher.exec(p.label);
+            return !!p.match;
+        });
+
+        function addZero(text) {
+            return (("" + text).length === 1? "0": "") + text;
+        }
+
+        suggs = matchingPredefs.map(p =>
+            CmdUtils.makeSugg(p.label, p.label, null, CmdUtils.matchScore(p.match), selectionIndices));
+
+        if (/\d{4}-d{1,2}-d{1,2}/.test(text)) {
+            suggs.push(CmdUtils.makeSugg(text, text, null, CmdUtils.matchScore(p.match), selectionIndices));
+        }
+        else if (/\d{2}-\d{2}/.test(text)) {
+            let now = new Date();
+            let date = now.getFullYear() + "-" + text;
+            suggs.push(CmdUtils.makeSugg(date, date, null, 1, selectionIndices));
+        }
+        else if (/\d{1,2}/.test(text)) {
+            let now = new Date();
+            let date = now.getFullYear() + "-" + addZero(now.getMonth() + 1) + "-" + addZero(text);
+            suggs.push(CmdUtils.makeSugg(date, date, null, 1, selectionIndices));
+        }
+
+        return suggs;
+    }
+};

@@ -482,3 +482,103 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
         }
     });
 });
+
+CmdUtils.CreateCommand({
+    name: "history",
+    uuid: "128DEB45-F187-4A1F-A74D-566EDAE8DD0F",
+    arguments: [{role: "object",   nountype: noun_arb_text, label: "title or url"},
+        {role: "modifier", nountype: noun_type_history_date, label: "day"},
+        {role: "cause",    nountype: noun_type_number, label: "amount"}],
+    description: "Browsing history search.",
+    help:  `<span class="syntax">Syntax</span>
+            <ul class="syntax">
+                <li><b>history</b> [<i>filter</i>] [<b>of</b> <i>day</i>] [<b>by</b> <i>results</i>]</li>
+            </ul>
+            <span class="arguments">Arguments</span><br>
+            <ul class="syntax">
+                <li>- <b>filter</b> - arbitrary text, filters history items by title or URL if specified.</li>
+            </ul>
+            <ul class="syntax">
+                <li>- <b>day</b> - {<b>today</b> | yesterday | YYYY-MM-DD | MM-DD | DD | D}, specifies date to search history for. </li>
+            </ul>
+            <ul class="syntax">
+                <li>- <b>results</b> - number, specifies maximum amount of result items.</li>
+            </ul>
+            <span class="arguments">Example</span>
+            <ul class="syntax">
+                <li><b>history</b> <i>news</i> <b>of</b> <i>10</i> <b>by</b> <i>50</i></li>
+            </ul>`,
+    icon: "/res/icons/history.ico",
+    previewDelay: 1000,
+    builtIn: true,
+    _namespace: "Browser",
+    preview: function(pblock, args, {Bin}) {
+        let maxResults = args.cause && args.cause.data
+            ? args.cause.data
+            : +CmdUtils.maxSearchResults;
+
+        let startDate;
+
+        switch (args.modifier.text) {
+            case "today":
+                startDate = new Date();
+                startDate.setHours(0,0,0,0);
+                break;
+            case "yesterday":
+                startDate = new Date();
+                startDate.setHours(0,0,0,0);
+                startDate.setDate(startDate.getDate() - 1);
+                break;
+            default:
+                if (args.modifier.text)
+                    startDate = new Date(args.modifier.text + "T00:00:00");
+                else
+                    startDate = undefined;
+        }
+
+        let endDate;
+        if (startDate) {
+            endDate = new Date(startDate);
+            endDate.setDate(endDate.getDate() + 1);
+        }
+
+        chrome.history.search({
+                text: args.object.text,
+                startTime: startDate,
+                endTime: endDate,
+                maxResults: maxResults
+            },
+            (historyItems) => {
+
+                if (historyItems.length === 0) {
+                    pblock.innerHTML = "History is empty."
+                }
+                else {
+                    let html = "";
+                    let items = [];
+                    for (let h of historyItems) {
+                        let text = h.title || h.url;
+                        items.push(text);
+                    }
+
+                    CmdUtils.previewList(pblock, items, (i, _) => {
+                            console.log(i);
+                            chrome.tabs.create({"url": historyItems[i].url, active: false});
+                        },
+                        `.preview-list-item {white-space: nowrap;}
+                         .preview-list-item span {display: inline-block; vertical-align: middle;}
+                         .preview-item-text {
+                            color: #45BCFF;  
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            width: 490px;
+                         }`
+                    );
+                }
+            });
+
+    },
+    execute: function(args, {Bin}) {
+    }
+});
