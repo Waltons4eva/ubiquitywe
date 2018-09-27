@@ -3,7 +3,7 @@
 A natural language interface for web browsers.
 
 ![Firefox](https://github.com/GChristensen/gchristensen.github.io/blob/master/firefox.png?raw=true)
-[Firefox Add-On](https://github.com/GChristensen/ubichr/releases/download/v0.2.5.2/ubiquity_webeextension.xpi) 
+[Firefox Add-On](https://github.com/GChristensen/ubiquitywe/releases/download/v0.2.5.2/ubiquity_webeextension.xpi) 
 :: ![Chrome](https://github.com/GChristensen/gchristensen.github.io/blob/master/chrome.png?raw=true)
 [Chrome Extension](https://chrome.google.com/webstore/detail/ubiquity-webextension/pideamopjihhbgieeeeamcbfllmgjfkb)
 :: ![Youtube](https://github.com/GChristensen/gchristensen.github.io/blob/master/youtube.png?raw=true) 
