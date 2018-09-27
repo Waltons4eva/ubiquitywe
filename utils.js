@@ -1,6 +1,77 @@
 const NS_MORE_COMMANDS = "More Commands";
 
-if (!Utils) var Utils = {};
+if (!Utils) var Utils = {
+    _connection: new JsStore.Instance(),
+    suggestionMemory: {}
+};
+
+Utils.initSettingsDB = function (callback) {
+    let ubiqSettingsDB = "settings";
+
+    function getDbSchema() {
+        let tblCustomScripts = {
+            name: 'CustomScripts',
+            columns: [
+                {
+                    name: 'namespace',
+                    dataType: JsStore.DATA_TYPE.String
+                },
+                {
+                    name: 'scripts',
+                    dataType: JsStore.DATA_TYPE.String
+                }
+            ]
+        };
+        let tblSuggestionMemory = {
+            name: 'SuggestionMemory',
+            columns: [
+                {
+                    name: 'input',
+                    dataType: JsStore.DATA_TYPE.String
+                },
+                {
+                    name: 'scores',
+                    notNull: true,
+                    dataType: JsStore.DATA_TYPE.Object
+                }
+            ]
+        };
+        return {
+            name: ubiqSettingsDB,
+            tables: [tblCustomScripts, tblSuggestionMemory]
+        };
+    }
+
+    Utils._connection.isDbExist(ubiqSettingsDB).then(function(isExist) {
+        let promise;
+        if (isExist) {
+            promise = Utils._connection.openDb(ubiqSettingsDB);
+        }
+        else {
+            promise = Utils._connection.createDb(getDbSchema()).then(() => {
+                try {
+                    Utils.getPref("customScripts", all_scripts => {
+                        if (all_scripts && !Utils.isEmpty(all_scripts)) {
+                            for (let [k, v] of Object.entries(all_scripts)) {
+                                Utils.saveCustomScripts(k, v.scripts);
+                            }
+                            Utils.setPref("customScripts", {});
+                        }
+                    });
+                }
+                catch (e) {
+                    console.error(e);
+                }
+            });
+        }
+
+        promise.then(() => {
+            if (callback)
+                callback();
+        });
+    });
+};
+
 
 const TO_STRING = Object.prototype.toString;
 
@@ -26,12 +97,58 @@ Utils.getPref = function(key, callback) {
 
 Utils.setPref = function(key, value, callback) {
     chrome.storage.local.set({[key]: value}, () => {if (callback) callback()});
-
 };
 
 Utils.getCustomScripts = function(callback) {
-    Utils.getPref("customscripts", customscripts => {
-        callback(customscripts? customscripts: {});
+    let args = arguments;
+    let namespace = (typeof callback === "function")? undefined: callback;
+    let query = {from: "CustomScripts"};
+
+    if (namespace)
+        query["where"] = {namespace: namespace};
+
+    Utils._connection.select(query).then(rows => {
+        let customScripts = {};
+
+        for (let row of rows)
+            customScripts[row.namespace] = row;
+
+        if (namespace) {
+            if (args[1])
+                args[1](customScripts);
+        }
+        else {
+            callback(customScripts);
+        }
+    }).catch(error => {
+        console.error(error);
+    });
+};
+
+Utils.saveCustomScripts = function (namespace, scripts, callback) {
+    this._connection.select({from: "CustomScripts", where: {namespace: namespace}}).then(rows => {
+        let promise;
+
+        if (rows.length === 0)
+            promise = this._connection.insert({into: "CustomScripts", values: [{scripts: scripts, namespace: namespace}]});
+        else
+            promise = this._connection.update({in: "CustomScripts", set: {scripts: scripts}, where: {namespace: namespace}});
+
+        promise.then(() => {
+            if (callback)
+                callback();
+        })
+    }).catch(error => {
+        console.error(error);
+    });
+};
+
+Utils.deleteCustomScripts = function (namespace, callback) {
+    this._connection.remove({from: "CustomScripts", where: {namespace: namespace}}).then(() => {
+        if (callback)
+            callback();
+    }).catch(error => {
+        console.error(error);
     });
 };
 

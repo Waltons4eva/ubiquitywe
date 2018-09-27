@@ -27,6 +27,9 @@ if (!CmdUtils) var CmdUtils = {
     get nlParser() {
         return (CmdUtils.parserVersion === 2 ? NLParser2: NLParser3);
     },
+    get suggestionMemory() {
+        return (CmdUtils.parserVersion === 2 ? SuggestionMemory2: SuggestionMemory3);
+    },
     setPreview: function(message, prepend) { console.log(message); },
 };
 
@@ -64,7 +67,7 @@ CmdUtils.renderTemplate = function (template, data) {
 CmdUtils.makeParser = function() {
     return CmdUtils.nlParser
         .makeParserForLanguage(CmdUtils.parserLanguage, CmdUtils.CommandList, ContextUtils,
-            new SuggestionMemory("main_parser"));
+            new (CmdUtils.suggestionMemory)("main_parser"));
 };
 
 // creates command and adds it to command array, name or names must be provided and preview execute functions
@@ -317,7 +320,7 @@ CmdUtils._executeContextMenuItem = function(command, contextMenuCmdData) {
                 if (CmdUtils.rememberContextMenuCommands)
                     CmdUtils.commandHistoryPush(contextMenuCmdData.command);
 
-                if (CmdUtils.DEBUG)
+                //if (CmdUtils.DEBUG)
                     parser.strengthenMemory(sent);
             }
             else
@@ -559,7 +562,6 @@ ContextUtils.setSelection = CmdUtils.setSelection = function setSelection(s) {
         var sel, range;
         sel = window.getSelection();
         var activeElement = document.activeElement;
-                    console.log("Allahu akbar");
         if (activeElement.nodeName == "TEXTAREA" ||
             (activeElement.nodeName == "INPUT" && (activeElement.type.toLowerCase() == "text"
                 || activeElement.type.toLowerCase() == "search"))) {
@@ -1006,9 +1008,7 @@ CmdUtils.previewList.CSS = `\
 
 (function ( $ ) {
     $.fn.blankify = function( url ) {
-        console.log("tryeing to blnk",this.find("a"));
         return this.find("a").not('[href^="http"],[href^="//:"],[href^="mailto:"],[href^="#"]').each(function() {
-            console.log("bln");
             $(this).attr("target", "_blank").attr('href', function(index, value) {
                 if (value.substr(0,1) !== "/") value = "/"+value;
                 return url + value;

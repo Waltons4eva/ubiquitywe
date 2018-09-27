@@ -1,37 +1,40 @@
 CmdUtils.deblog("UbiquityWE v" + CmdUtils.VERSION + " background script says hello");
 
-Utils.getPref("enableMoreCommands", enableMoreCommands => {
+Utils.initSettingsDB(() => {
+    Utils.getPref("enableMoreCommands", enableMoreCommands => {
 
-    if (enableMoreCommands) {
-        for (let cmd of CmdUtils.CommandList)
-            if (cmd.builtIn && cmd._namespace === NS_MORE_COMMANDS)
-                cmd._hidden = false;
-        CmdUtils.MORE_COMMANDS = true;
-    }
-    else
-        CmdUtils.CommandList = CmdUtils.CommandList.filter(cmd => !(cmd.builtIn && cmd._namespace === NS_MORE_COMMANDS));
+        if (enableMoreCommands) {
+            for (let cmd of CmdUtils.CommandList)
+                if (cmd.builtIn && cmd._namespace === NS_MORE_COMMANDS)
+                    cmd._hidden = false;
+            CmdUtils.MORE_COMMANDS = true;
+        }
+        else
+            CmdUtils.CommandList = CmdUtils.CommandList.filter(cmd => !(cmd.builtIn && cmd._namespace === NS_MORE_COMMANDS));
 
-    Utils.getPref("debugMode", debugMode => {
-        CmdUtils.DEBUG = !!debugMode;
-        CmdUtils.CommandList = CmdUtils.CommandList.filter(cmd => CmdUtils.DEBUG || !cmd._hidden);
-        CmdUtils.loadCustomScripts();
-        Utils.getPref("disabledCommands", disabledCommands => {
-            if (disabledCommands)
-                for (let cmd of CmdUtils.CommandList) {
-                    if (cmd.name in disabledCommands)
-                        cmd.disabled = true;
-                }
+        Utils.getPref("debugMode", debugMode => {
+            CmdUtils.DEBUG = !!debugMode;
+            CmdUtils.CommandList = CmdUtils.CommandList.filter(cmd => CmdUtils.DEBUG || !cmd._hidden);
+            CmdUtils.loadCustomScripts(() => {
+                Utils.getPref("disabledCommands", disabledCommands => {
+                    if (disabledCommands)
+                        for (let cmd of CmdUtils.CommandList) {
+                            if (cmd.name in disabledCommands)
+                                cmd.disabled = true;
+                        }
 
-            for (cmd of CmdUtils.CommandList) {
-                try {
-                    if (cmd.init) {
-                        Utils.callPersistent(cmd.uuid, cmd, cmd.init);
+                    for (cmd of CmdUtils.CommandList) {
+                        try {
+                            if (cmd.init) {
+                                Utils.callPersistent(cmd.uuid, cmd, cmd.init);
+                            }
+                        }
+                        catch (e) {
+                            console.log(e.message);
+                        }
                     }
-                }
-                catch (e) {
-                    console.log(e.message);
-                }
-            }
+                });
+            });
         });
     });
 });
@@ -56,6 +59,7 @@ Utils.getPref("microsoftTranslatorAPIKey", microsoftTranslatorAPIKey => {
     CmdUtils.microsoftTranslatorAPIKey = microsoftTranslatorAPIKey;
 });
 
+// Parser2 still depends on this
 Utils.getPref("suggestionMemory", suggestionMemory => {
     Utils.suggestionMemory = suggestionMemory || {__proto__: null};
 });

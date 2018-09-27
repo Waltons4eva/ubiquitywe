@@ -88,6 +88,19 @@ CmdUtils.CreateCommand({
 });
 
 CmdUtils.CreateCommand({
+    names: ["show-background-page"],
+    uuid: "42B341B1-5D12-4891-962E-4C2BF68DC7E8",
+    description: "Open extension generated background page.",
+    _namespace: "Ubiquity",
+    _hidden: true,
+    builtIn: true,
+    icon: "/res/icons/debug.png",
+    execute: function() {
+        chrome.runtime.getBackgroundPage(p => CmdUtils.addTab(p.location.href));
+    }
+});
+
+CmdUtils.CreateCommand({
     name: "switch-to-tab",
     uuid: "24616A75-C995-439B-B6F4-F3ED72662C89",
     argument: [{role: "object", nountype: noun_type_tab, label: "tab title or URL"}],

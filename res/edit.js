@@ -102,13 +102,13 @@ function insertExampleStub() {
     editor.session.insert(editor.getCursorPosition(), stub.replace("%%UUID%%", UUID.generate()));
 
     //editor.setValue( stub + editor.getValue() );
-    saveScripts();
+    //saveScripts();
     editor.focus();
     return false;
 }
 
 // evaluates and saves scripts from editor
-function saveScripts() {
+function saveScripts(callback) {
     var customscripts = editor.getSession().getValue();
 
     if (scriptNamespace === UBIQUITY_SETTINGS) {
@@ -128,21 +128,21 @@ function saveScripts() {
     }
     else {
         // save
-        if (typeof chrome !== 'undefined' && chrome.storage) {
-            Utils.getCustomScripts(all_scripts => {
-                all_scripts[scriptNamespace] = {scripts: customscripts};
-                Utils.setPref("customscripts", all_scripts);
-            });
-        }
+        Utils.saveCustomScripts(scriptNamespace, customscripts, () => {
+            // eval
+            console.log(scriptNamespace);
+            console.log(customscripts);
+            try {
+                $("#info").html("Evaluated!");
+                eval(customscripts);
+                CmdUtils.loadCustomScripts();
+            } catch (e) {
+                $("#info").html("<span style='background-color: red; color: white;'>&nbsp;" + e.message + "&nbsp;</span>");
+            }
 
-        // eval
-        try {
-            $("#info").html("Evaluated!");
-            eval(customscripts);
-        } catch (e) {
-            $("#info").html("<span style='background-color: red; color: white;'>&nbsp;" + e.message + "&nbsp;</span>");
-        }
-        CmdUtils.loadCustomScripts();
+            if (callback)
+                callback();
+        });
     }
 
     // download link
@@ -165,12 +165,8 @@ $(() => {
 
     editor.setPrintMarginColumn(120);
 
-    editor.on("blur", saveScripts);
-    editor.on("change", saveScripts);
-
     $(window).on('resize', e => {
        editor.container.style.height = $(window).innerHeight() - $("#header").height() - $("#footer").height() - 16;
-       console.log(editor.container.style.height);
        editor.resize();
     });
     $(window).resize();
@@ -178,16 +174,19 @@ $(() => {
     function editNamespaceScripts(all_scripts, namespace) {
         let namespace_scripts = all_scripts[namespace];
         if (namespace_scripts)
-            editor.setValue(namespace_scripts.scripts || "", -1);
+            return editor.setValue(namespace_scripts.scripts || "", -1);
         else
-            editor.setValue("");
+            return editor.setValue("");
     }
 
     $("#script-namespaces").change(() => {
-        saveScripts();
-        Utils.getCustomScripts(all_scripts => {
+        saveScripts(() => {
             scriptNamespace = $("#script-namespaces").val();
-            editNamespaceScripts(all_scripts, scriptNamespace);
+
+            Utils.getCustomScripts(scriptNamespace, scripts => {
+                console.log(scripts);
+                editNamespaceScripts(scripts, scriptNamespace);
+            });
         });
     });
 
@@ -225,9 +224,8 @@ $(() => {
                         }
                     }
 
-                    editor.getSession().setValue("");
-
                     scriptNamespace = name;
+                    editor.getSession().setValue("");
                     $("#script-namespaces").append($("<option></option>")
                         .attr("value", name)
                         .text(name))
@@ -242,20 +240,19 @@ $(() => {
     $("#delete-namespace").click(() => {
         if (scriptNamespace !== "default" && scriptNamespace !== UBIQUITY_SETTINGS)
             if (confirm("Do you really want to delete \"" + scriptNamespace + "\"?")) {
-                Utils.getCustomScripts(all_scripts => {
-                    delete all_scripts[scriptNamespace];
-                    Utils.setPref("customscripts", all_scripts);
+                Utils.deleteCustomScripts(scriptNamespace, () => {
                     $('option:selected', $("#script-namespaces")).remove();
 
                     scriptNamespace = $("#script-namespaces").val();
-                    editNamespaceScripts(all_scripts, scriptNamespace);
+                    Utils.getCustomScripts(scriptNamespace, scripts => {
+                        editNamespaceScripts(scripts, scriptNamespace);
+                    });
                 });
             }
     });
 
     $("#expand-editor").click(() => {
         if ($("#expand-editor img").prop("src").endsWith("/res/icons/collapse.png")) {
-            console.log("nyaa");
             $("#panel").css("width", "870px");
             $("body").css("margin", "auto");
             $("body").css("max-width", "900px");
@@ -305,8 +302,11 @@ $(() => {
                 $("#script-namespaces").val(scriptNamespace);
 
                 editNamespaceScripts(all_scripts, scriptNamespace);
-                saveScripts();
+                //saveScripts();
             });
+
+        editor.on("blur", saveScripts);
+        editor.on("change", saveScripts);
     }
 
     editor.focus();

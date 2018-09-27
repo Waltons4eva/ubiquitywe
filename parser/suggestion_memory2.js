@@ -1,10 +1,10 @@
-function SuggestionMemory() {
-    this._table = Utils.suggestionMemory;
+function SuggestionMemory2() {
+    this._table = Utils.suggestionMemory || {__proto__: null};
 }
 
-SuggestionMemory.prototype = {
-  constructor: SuggestionMemory,
-  toString() { return "[object SuggestionMemory]" },
+SuggestionMemory2.prototype = {
+  constructor: SuggestionMemory2,
+  toString() { return "[object SuggestionMemory2]" },
   toJSON() { return this._table },
 
     Z: {__proto__: null}, // keep this empty!
@@ -36,9 +36,9 @@ SuggestionMemory.prototype = {
     getScore(input, suggestion) {
         return (this._table[input] || this.Z)[suggestion] || 0
     },
-    setScore(input, suggestion, score) { return (
-        this.remember(input, suggestion, score - this.getScore(input, suggestion))
-    ) },
+    setScore(input, suggestion, score) {
+        return this.remember(input, suggestion, score - this.getScore(input, suggestion));
+    },
 
     // === {{{ SuggestionMemory#wipe(input, suggestion) }}} ===
     // Wipes the specified entry out of this suggestion memory instance.

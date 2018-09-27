@@ -3,19 +3,22 @@
     "short_name": "UbiquityWE",
     "homepage_url": "https://github.com/GChristensen/ubichr#readme",
     "author": "rostok, gchristnsn",
-    "version": "0.2.4.1",
+    "version": "0.2.5.2",
     "description": "WebExtension port of Ubiquity",
     "content_security_policy": "script-src 'self' 'unsafe-eval' https://maps.googleapis.com; style-src 'self' 'unsafe-inline'; object-src 'self'",
     "applications": {
        "gecko": {
          "id": "ubiquitywe@firefox",
-         "strict_min_version": "57.0"
+         "strict_min_version": "57.0",
+         "update_url": "https://github.com/GChristensen/ubiquitywe/blob/master/updates.json?raw=true"
        }
      },
     "manifest_version": 2,
     "background": {
         "scripts": [
-          "lib/jquery.min.js", 
+          "lib/jquery.min.js",
+          "lib/jsstore.min.js",
+          "lib/jsstore.worker.min.js",
           "lib/template.js",
           "lib/math_parser.js",
           "lib/uuid.js",
@@ -24,7 +27,8 @@
           "cmdutils.js",
           "parser/nounutils.js",
           "parser/nountypes.js",
-          "parser/suggestion_memory.js",
+          "parser/suggestion_memory2.js",
+          "parser/suggestion_memory3.js",
           "parser/parser2.js",
           "parser/parser3.js",
           "/commands/more/nyaa.js",

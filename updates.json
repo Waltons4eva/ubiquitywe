@@ -1,0 +1,11 @@
+{
+  "addons": {
+    "ubiquitywe@firefox": {
+      "updates": [{
+          "version": "0.2.5.2",
+          "update_link": "https://github.com/GChristensen/ubichr/releases/download/v0.2.5.2/ubiquity_webeextension.xpi"
+        }
+      ]
+    }
+  }
+}

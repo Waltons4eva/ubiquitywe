@@ -66,24 +66,45 @@ function onDocumentLoad() {
 
     $("#export-settings").mouseover((e) => {
         chrome.storage.local.get(undefined, (settings) => {
-            var file = new Blob([JSON.stringify(settings, null, 2)], {type: "application/json"});
-            e.target.href = URL.createObjectURL(file);
-            e.target.download = "ubiquity.json";
+            let exported = {};
+            Object.assign(exported, settings);
+            exported.version = CmdUtils.VERSION;
+
+            Utils.getCustomScripts(all_scripts => {
+                exported.customScripts = all_scripts;
+
+                var file = new Blob([JSON.stringify(exported, null, 2)], {type: "application/json"});
+                e.target.href = URL.createObjectURL(file);
+                e.target.download = "ubiquity.json";
+            });
         });
     });
 
     $("#import-settings").click((e) => {
         e.preventDefault();
-        console.log("uuu");
         $("#file-picker").click();
     });
 
     $("#file-picker").change((e) => {
-        console.log("uuuu");
         if (e.target.files.length > 0) {
             let reader = new FileReader();
             reader.onload = function(re) {
-                chrome.storage.local.set(JSON.parse(re.target.result));
+                let imported = JSON.parse(re.target.result);
+
+                // versioned operations here
+
+                if (imported.version)
+                    delete imported.version;
+
+                if (imported.customScripts && typeof imported.customScripts === "object") {
+                    for (let scripts of Object.values(imported.customScripts)) {
+                        Utils.saveCustomScripts(scripts.namespace, scripts.scripts);
+                    }
+
+                    delete imported.customScripts;
+                }
+
+                chrome.storage.local.set(imported);
                 chrome.runtime.reload();
             };
             reader.readAsText(e.target.files[0]);

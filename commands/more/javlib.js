@@ -86,34 +86,35 @@
                         return;
 
                     pblock.innerHTML = "Waiting for Cloudflare...";
-                        chrome.tabs.create({active: false, url: JAVLIB_SEARCH_URL}, new_tab => {
-                            let retries = 0;
-                            function checkForTitle() {
-                                chrome.tabs.executeScript(new_tab.id,
-                                    {code: `___title = document.getElementsByTagName('title'); 
-                                            ___title && ___title.length > 0? ___title[0].textContent: ''`},
-                                    function (title) {
-                                        if (title && title.length > 0
-                                                && title[0].toLowerCase().indexOf("javlibrary") >= 0) {
-                                            retries = 100;
-                                            setTimeout(() => {
-                                                chrome.tabs.remove(new_tab.id);
-                                                reentry = true;
-                                                CmdUtils.previewAjax(pblock, options);
-                                            }, 2000);
-                                        }
-                                    });
+                    let seed = Math.floor(Math.random() * 100000);
+                    chrome.tabs.create({active: false, url: JAVLIB_SEARCH_URL + "&seed=" + seed}, new_tab => {
+                        let retries = 0;
+                        function checkForTitle() {
+                            chrome.tabs.executeScript(new_tab.id,
+                                {code: `___title = document.getElementsByTagName('title'); 
+                                        ___title && ___title.length > 0? ___title[0].textContent: ''`},
+                                function (title) {
+                                    if (title && title.length > 0
+                                            && title[0].toLowerCase().indexOf("javlibrary") >= 0) {
+                                        retries = 100;
+                                        setTimeout(() => {
+                                            chrome.tabs.remove(new_tab.id);
+                                            reentry = true;
+                                            CmdUtils.previewAjax(pblock, options);
+                                        }, 2000);
+                                    }
+                                });
 
-                                if (retries < 12) {
-                                    retries += 1;
-                                    timeout = setTimeout(checkForTitle, 1000);
-                                }
-                                else
-                                    retries = 0;
+                            if (retries < 12) {
+                                retries += 1;
+                                timeout = setTimeout(checkForTitle, 1000);
                             }
+                            else
+                                retries = 0;
+                        }
 
-                            checkForTitle();
-                        });
+                        checkForTitle();
+                    });
                 }
             },
             error: function (xhr) {

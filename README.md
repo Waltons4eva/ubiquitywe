@@ -3,7 +3,7 @@
 A natural language interface for web browsers.
 
 ![Firefox](https://github.com/GChristensen/gchristensen.github.io/blob/master/firefox.png?raw=true)
-[Firefox Add-On](https://github.com/GChristensen/ubichr/releases/download/v0.2.4.1/ubiquity_webeextension.xpi) 
+[Firefox Add-On](https://github.com/GChristensen/ubichr/releases/download/v0.2.5.2/ubiquity_webeextension.xpi) 
 :: ![Chrome](https://github.com/GChristensen/gchristensen.github.io/blob/master/chrome.png?raw=true)
 [Chrome Extension](https://chrome.google.com/webstore/detail/ubiquity-webextension/pideamopjihhbgieeeeamcbfllmgjfkb)
 :: ![Youtube](https://github.com/GChristensen/gchristensen.github.io/blob/master/youtube.png?raw=true) 
@@ -103,16 +103,14 @@ This means, that porting of existing commands to UbiquityWE will require some ef
 should be pretty easy to port one).
 
 #### Change Log
-[Full changelog](changelog.txt)
+[Full changelog](changelog.md)
 
-##### 25.09.2018 (v.0.2.4.1)
+##### 27.09.2018 (v.0.2.5.2)
 
-* Added keyboard shortcuts to 'YouTube' command.
-* New parser prepositions: 'by' and 'for'.
-* Added new commands:
-  * history
-  * isdown
-
+* Internal improvements: enabled suggestion memory for non-debug modes.
+* Internal improvements: added Firefox update manifest.
+* Internal improvements: fixed custom script handing in command editor.
+* Internal improvements: moved suggestion memory and user commands to IndexedDB.
 
 #### TODO
 

@@ -1,6 +1,6 @@
 Utils.getPref("maxSearchResults", maxSearchResults => {
 
-    CmdUtils.maxSearchResults = maxSearchResults;
+    CmdUtils.maxSearchResults = maxSearchResults || 10;
 
     CmdUtils.makeSearchCommand({
         name: "google",
@@ -515,7 +515,7 @@ CmdUtils.CreateCommand({
     preview: function(pblock, args, {Bin}) {
         let maxResults = args.cause && args.cause.data
             ? args.cause.data
-            : +CmdUtils.maxSearchResults;
+            : (+CmdUtils.maxSearchResults);
 
         let startDate;
 

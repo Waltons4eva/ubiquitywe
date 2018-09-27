@@ -352,13 +352,13 @@ var NLParser3 = {};
         },
 
         // The handler that makes this a listener for partiallyParsedSentences.
-        onNewParseGenerated: function PQ_onNewParseGenerated() {
-            this._refreshSuggestionList();
+        onNewParseGenerated: async function PQ_onNewParseGenerated() {
+            await this._refreshSuggestionList();
             this.onResults();
         },
 
-        run: function PQ_run() {
-            this.onNewParseGenerated();
+        run: async function PQ_run() {
+            await this.onNewParseGenerated();
             return this;
         },
 
@@ -367,7 +367,7 @@ var NLParser3 = {};
                 push.apply(this._parsingsList, ppss);
             },
 
-        _refreshSuggestionList: function PQ__refreshSuggestionList() {
+        _refreshSuggestionList: async function PQ__refreshSuggestionList() {
             // get completions from parsings -- the completions may have changed
             // since the parsing list was first generated.
             var suggs = this._suggestionList = [];
@@ -377,18 +377,18 @@ var NLParser3 = {};
             }
 
             // Sort and take the top maxSuggestions number of suggestions
-            this._sortSuggestionList();
+            await this._sortSuggestionList();
             suggs.splice(this.maxSuggestions);
         },
 
-        _sortSuggestionList: function PQ__sortSuggestionList() {
+        _sortSuggestionList: async function PQ__sortSuggestionList() {
             // Each suggestion in the suggestion list should already have a matchScore
             // assigned by Verb.match().
             // Give them also a frequencyScore based on the suggestionMemory:
             var {_parser} = this;
             var {pow} = Math;
             for (let sugg of this._suggestionList) {
-                let freq = _parser.getSuggestionMemoryScore(
+                let freq = await _parser.getSuggestionMemoryScore(
                     sugg.fromNounFirstSuggestion ? "" : sugg._verb.input,
                     sugg._verb.cmd.id);
                 sugg.frequencyMatchScore = pow(.1, 1 / (freq + 1));
@@ -427,8 +427,8 @@ var NLParser3 = {};
             this._suggestionMemory.remember(verb.input, verb.cmd.id);
         },
 
-        getSuggestionMemoryScore(input, cmdId) {
-            return this._suggestionMemory.getScore(input, cmdId)
+        async getSuggestionMemoryScore(input, cmdId) {
+            return await this._suggestionMemory.getScore(input, cmdId)
         },
 
         newQuery: function P_newQuery(input, context, maxSuggestions, lazy) {
@@ -500,9 +500,20 @@ var NLParser3 = {};
         _sortGenericVerbCache: function P__sortGenericVerbCache() {
             var suggMemory = this._suggestionMemory;
             if (!suggMemory) return;
-            Utils.sort(
-                this._rankedVerbsThatUseGenericNouns,
-                v => suggMemory.getScore("", v.cmd.id), true)
+
+            async function scoreVerb(verb) {
+                let score = await suggMemory.getScore("", verb.cmd.id);
+                verb.__initialScore = score;
+                return score;
+            }
+
+            Promise.all(this._rankedVerbsThatUseGenericNouns.map(async v => await scoreVerb(v)))
+                .then(() => {
+                    Utils.sort(
+                        this._rankedVerbsThatUseGenericNouns,
+                        v => v.__initialScore,
+                        true);
+                });
         },
     };
 
