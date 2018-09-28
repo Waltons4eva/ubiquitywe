@@ -126,7 +126,7 @@ Utils.getCustomScripts = function(callback) {
 };
 
 Utils.saveCustomScripts = function (namespace, scripts, callback) {
-    this._connection.select({from: "CustomScripts", where: {namespace: namespace}}).then(rows => {
+    return this._connection.select({from: "CustomScripts", where: {namespace: namespace}}).then(rows => {
         let promise;
 
         if (rows.length === 0)
@@ -134,7 +134,7 @@ Utils.saveCustomScripts = function (namespace, scripts, callback) {
         else
             promise = this._connection.update({in: "CustomScripts", set: {scripts: scripts}, where: {namespace: namespace}});
 
-        promise.then(() => {
+        return promise.then(() => {
             if (callback)
                 callback();
         })
@@ -144,7 +144,7 @@ Utils.saveCustomScripts = function (namespace, scripts, callback) {
 };
 
 Utils.deleteCustomScripts = function (namespace, callback) {
-    this._connection.remove({from: "CustomScripts", where: {namespace: namespace}}).then(() => {
+    return this._connection.remove({from: "CustomScripts", where: {namespace: namespace}}).then(() => {
         if (callback)
             callback();
     }).catch(error => {

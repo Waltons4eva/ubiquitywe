@@ -1,7 +1,7 @@
 {
     "name": "Ubiquity WebExtension",
     "short_name": "UbiquityWE",
-    "homepage_url": "https://github.com/GChristensen/ubichr#readme",
+    "homepage_url": "https://github.com/GChristensen/ubiquitywe#readme",
     "author": "rostok, gchristnsn",
     "version": "0.2.5.2",
     "description": "WebExtension port of Ubiquity",

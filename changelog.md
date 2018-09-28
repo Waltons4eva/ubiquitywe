@@ -1,3 +1,7 @@
+##### 28.09.2018 (v.0.2.5.3)
+
+* Fixed settings import feature.
+
 ##### 27.09.2018 (v.0.2.5.2)
 
 * Internal improvements: enabled suggestion memory for non-debug modes.

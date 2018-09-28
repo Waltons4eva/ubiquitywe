@@ -130,8 +130,6 @@ function saveScripts(callback) {
         // save
         Utils.saveCustomScripts(scriptNamespace, customscripts, () => {
             // eval
-            console.log(scriptNamespace);
-            console.log(customscripts);
             try {
                 $("#info").html("Evaluated!");
                 eval(customscripts);

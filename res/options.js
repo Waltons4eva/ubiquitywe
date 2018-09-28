@@ -96,16 +96,26 @@ function onDocumentLoad() {
                 if (imported.version)
                     delete imported.version;
 
-                if (imported.customScripts && typeof imported.customScripts === "object") {
-                    for (let scripts of Object.values(imported.customScripts)) {
-                        Utils.saveCustomScripts(scripts.namespace, scripts.scripts);
-                    }
+                let customScripts = imported.customScripts;
 
+                if (customScripts !== undefined)
                     delete imported.customScripts;
-                }
 
                 chrome.storage.local.set(imported);
-                chrome.runtime.reload();
+
+                if (customScripts && typeof customScripts === "object") {
+                    let multipleObjects = [];
+                    try {
+                        multipleObjects = Object.values(customScripts).map(scripts =>
+                            Utils.saveCustomScripts(scripts.namespace, scripts.scripts));
+                    }
+                    catch (e) {
+                        console.error(e);
+                    }
+                    Promise.all(multipleObjects).then(() => chrome.runtime.reload());
+                }
+                else
+                    chrome.runtime.reload();
             };
             reader.readAsText(e.target.files[0]);
         }
