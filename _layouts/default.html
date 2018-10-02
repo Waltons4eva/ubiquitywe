@@ -66,7 +66,11 @@
             xhr.send();
         </script>
 
-        <p><img src="/ubiquitywe/screen.png" alt="screen"/></p>
+        <p onclick="document.getElementById('videoman').style.display='block'; this.style.display='none'">
+            <img title="Watch on Youtube" style="cursor: pointer;" src="/ubiquitywe/screen.png" alt="screen" /></p>
+
+        <iframe style="display: none" id="videoman" width="500" height="280" src="https://www.youtube.com/embed/YEdsVDZhcoQ?autoplay=1"
+                frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
         <p>SEE ALSO: <a href="https://gchristensen.github.io/enso-portable/">Enso Portable</a>,
             <a href="https://gchristensen.github.io/torrent-add/">Add Torrent</a>,
