@@ -2,25 +2,7 @@
 
 A natural language interface for web browsers.
 
-![Firefox](https://github.com/GChristensen/gchristensen.github.io/blob/master/firefox.png?raw=true)
-[Firefox Add-On](https://github.com/GChristensen/ubiquitywe/releases/download/v0.2.5.3/ubiquity_webeextension.xpi) 
-:: ![Chrome](https://github.com/GChristensen/gchristensen.github.io/blob/master/chrome.png?raw=true)
-[Chrome Extension](https://chrome.google.com/webstore/detail/ubiquity-webextension/pideamopjihhbgieeeeamcbfllmgjfkb)
-:: ![Youtube](https://github.com/GChristensen/gchristensen.github.io/blob/master/youtube.png?raw=true) 
-[Video Manual](https://youtu.be/YEdsVDZhcoQ)
-
-![screen](screen.png?raw=true)
-
-SEE ALSO: [Enso Portable](https://github.com/GChristensen/enso-portable#readme), [Dark Flow](https://github.com/GChristensen/dark-flow#readme), [Add Torrent](https://github.com/GChristensen/torrent-add#readme)
-
-UbiquityWE is a browser add-on available by Ctrl+Space key combination
-that lets you give commands to a browser by entering text into a special input box.
-Commands are shortcuts for things that you commonly do on the Web; they can eliminate
-repetitive tasks and let you get more done, faster.
-Your can write your own Ubiquity commands using the JavaScript programming language.
-
-Find more information on command authoring in the tutorial available at UbiquityWE 
-settings pages.
+This is a development site. Please visit the main site at: https://gchristensen.github.io/ubiquitywe/
 
 #### History
 
