@@ -87,7 +87,7 @@
 
                     pblock.innerHTML = "Waiting for Cloudflare...";
                     let seed = Math.floor(Math.random() * 100000);
-                    chrome.tabs.create({active: false, url: JAVLIB_SEARCH_URL + "&seed=" + seed}, new_tab => {
+                    chrome.tabs.create({active: false, url: "http://www.javlibrary.com/en?seed=" + seed}, new_tab => {
                         let retries = 0;
                         function checkForTitle() {
                             chrome.tabs.executeScript(new_tab.id,

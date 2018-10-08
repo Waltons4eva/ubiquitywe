@@ -481,91 +481,125 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
             CmdUtils.addTab("http://maps.google.com/maps?q="+encodeURIComponent(text));
         }
     });
-});
 
-CmdUtils.CreateCommand({
-    name: "history",
-    uuid: "128DEB45-F187-4A1F-A74D-566EDAE8DD0F",
-    arguments: [{role: "object",   nountype: noun_arb_text, label: "title or url"},
-        {role: "modifier", nountype: noun_type_history_date, label: "day"},
-        {role: "cause",    nountype: noun_type_number, label: "amount"}],
-    description: "Browsing history search.",
-    help:  `<span class="syntax">Syntax</span>
+    function dayToDate(day) {
+        let date;
+        switch (day) {
+            case "today":
+                date = new Date();
+                date.setHours(0,0,0,0);
+                break;
+            case "yesterday":
+                date = new Date();
+                date.setHours(0,0,0,0);
+                date.setDate(date.getDate() - 1);
+                break;
+            default:
+                if (day)
+                    date = new Date(day + "T00:00:00");
+                else
+                    date = undefined;
+        }
+        return date;
+    }
+
+
+    CmdUtils.CreateCommand({
+        name: "history",
+        uuid: "128DEB45-F187-4A1F-A74D-566EDAE8DD0F",
+        arguments: [{role: "object",   nountype: noun_arb_text, label: "title or url"},
+                    {role: "subject",  nountype: /[^\s]+/, label: "url"},
+                    {role: "modifier", nountype: noun_type_history_date, label: "day"},
+                    {role: "goal",     nountype: noun_type_history_date, label: "day"},
+                    {role: "source",   nountype: noun_type_history_date, label: "day"},
+                    {role: "cause",    nountype: noun_type_number, label: "amount"}],
+        description: "Browsing history search.",
+        help:  `<span class="syntax">Syntax</span>
             <ul class="syntax">
-                <li><b>history</b> [<i>filter</i>] [<b>of</b> <i>day</i>] [<b>by</b> <i>results</i>]</li>
+                <li><b>history</b> [<i>filter</i>] [<b>for</b> <i>domain</i>] [<b>of</b> <i>day</i>] [<b>from</b> <i>day</i>] [<b>to</b> <i>day</i>] [<b>by</b> <i>results</i>]</li>
             </ul>
             <span class="arguments">Arguments</span><br>
             <ul class="syntax">
-                <li>- <b>filter</b> - arbitrary text, filters history items by title or URL if specified.</li>
+                <li>- <i>filter</i> - arbitrary text, filters history items by title or URL if specified.</li>
             </ul>
             <ul class="syntax">
-                <li>- <b>day</b> - {<b>today</b> | yesterday | YYYY-MM-DD | MM-DD | DD | D}, specifies date to search history for. </li>
+                <li>- <i>domain</i> - additional filter by URL.</li>
             </ul>
             <ul class="syntax">
-                <li>- <b>results</b> - number, specifies maximum amount of result items.</li>
+                <li>- <i>day</i> - {<b>today</b> | yesterday | YYYY-MM-DD | MM-DD | DD | D}, specifies date to search history for. </li>
+            </ul>
+            <ul class="syntax">
+                <li>- <i>results</i> - number, specifies maximum amount of result items.</li>
             </ul>
             <span class="arguments">Example</span>
             <ul class="syntax">
-                <li><b>history</b> <i>news</i> <b>of</b> <i>10</i> <b>by</b> <i>50</i></li>
+                <li><b>history</b> <i>news</i> <b>for</b> <i>example.com</i> <b>of</b> <i>10</i> <b>by</b> <i>50</i></li>
             </ul>`,
-    icon: "/res/icons/history.ico",
-    previewDelay: 1000,
-    builtIn: true,
-    _namespace: "Browser",
-    preview: function(pblock, args, {Bin}) {
-        let maxResults = args.cause && args.cause.data
-            ? args.cause.data
-            : (+CmdUtils.maxSearchResults);
+        icon: "/res/icons/history.ico",
+        previewDelay: 1000,
+        builtIn: true,
+        _namespace: "Browser",
+        preview: function(pblock, args, {Bin}) {
+            let maxResults = args.cause && args.cause.data
+                ? args.cause.data
+                : (+CmdUtils.maxSearchResults);
 
-        let startDate;
+            let forDomain;
 
-        switch (args.modifier.text) {
-            case "today":
-                startDate = new Date();
-                startDate.setHours(0,0,0,0);
-                break;
-            case "yesterday":
-                startDate = new Date();
-                startDate.setHours(0,0,0,0);
-                startDate.setDate(startDate.getDate() - 1);
-                break;
-            default:
-                if (args.modifier.text)
-                    startDate = new Date(args.modifier.text + "T00:00:00");
-                else
-                    startDate = undefined;
-        }
+            if (args.subject && args.subject.text)
+                forDomain = args.subject.text;
 
-        let endDate;
-        if (startDate) {
-            endDate = new Date(startDate);
-            endDate.setDate(endDate.getDate() + 1);
-        }
+            let startDate = dayToDate(args.modifier.text);
 
-        chrome.history.search({
-                text: args.object.text,
-                startTime: startDate,
-                endTime: endDate,
-                maxResults: maxResults
-            },
-            (historyItems) => {
+            if (args.source && args.source.text)
+                startDate = dayToDate(args.source.text);
 
-                if (historyItems.length === 0) {
-                    pblock.innerHTML = "History is empty."
-                }
-                else {
-                    let html = "";
-                    let items = [];
-                    for (let h of historyItems) {
-                        let text = h.title || h.url;
-                        items.push(text);
+            let endDate;
+            if (startDate) {
+                endDate = new Date(startDate);
+                endDate.setDate(endDate.getDate() + 1);
+            }
+
+            if (args.goal && args.goal.text)
+                endDate = dayToDate(args.goal.text);
+
+            chrome.history.search({
+                    text: args.object.text,
+                    startTime: startDate,
+                    endTime: endDate,
+                    maxResults: forDomain? maxResults * 2: maxResults
+                },
+                (historyItems) => {
+
+                    if (!historyItems || historyItems.length === 0) {
+                        pblock.innerHTML = "History is empty."
                     }
+                    else {
+                        if (forDomain) {
+                            let matcher = new RegExp(forDomain, "i");
+                            historyItems = historyItems.filter(hi => !!matcher.exec(hi.url))
+                        }
 
-                    CmdUtils.previewList(pblock, items, (i, _) => {
-                            console.log(i);
-                            chrome.tabs.create({"url": historyItems[i].url, active: false});
-                        },
-                        `.preview-list-item {white-space: nowrap;}
+                        historyItems = historyItems.slice(0, maxResults);
+
+                        let html = "";
+                        let items = [];
+                        for (let h of historyItems) {
+                            let text;
+                            if (h.url && !h.title)
+                                text = h.url;
+                            else
+                                text = "<div class='h-title'>" + h.title + "</div>"
+                                    + "<div class='h-url'>" + h.url + "</div>";
+
+                            items.push(text);
+                        }
+
+                        CmdUtils.previewList(pblock, items, (i, _) => {
+                                console.log(i);
+                                chrome.tabs.create({"url": historyItems[i].url, active: false});
+                            },
+                            `.preview-list-item {white-space: nowrap;}
                          .preview-list-item span {display: inline-block; vertical-align: middle;}
                          .preview-item-text {
                             color: #45BCFF;  
@@ -573,12 +607,25 @@ CmdUtils.CreateCommand({
                             overflow: hidden;
                             text-overflow: ellipsis;
                             width: 490px;
+                         }
+                         .h-url {
+                            font-size: x-small;
+                            padding-left: 10px;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            color: #f25800;
+                         }
+                         .h-title {
+                            overflow: hidden;
+                            text-overflow: ellipsis;
                          }`
-                    );
-                }
-            });
+                        );
+                    }
+                });
 
-    },
-    execute: function(args, {Bin}) {
-    }
+        },
+        execute: function(args, {Bin}) {
+        }
+    });
+
 });

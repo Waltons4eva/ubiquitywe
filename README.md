@@ -2,7 +2,7 @@
 
 A natural language interface for web browsers.
 
-This is a development site. Please visit the main site at: https://gchristensen.github.io/ubiquitywe/
+This is a development page. Please visit the main site at: https://gchristensen.github.io/ubiquitywe/
 
 #### History
 
@@ -87,12 +87,9 @@ should be pretty easy to port one).
 #### Change Log
 [Full changelog](changelog.md)
 
-##### 27.09.2018 (v.0.2.5.2)
+##### 08.10.2018 (v.0.2.5.5)
 
-* Internal improvements: enabled suggestion memory for non-debug modes.
-* Internal improvements: added Firefox update manifest.
-* Internal improvements: fixed custom script handing in command editor.
-* Internal improvements: moved suggestion memory and user commands to IndexedDB.
+* Improved history command.
 
 ##### 28.09.2018 (v.0.2.5.3)
 

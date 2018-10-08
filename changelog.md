@@ -1,3 +1,7 @@
+##### 08.10.2018 (v.0.2.5.5)
+
+* Improved history command.
+
 ##### 28.09.2018 (v.0.2.5.3)
 
 * Fixed settings import feature.
