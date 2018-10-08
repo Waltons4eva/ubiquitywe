@@ -182,7 +182,7 @@ $(() => {
             scriptNamespace = $("#script-namespaces").val();
 
             Utils.getCustomScripts(scriptNamespace, scripts => {
-                console.log(scripts);
+//                console.log(scripts);
                 editNamespaceScripts(scripts, scriptNamespace);
             });
         });
