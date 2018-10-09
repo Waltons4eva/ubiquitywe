@@ -8,14 +8,14 @@ CmdUtils.CreateCommand({
     description: "Compose an email with the current selection as body using <a href='http://gmail.com'>Gmail</a>.",
     help: `<span class="syntax">Syntax</span>
             <ul class="syntax">
-                <li><b>email</b> <b>this</b> <b>to</b> <i>email@address</i> [<b>from</b> <i>account</i>]</li>
+                <li><b>email</b> <b>this</b> <b>to</b> <i>email address</i> [<b>from</b> <i>account</i>]</li>
             </ul>
             <span class="arguments">Arguments</span><br>
             <ul class="syntax">
                 <li>- <b>this</b> - mandatory keyword used as substitution for the selection, an arbitrary text may be used
                     instead<br></li>
-                <li>- <b>to</b> - recipient's address: a valid email address<br></li>
-                <li>- <b>from</b> - gmail account: {<b>default</b>, <b>secondary</b>}<br></li>
+                <li>- <i>email address</i> - recipient's address: a valid email address<br></li>
+                <li>- <i>account</i> - gmail account: {<b>default</b>, <b>secondary</b>}<br></li>
             </ul>
             <span class="arguments">Example</span>
             <ul class="syntax">
@@ -85,12 +85,12 @@ CmdUtils.CreateCommand({
     description: "Compose an empty email with the given subject using <a href='http://gmail.com'>Gmail</a>.",
     help: `<span class="syntax">Syntax</span>
             <ul class="syntax">
-                <li><b>compose</b> <i>message subject</i> <b>to</b> <i>email@address</i> [<b>at</b> <i>account</i>]</li>
+                <li><b>compose</b> <i>message subject</i> <b>to</b> <i>email address</i> [<b>at</b> <i>account</i>]</li>
             </ul>
             <span class="arguments">Arguments</span><br>
             <ul class="syntax">
-                <li>- <b>to</b> - recipient's address: a valid email address</li>
-                <li>- <b>at</b> - gmail account: {<b>default</b>, <b>secondary</b>}<br></li>
+                <li>- <i>email address</i> - recipient's address: a valid email address</li>
+                <li>- <i>account</i> - gmail account: {<b>default</b>, <b>secondary</b>}<br></li>
             </ul>
             <span class="arguments">Example</span>
             <ul class="syntax">

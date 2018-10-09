@@ -85,7 +85,7 @@
             </ul>
             <span class="arguments">Arguments</span><br>
             <ul class="syntax">
-                <li>- <b>from, to</b> - a valid language name supported by Bing Translator</li>
+                <li>- <i>language</i> - a valid language name supported by Bing Translator</li>
             </ul>
             <span class="arguments">Example</span>
             <ul class="syntax">

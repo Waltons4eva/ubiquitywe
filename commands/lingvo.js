@@ -32,7 +32,7 @@ var __lingvoLiveAPIToken;
                 </ul>
                 <span class="arguments">Arguments</span><br>
                 <ul class="syntax">
-                    <li>- <b>from, to</b> - a valid language name supported by Lingvo</li>
+                    <li>- <i>language</i> - a valid language name supported by Lingvo</li>
                 </ul>
                 <span class="arguments">Example</span>
                 <ul class="syntax">

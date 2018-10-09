@@ -17,13 +17,13 @@ CmdUtils.CreateCommand(
                 </ul>
                 <span class="arguments">Arguments</span><br>
                 <ul class="syntax">
-                    <li>- <b>of</b> - a name of sport:</li>
+                    <li>- <i>sport</i> - a name of sport:</li>
                     <ul class="syntax">
                         <li>- <i>football</i></li>
                         <li>- <i>formula1</i></li>
                     </ul>
                     </li>
-                    <li>- <b>in</b> - division (football only):
+                    <li>- <i>division</i> - division (football only):
                         <ul class="syntax">
                             <li>- <i>premier</i></li>
                             <li>- <i>first</i></li>
