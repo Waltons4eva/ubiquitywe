@@ -11,11 +11,14 @@ function __ubiq_get_sel() {
 }
 
 var __ubiq_send_sel = function(event) {
-    if (chrome && chrome.runtime) chrome.runtime.sendMessage({
-        message:"selection",
-        data: __ubiq_get_sel(),
-        event: event.type
-    },function(response){});
+    if (chrome && chrome.runtime) {
+        chrome.runtime.sendMessage({
+            message: "selection",
+            data: __ubiq_get_sel(),
+            event: event.type
+        }, function (response) {
+        });
+    }
 };
 
 // document.addEventListener('selectionchange', __ubiq_send_sel); // works in chrome

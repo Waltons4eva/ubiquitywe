@@ -580,7 +580,7 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
                             historyItems = historyItems.filter(hi => !!matcher.exec(hi.url))
                         }
 
-                        historyItems = historyItems.slice(0, maxResults);
+                        //historyItems = historyItems.slice(0, maxResults);
 
                         let html = "";
                         let items = [];
@@ -596,7 +596,6 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
                         }
 
                         CmdUtils.previewList(pblock, items, (i, _) => {
-                                console.log(i);
                                 chrome.tabs.create({"url": historyItems[i].url, active: false});
                             },
                             `.preview-list-item {white-space: nowrap;}

@@ -1,3 +1,7 @@
+##### 10.10.2018 (v.0.2.5.6)
+
+* Improved selection acquisition over multiple iframes.
+
 ##### 08.10.2018 (v.0.2.5.5)
 
 * Improved history command.

@@ -494,13 +494,36 @@ CmdUtils.loadCSS = function(doc, id, file) {
 // updates selectedText variable
 CmdUtils.updateSelection = function (tab_id, callback) {
     try {
-        chrome.tabs.executeScript(tab_id, {code: "__ubiq_get_sel()"}, function (selection) {
-            if (selection && selection.length > 0 &&  selection[0]) {
-                CmdUtils.selectedText = selection[0].text || "";
-                CmdUtils.selectedHtml = selection[0].html || "";
+        chrome.webNavigation.getAllFrames({tabId: tab_id}, async (frames) => {
+            CmdUtils.selectedText = "";
+            CmdUtils.selectedHtml = "";
+
+            function getFrameSelection(frames) {
+                let frame = frames.shift();
+                try {
+                    chrome.tabs.executeScript(tab_id, {code: "__ubiq_get_sel()", frameId: frame.frameId},
+                        function (selection) {
+                            if (selection && selection.length > 0 && selection[0]) {
+                                CmdUtils.selectedText = selection[0].text;
+                                CmdUtils.selectedHtml = selection[0].html;
+                            }
+
+                            if (!CmdUtils.selectedText && frames.length > 0)
+                                getFrameSelection(frames);
+                            else if (callback)
+                                callback();
+                        });
+                }
+                catch (e) {
+                    console.error(e);
+                    if (!CmdUtils.selectedText && frames.length > 0)
+                        getFrameSelection(frames);
+                    else if (callback)
+                        callback();
+                }
             }
-            if (callback)
-                callback();
+
+            getFrameSelection(frames)
         });
     }
     catch (e) {
@@ -521,7 +544,7 @@ CmdUtils.updateActiveTab = function (callback) {
     CmdUtils.selectedText = '';
     if (chrome.tabs && chrome.tabs.query)
         try {
-            chrome.tabs.query({active: true}, function (tabs) {
+            chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
                 if (tabs.length > 0) {
                     var tab = tabs[0];
                     if (tab.url.match('^https?://')) {
@@ -551,11 +574,11 @@ ContextUtils.getHtmlSelection = CmdUtils.getHtmlSelection = () => CmdUtils.selec
 
 // replaces current selection with string provided
 ContextUtils.setSelection = CmdUtils.setSelection = function setSelection(s) {
-    //console.log("CmdUtils.setSelection"+s)
     if (typeof s!=='string') s = s+'';
     s = s.replace(/(['"])/g, "\\$1");
     s = s.replace(/\\\\/g, "\\");
     // http://jsfiddle.net/b3Fk5/2/
+    //console.log("CmdUtils.setSelection"+s)
 
     var insertCode = `
     function replaceSelectedText(replacementText) {
@@ -584,7 +607,7 @@ ContextUtils.setSelection = CmdUtils.setSelection = function setSelection(s) {
             }
         }
     }
-    replaceSelectedText("`+s+`");`;
+    replaceSelectedText(\``+s+`\`);`;
     if (CmdUtils.active_tab && CmdUtils.active_tab.id)
         return chrome.tabs.executeScript( CmdUtils.active_tab.id, { code: insertCode } );
     else 
@@ -993,8 +1016,8 @@ CmdUtils.previewList = function(block, htmls, callback, css) {
         var {target} = ev;
         ev.preventDefault();
         if (callback) {
-            if (target.tagName != "LI")
-                target = target.parentNode
+            while (!target.getAttribute("key"))
+                target = target.parentNode;
             callback.call(this, target.getAttribute("key"), ev);
         }
     }, false);

@@ -87,13 +87,13 @@ should be pretty easy to port one).
 #### Change Log
 [Full changelog](changelog.md)
 
+##### 10.10.2018 (v.0.2.5.6)
+
+* Improved selection acquisition over multiple iframes.
+
 ##### 08.10.2018 (v.0.2.5.5)
 
 * Improved history command.
-
-##### 28.09.2018 (v.0.2.5.3)
-
-* Fixed settings import feature.
 
 #### TODO
 
