@@ -16,6 +16,7 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
         "of the Google results shown in the preview.",
         parser: {
             container  : ".rc",
+            href       : "a",
             title      : "h3",
             body       : ".st",
             maxResults : maxSearchResults,
