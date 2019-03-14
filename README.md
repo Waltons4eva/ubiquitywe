@@ -96,7 +96,4 @@ should be pretty easy to port one).
 #### TODO
 
 * Redesign/refactor UbiquityWE in component-based architecture.
-* Ubiquity Touch: add a popup near the page text selection a la Oxford Dictionary one to execute predefined 
-commands with set arguments on the selection (useful for various dictionary/clipping apps 
-on touch devices).
 * I18N.
