@@ -9,7 +9,7 @@ This is a development page. Please visit the main site at: https://gchristensen.
 The [original Ubiquity](https://wiki.mozilla.org/Labs/Ubiquity) was a promising project by Mozilla aimed to familiarize
 masses with natural language user interfaces. But eventually, it went popular only within a community of handful of
 geeks and has been abandoned, although, the [impressive
-repository](https://wiki.mozilla.org/Labs/Ubiquity/Commands_In_The_Wild) of commands was created. 
+repository](https://wiki.mozilla.org/Labs/Ubiquity/Commands_In_The_Wild) of commands still remains. 
 You have been meant to subscribe them to get updates automatically, but subscription model has ceased
 with the original ubiquity, and due to the volatile nature of the Web, you will hardly find a working command there.
 Nevertheless, Ubiquity is still immensely useful if
