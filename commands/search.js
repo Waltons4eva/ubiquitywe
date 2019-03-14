@@ -544,7 +544,7 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
             </ul>
             <span class="arguments">Examples</span>
             <ul class="syntax">
-                <li><b>history</b> <i>books</i> from 01 to 10</li>
+                <li><b>history</b> <i>books</i> <b>from</b> <i>01</i> <b>to</b> <i>10</i></li>
                 <li><b>history</b> <i>news</i> <b>for</b> <i>example.com</i> <b>of</b> <i>week</i> <b>by</b> <i>50</i></li>
             </ul>`,
         icon: "/res/icons/history.ico",
@@ -568,14 +568,12 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
 
             let endDate;
             if (startDate) {
-                if (args.modifier && args.modifier.text
-                        && (args.modifier.text === "week" || args.modifier.text === "month")) {
-                    endDate = new Date();
-                }
-                else {
+                if (args.modifier && args.modifier.text === "yesterday") {
                     endDate = new Date(startDate);
                     endDate.setDate(endDate.getDate() + 1);
                 }
+                else
+                    endDate = new Date();
             }
 
             if (args.goal && args.goal.text)

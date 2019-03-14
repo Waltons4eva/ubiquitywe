@@ -1,4 +1,4 @@
-##### 14.03.2019 (v.0.2.6.0)
+##### 14.03.2019 (v.0.2.6.2)
 
 * Improved "History" command.
 * Remember last edited command category.
