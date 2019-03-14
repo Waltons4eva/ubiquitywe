@@ -68,7 +68,8 @@ there are some notable differences which emerge, in part, from Firefox Quantum l
 
 * Because there is no command subscription model anymore, each command is required to
  have an UUID. Although, commands generally are able to run without an UUID, in this case they
- would not be able to store persistent data and it would be not possible to add such a command 
+ would not be able to store persistent data through "Bin" interface (but still be able to do this 
+ through WebExtension API directly) and it would be not possible to add such a command 
  into context menu. An RFC 4122 v4 complaint UUID is generated automatically for commands
  inserted through command editor templates.
 * Since there is no sandboxed evaluation available in Firefox WebExtensions, the
@@ -87,14 +88,10 @@ should be pretty easy to port one).
 #### Change Log
 [Full changelog](changelog.md)
 
-##### 11.10.2018 (v.0.2.5.7)
+##### 14.03.2019 (v.0.2.6.0)
 
-* Fixed Google command.
-
-##### 10.10.2018 (v.0.2.5.6)
-
-* Improved selection acquisition over multiple iframes.
-
+* Improved "History" command.
+* Remember last edited command category.
 
 #### TODO
 

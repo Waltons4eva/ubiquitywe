@@ -1,3 +1,8 @@
+##### 14.03.2019 (v.0.2.6.0)
+
+* Improved "History" command.
+* Remember last edited command category.
+
 ##### 11.10.2018 (v.0.2.5.7)
 
 * Fixed Google command.
