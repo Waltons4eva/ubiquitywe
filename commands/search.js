@@ -495,6 +495,16 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
                 date.setHours(0,0,0,0);
                 date.setDate(date.getDate() - 1);
                 break;
+            case "week":
+                date = new Date();
+                date.setHours(0,0,0,0);
+                date.setDate(date.getDate() - 7);
+                break;
+            case "month":
+                date = new Date();
+                date.setHours(0,0,0,0);
+                date.setDate(date.getDate() - 30);
+                break;
             default:
                 if (day)
                     date = new Date(day + "T00:00:00");
@@ -527,14 +537,15 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
                 <li>- <i>domain</i> - additional filter by URL.</li>
             </ul>
             <ul class="syntax">
-                <li>- <i>day</i> - {<b>today</b> | yesterday | YYYY-MM-DD | MM-DD | DD | D}, specifies date to search history for. </li>
+                <li>- <i>day</i> - {<b>today</b> | yesterday | week | month | YYYY-MM-DD | MM-DD | DD | D}, specifies date to search history for. </li>
             </ul>
             <ul class="syntax">
                 <li>- <i>results</i> - number, specifies maximum amount of result items.</li>
             </ul>
-            <span class="arguments">Example</span>
+            <span class="arguments">Examples</span>
             <ul class="syntax">
-                <li><b>history</b> <i>news</i> <b>for</b> <i>example.com</i> <b>of</b> <i>10</i> <b>by</b> <i>50</i></li>
+                <li><b>history</b> <i>books</i> from 01 to 10</li>
+                <li><b>history</b> <i>news</i> <b>for</b> <i>example.com</i> <b>of</b> <i>week</i> <b>by</b> <i>50</i></li>
             </ul>`,
         icon: "/res/icons/history.ico",
         previewDelay: 1000,
@@ -557,8 +568,13 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
 
             let endDate;
             if (startDate) {
-                endDate = new Date(startDate);
-                endDate.setDate(endDate.getDate() + 1);
+                if (args.modifier && args.modifier.text
+                        && args.modifier.text !== "week" && args.modifier.text !== "month") {
+                    endDate = new Date(startDate);
+                    endDate.setDate(endDate.getDate() + 1);
+                }
+                else
+                    endDate = new Date();
             }
 
             if (args.goal && args.goal.text)

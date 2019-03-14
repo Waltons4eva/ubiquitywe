@@ -670,7 +670,7 @@ var noun_type_history_date = {
     noExternalCalls: true,
     cacheTime: -1,
     suggest: function (text, html, cb, selectionIndices) {
-        let predefs = ["today", "yesterday"];
+        let predefs = ["today", "yesterday", "week", "month"];
         let matcher = new RegExp(text, "i");
         let suggs;
 
