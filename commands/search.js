@@ -569,12 +569,13 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
             let endDate;
             if (startDate) {
                 if (args.modifier && args.modifier.text
-                        && args.modifier.text !== "week" && args.modifier.text !== "month") {
+                        && (args.modifier.text === "week" || args.modifier.text === "month")) {
+                    endDate = new Date();
+                }
+                else {
                     endDate = new Date(startDate);
                     endDate.setDate(endDate.getDate() + 1);
                 }
-                else
-                    endDate = new Date();
             }
 
             if (args.goal && args.goal.text)
