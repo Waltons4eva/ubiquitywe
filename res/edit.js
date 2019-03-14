@@ -1,6 +1,12 @@
 const UBIQUITY_SETTINGS = "ubiquity-settings";
 
-var scriptNamespace = window.location.search? decodeURI(window.location.search.substring(1)): "default";
+var scriptNamespace;
+
+Utils.getPref("lastNamespace", lastNamespace => {
+    scriptNamespace =  window.location.search
+        ? decodeURI(window.location.search.substring(1))
+        : (lastNamespace? lastNamespace: "default");
+});
 
 // inserts stub (example command)
 function insertExampleStub() {
@@ -181,6 +187,7 @@ $(() => {
         saveScripts(() => {
             scriptNamespace = $("#script-namespaces").val();
 
+            Utils.setPref("lastNamespace", scriptNamespace);
             Utils.getCustomScripts(scriptNamespace, scripts => {
 //                console.log(scripts);
                 editNamespaceScripts(scripts, scriptNamespace);
