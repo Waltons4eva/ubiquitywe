@@ -25,6 +25,10 @@
           "version": "0.2.6.2",
           "update_link": "https://github.com/GChristensen/ubiquitywe/releases/download/v0.2.6.2/ubiquity_webeextension.xpi"
         }
+      ,{
+          "version": "0.2.6.3",
+          "update_link": "https://github.com/GChristensen/ubiquitywe/releases/download/v0.2.6.3/ubiquity_webeextension.xpi"
+        }
       ]
     }
   }
