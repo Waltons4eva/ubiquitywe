@@ -1,4 +1,4 @@
-# UbiquityWE <sup>EXPERIMENTAL</sup>
+# UbiquityWE
 
 A natural language interface for web browsers.
 
