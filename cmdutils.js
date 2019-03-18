@@ -385,7 +385,8 @@ CmdUtils.createContextMenu = function() {
                     }
                     if (info.linkUrl) {
                         CmdUtils.selectedText = info.linkUrl;
-                        CmdUtils.selectedHtml = info.linkUrl;
+                        CmdUtils.selectedHtml = "<a class='__ubiqLinkSelection' src='"
+                                              + info.linkUrl + "'>" + info.linkText + "</a>";
                     }
 
                     let contextMenuCmdData = CmdUtils.getContextMenuCommand(info.menuItemId);
