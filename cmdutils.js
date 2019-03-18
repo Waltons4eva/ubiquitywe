@@ -1015,16 +1015,16 @@ CmdUtils.previewList = function(block, htmls, callback, css) {
     var ol = block.firstChild, start = 0;
     function onPreviewListClick(ev) {
         ev.preventDefault();
-        if (ev.which === 1 || ev.which === 2) {
-            var {target} = ev;
-            if (callback) {
-                while (!target.getAttribute("key"))
-                    target = target.parentNode;
-                callback.call(this, target.getAttribute("key"), ev);
-            }
-        }
+        var {target} = ev;
+        while (!target.getAttribute("key"))
+            target = target.parentNode;
+        callback.call(this, target.getAttribute("key"), ev);
     }
-    callback && ol.addEventListener("mousedown", onPreviewListClick, false);
+    callback && ol.addEventListener("click", onPreviewListClick, false);
+    callback && ol.addEventListener("mousedown", function (ev) {
+        if (ev.which === 2)
+            onPreviewListClick(ev)
+    }, false);
     return ol;
 };
 CmdUtils.previewList.CSS = `\
