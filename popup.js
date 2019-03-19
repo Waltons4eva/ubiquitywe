@@ -20,6 +20,14 @@ CmdUtils.closePopup = function closePopup(w) {
         window.close();
 };
 
+CmdUtils.getCommandLine = ubiq_get_input;
+CmdUtils.setCommandLine = function (text) {
+    ubiq_set_input(text);
+    ubiq_save_input();
+    ubiq_show_matching_commands();
+    lcmd = ubiq_get_input();
+};
+
 function ubiq_preview_el() {
     return document.getElementById('ubiq-command-preview');
 }
