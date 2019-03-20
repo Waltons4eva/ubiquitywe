@@ -1,12 +1,6 @@
 const UBIQUITY_SETTINGS = "ubiquity-settings";
 
-var scriptNamespace;
-
-Utils.getPref("lastNamespace", lastNamespace => {
-    scriptNamespace =  window.location.search
-        ? decodeURI(window.location.search.substring(1))
-        : (lastNamespace? lastNamespace: "default");
-});
+scriptNamespace = "default";
 
 // inserts stub (example command)
 function insertExampleStub() {
@@ -158,161 +152,164 @@ function saveScripts(callback) {
 
 $(() => {
 
-    editor = ace.edit("code");
-    editor.setTheme("ace/theme/monokai");
-    editor.getSession().setMode("ace/mode/javascript");
+    Utils.getPref("lastNamespace", lastNamespace => {
+        scriptNamespace =  window.location.search
+            ? decodeURI(window.location.search.substring(1))
+            : (lastNamespace? lastNamespace: "default");
 
-    // Utils.getPref("keyboardScheme", keyboardScheme => {
-    //     if (keyboardScheme !== "ace")
-    //         editor.setKeyboardHandler("ace/keyboard/" + keyboardScheme);
-    // });
+        editor = ace.edit("code");
+        editor.getSession().setUseWorker(false);
+        editor.setTheme("ace/theme/monokai");
+        editor.getSession().setMode("ace/mode/javascript");
+        editor.setPrintMarginColumn(120);
 
-    editor.setPrintMarginColumn(120);
-
-    $(window).on('resize', e => {
-       editor.container.style.height = $(window).innerHeight() - $("#header").height() - $("#footer").height() - 16;
-       editor.resize();
-    });
-    $(window).resize();
-
-    function editNamespaceScripts(all_scripts, namespace) {
-        let namespace_scripts = all_scripts[namespace];
-        if (namespace_scripts)
-            return editor.setValue(namespace_scripts.scripts || "", -1);
-        else
-            return editor.setValue("");
-    }
-
-    $("#script-namespaces").change(() => {
-        saveScripts(() => {
-            scriptNamespace = $("#script-namespaces").val();
-
-            Utils.setPref("lastNamespace", scriptNamespace);
-            Utils.getCustomScripts(scriptNamespace, scripts => {
-//                console.log(scripts);
-                editNamespaceScripts(scripts, scriptNamespace);
-            });
+        $(window).on('resize', e => {
+           editor.container.style.height = $(window).innerHeight() - $("#header").height() - $("#footer").height() - 16;
+           editor.resize();
         });
-    });
+        $(window).resize();
 
-    $("#upload").click((e) => {
-        $("#file-picker").click();
-    });
-
-    $("#file-picker").change((e) => {
-       if (e.target.files.length > 0) {
-           let reader = new FileReader();
-           reader.onload = function(e) {
-               editor.getSession().setValue(e.target.result);
-           };
-           reader.readAsText(e.target.files[0]);
-       }
-    });
-
-    $("#create-namespace").click(() => {
-        if (scriptNamespace === UBIQUITY_SETTINGS)
-            return;
-
-        let name = prompt("Create category: ");
-        if (name) {
-
-            Utils.getCustomScripts(all_scripts => {
-                ADD_NAME: {
-                    saveScripts();
-
-                    for (let n in all_scripts) {
-                        if (n.toLowerCase() == name.toLowerCase()) {
-                            scriptNamespace = n;
-                            $("#script-namespaces").val(n);
-                            editNamespaceScripts(all_scripts, scriptNamespace)
-                            break ADD_NAME;
-                        }
-                    }
-
-                    scriptNamespace = name;
-                    editor.getSession().setValue("");
-                    $("#script-namespaces").append($("<option></option>")
-                        .attr("value", name)
-                        .text(name))
-                        .val(name);
-
-
-                }
-            });
+        function editNamespaceScripts(all_scripts, namespace) {
+            let namespace_scripts = all_scripts[namespace];
+            if (namespace_scripts)
+                return editor.setValue(namespace_scripts.scripts || "", -1);
+            else
+                return editor.setValue("");
         }
-    });
 
-    $("#delete-namespace").click(() => {
-        if (scriptNamespace !== "default" && scriptNamespace !== UBIQUITY_SETTINGS)
-            if (confirm("Do you really want to delete \"" + scriptNamespace + "\"?")) {
-                Utils.deleteCustomScripts(scriptNamespace, () => {
-                    $('option:selected', $("#script-namespaces")).remove();
+        $("#upload").click((e) => {
+            $("#file-picker").click();
+        });
 
-                    scriptNamespace = $("#script-namespaces").val();
-                    Utils.getCustomScripts(scriptNamespace, scripts => {
-                        editNamespaceScripts(scripts, scriptNamespace);
-                    });
+        $("#file-picker").change((e) => {
+           if (e.target.files.length > 0) {
+               let reader = new FileReader();
+               reader.onload = function(e) {
+                   editor.getSession().setValue(e.target.result);
+               };
+               reader.readAsText(e.target.files[0]);
+           }
+        });
+
+        $("#create-namespace").click(() => {
+            if (scriptNamespace === UBIQUITY_SETTINGS)
+                return;
+
+            let name = prompt("Create category: ");
+            if (name) {
+
+                Utils.getCustomScripts(all_scripts => {
+                    ADD_NAME: {
+                        saveScripts();
+
+                        for (let n in all_scripts) {
+                            if (n.toLowerCase() == name.toLowerCase()) {
+                                scriptNamespace = n;
+                                $("#script-namespaces").val(n);
+                                editNamespaceScripts(all_scripts, scriptNamespace)
+                                break ADD_NAME;
+                            }
+                        }
+
+                        scriptNamespace = name;
+                        editor.getSession().setValue("");
+                        $("#script-namespaces").append($("<option></option>")
+                            .attr("value", name)
+                            .text(name))
+                            .val(name);
+
+
+                    }
                 });
             }
-    });
+        });
 
-    $("#expand-editor").click(() => {
-        if ($("#expand-editor img").prop("src").endsWith("/res/icons/collapse.png")) {
-            $("#panel").css("width", "870px");
-            $("body").css("margin", "auto");
-            $("body").css("max-width", "900px");
-            $("#toolbar").css("padding-right", "30px");
-            $(".head, #nav-container, #head-br").show();
-            $("#expand-editor img").prop("src", "/res/icons/expand.png");
+        $("#delete-namespace").click(() => {
+            if (scriptNamespace !== "default" && scriptNamespace !== UBIQUITY_SETTINGS)
+                if (confirm("Do you really want to delete \"" + scriptNamespace + "\"?")) {
+                    Utils.deleteCustomScripts(scriptNamespace, () => {
+                        $('option:selected', $("#script-namespaces")).remove();
+
+                        scriptNamespace = $("#script-namespaces").val();
+                        Utils.getCustomScripts(scriptNamespace, scripts => {
+                            editNamespaceScripts(scripts, scriptNamespace);
+                        });
+                    });
+                }
+        });
+
+        $("#expand-editor").click(() => {
+            if ($("#expand-editor img").prop("src").endsWith("/res/icons/collapse.png")) {
+                $("#panel").css("width", "870px");
+                $("body").css("margin", "auto");
+                $("body").css("max-width", "900px");
+                $("#toolbar").css("padding-right", "30px");
+                $(".head, #nav-container, #head-br").show();
+                $("#expand-editor img").prop("src", "/res/icons/expand.png");
+            }
+            else {
+                $(".head, #nav-container, #head-br").hide();
+                $("#panel").css("width", "100%");
+                $("body").css("margin", "0");
+                $("body").css("max-width", "100%");
+                $("#toolbar").css("padding-right", "5px");
+                $("#expand-editor img").prop("src", "/res/icons/collapse.png");
+            }
+            window.dispatchEvent(new Event('resize'));
+            editor.focus();
+        });
+
+        $("#insertsimplecommandstub").click(insertExampleStub);
+        $("#insertcommandstub").click(insertExampleStub);
+        $("#insertsearchstub").click(insertExampleStub);
+
+        // load scrtips
+        if (typeof chrome !== 'undefined' && chrome.storage) {
+            if (scriptNamespace === UBIQUITY_SETTINGS)
+                chrome.storage.local.get(undefined, function (result) {
+                    $("#script-namespaces").prop("disabled", "disabled");
+                    if (result) {
+                        editor.getSession().setValue(JSON.stringify(result, null, 2), -1);
+                    }
+                });
+            else
+                Utils.getCustomScripts(all_scripts => {
+                    var sorted = Object.keys(all_scripts).sort(function (a, b) {
+                        if (a.toLocaleLowerCase() < b.toLocaleLowerCase())
+                            return -1;
+                        if (a.toLocaleLowerCase() > b.toLocaleLowerCase())
+                            return 1;
+                        return 0;
+                    });
+                    for (let n of sorted)
+                        if (n !== "default")
+                            $("#script-namespaces").append($("<option></option>")
+                                .attr("value", n)
+                                .text(n));
+
+                    $("#script-namespaces").val(window.scriptNamespace);
+
+                    $("#script-namespaces").change(() => {
+                        saveScripts(() => {
+
+                            scriptNamespace = $("#script-namespaces").val();
+
+                            Utils.setPref("lastNamespace", scriptNamespace);
+                            Utils.getCustomScripts(scriptNamespace, scripts => {
+                                editNamespaceScripts(scripts, scriptNamespace);
+                            });
+                        });
+                    });
+
+                    editNamespaceScripts(all_scripts, scriptNamespace);
+                    //saveScripts();
+                });
+
+            editor.on("blur", saveScripts);
+            editor.on("change", saveScripts);
         }
-        else {
-            $(".head, #nav-container, #head-br").hide();
-            $("#panel").css("width", "100%");
-            $("body").css("margin", "0");
-            $("body").css("max-width", "100%");
-            $("#toolbar").css("padding-right", "5px");
-            $("#expand-editor img").prop("src", "/res/icons/collapse.png");
-        }
-        window.dispatchEvent(new Event('resize'));
+
         editor.focus();
     });
 
-    $("#insertsimplecommandstub").click(insertExampleStub);
-    $("#insertcommandstub").click(insertExampleStub);
-    $("#insertsearchstub").click(insertExampleStub);
-
-    // load scrtips
-    if (typeof chrome !== 'undefined' && chrome.storage) {
-        if (scriptNamespace === UBIQUITY_SETTINGS)
-            chrome.storage.local.get(undefined, function (result) {
-                $("#script-namespaces").prop("disabled", "disabled");
-                if (result) {
-                    editor.getSession().setValue(JSON.stringify(result, null, 2), -1);
-                }
-            });
-        else
-            Utils.getCustomScripts(all_scripts => {
-                var sorted = Object.keys(all_scripts).sort(function (a, b) {
-                    if (a.toLocaleLowerCase() < b.toLocaleLowerCase())
-                        return -1;
-                    if (a.toLocaleLowerCase() > b.toLocaleLowerCase())
-                        return 1;
-                    return 0;
-                });
-                for (let n of sorted)
-                    if (n !== "default")
-                        $("#script-namespaces").append($("<option></option>")
-                            .attr("value", n)
-                            .text(n));
-                $("#script-namespaces").val(scriptNamespace);
-
-                editNamespaceScripts(all_scripts, scriptNamespace);
-                //saveScripts();
-            });
-
-        editor.on("blur", saveScripts);
-        editor.on("change", saveScripts);
-    }
-
-    editor.focus();
 });
