@@ -135,6 +135,8 @@ CmdUtils.CreateCommand = function CreateCommand(options) {
 
     options.previewDefault = CmdUtils.CreateCommand.previewDefault;
     CmdUtils.CommandList.push(options);
+
+    return options;
 };
 
 CmdUtils.CreateCommand.previewDefault = function previewDefault(pb) {

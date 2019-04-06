@@ -187,7 +187,8 @@ function buildTable(customscripts) {
 
     function insertBuiltinNamespace(ns) {
         let namespaced = CmdUtils.CommandList.filter((c) => c.builtIn && c._namespace === ns).sort(compareByName);
-        insertNamespace(ns, BUILTIN_AUTHOR, namespaced, table);
+        if (namespaced.length)
+            insertNamespace(ns, BUILTIN_AUTHOR, namespaced, table);
     }
 
     insertBuiltinNamespace("Ubiquity");
@@ -197,6 +198,7 @@ function buildTable(customscripts) {
     insertBuiltinNamespace("Mail");
     insertBuiltinNamespace("Syndication");
     insertBuiltinNamespace("Translation");
+    insertBuiltinNamespace("Scrapyard");
 
     if (CmdUtils.MORE_COMMANDS)
         insertBuiltinNamespace("More Commands");

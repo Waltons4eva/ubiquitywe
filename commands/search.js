@@ -527,7 +527,7 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
         description: "Browsing history search.",
         help:  `<span class="syntax">Syntax</span>
             <ul class="syntax">
-                <li><b>history</b> [<i>filter</i>] [<b>for</b> <i>domain</i>] [<b>of</b> <i>day</i>] [<b>from</b> <i>day</i>] [<b>to</b> <i>day</i>] [<b>by</b> <i>results</i>]</li>
+                <li><b>history</b> [<i>filter</i>] [<b>for</b> <i>domain</i>] [<b>of</b> <i>day</i>] [<b>from</b> <i>day</i>] [<b>to</b> <i>day</i>] [<b>by</b> <i>amount</i>]</li>
             </ul>
             <span class="arguments">Arguments</span><br>
             <ul class="syntax">
@@ -540,7 +540,7 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
                 <li>- <i>day</i> - {<b>today</b> | yesterday | week | month | YYYY-MM-DD | MM-DD | DD | D}, specifies date to search history for. </li>
             </ul>
             <ul class="syntax">
-                <li>- <i>results</i> - number, specifies maximum amount of result items.</li>
+                <li>- <i>amount</i> - number, specifies the maximum amount of listed items.</li>
             </ul>
             <span class="arguments">Examples</span>
             <ul class="syntax">

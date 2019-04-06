@@ -432,6 +432,15 @@ span.arguments {
     margin-top: 10px;
 }
 
+ul.arguments {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 20px;
+  padding-top: 0;
+  list-style: none;
+}
+
+
 .key-container {
   display: flex;
 }

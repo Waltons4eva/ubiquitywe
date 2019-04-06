@@ -689,9 +689,10 @@ var noun_type_history_date = {
         if (/\d{4}-d{1,2}-d{1,2}/.test(text)) {
             suggs.push(CmdUtils.makeSugg(text, text, null, CmdUtils.matchScore(p.match), selectionIndices));
         }
-        else if (/\d{2}-\d{2}/.test(text)) {
+        else if (/\d{1,2}-\d{1,2}/.test(text)) {
             let now = new Date();
-            let date = now.getFullYear() + "-" + text;
+            let [month, day] = text.split("-");
+            let date = now.getFullYear() + "-" + addZero(month) + "-" + addZero(day);
             suggs.push(CmdUtils.makeSugg(date, date, null, 1, selectionIndices));
         }
         else if (/\d{1,2}/.test(text)) {

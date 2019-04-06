@@ -92,9 +92,22 @@ function insertExampleStub() {
       //body       : ".css > .selector", // result item summary
         maxResults : 10,
     }
-});
+});`,
 
-`
+
+        'insertcapturestub': // capture pages to Scrapyard
+`CmdUtils.makeCaptureCommand({  // Capture page in the current tab to Scrapyard
+    name: "my-capture-command",
+    uuid: "%%UUID%%",
+    type: "archive",  // also "bookmark"
+    path: "My Shelf/My Folder",  // default path of the bookmark or archive
+ // tags: "my,tags",  // default tags
+ // todo: "TODO",  // also "WAITING", "POSTPONED", etc...
+ // due: "YYYY-MM-DD",  // todo deadline
+ // details: "bookmark details",  // arbitrary text
+ // selector: ".article-body",  // capture only elements matching selector
+ // filter: ".ads"  // remove elements matched by filter
+});`
     };
 
     var stub = stubs[this.id];
@@ -262,6 +275,13 @@ $(() => {
         $("#insertsimplecommandstub").click(insertExampleStub);
         $("#insertcommandstub").click(insertExampleStub);
         $("#insertsearchstub").click(insertExampleStub);
+        $("#insertcapturestub").click(insertExampleStub);
+
+        Utils.getPref("scrapyardPresents", scrapyardPresents => {
+            if (scrapyardPresents) {
+                $("#capture-stub").show();
+            }
+        });
 
         // load scrtips
         if (typeof chrome !== 'undefined' && chrome.storage) {

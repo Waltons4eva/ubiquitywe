@@ -2,6 +2,7 @@ CmdUtils.deblog("UbiquityWE v" + CmdUtils.VERSION + " background script says hel
 
 Utils.initSettingsDB(() => {
     Utils.getPref("enableMoreCommands", enableMoreCommands => {
+    Utils.getPref("scrapyardPresents", scrapyardPresents => {
 
         if (enableMoreCommands) {
             for (let cmd of CmdUtils.CommandList)
@@ -11,6 +12,9 @@ Utils.initSettingsDB(() => {
         }
         else
             CmdUtils.CommandList = CmdUtils.CommandList.filter(cmd => !(cmd.builtIn && cmd._namespace === NS_MORE_COMMANDS));
+
+        if (!scrapyardPresents)
+            CmdUtils.CommandList = CmdUtils.CommandList.filter(cmd => !(cmd.builtIn && cmd._namespace === "Scrapyard"));
 
         Utils.getPref("debugMode", debugMode => {
             CmdUtils.DEBUG = !!debugMode;
@@ -36,6 +40,7 @@ Utils.initSettingsDB(() => {
                 });
             });
         });
+    });
     });
 });
 
@@ -107,3 +112,27 @@ chrome.tabs.onHighlighted.addListener(function (higInfo) {
     CmdUtils.updateActiveTab();
 });
 
+chrome.management.onInstalled.addListener((info) => {
+    if (info.id === "scrapyard@firefox")
+        Utils.setPref("scrapyardPresents", true, () => chrome.runtime.reload());
+});
+
+chrome.management.onUninstalled.addListener((info) => {
+    console.log(info.id)
+    if (info.id === "scrapyard@firefox")
+        Utils.setPref("scrapyardPresents", false, () => chrome.runtime.reload());
+});
+
+function checkForScrapyard() {
+    chrome.runtime.sendMessage("scrapyard@firefox", {type: "SCRAPYARD_GET_VERSION"}).then(version => {
+        if (version) {
+            Utils.setPref("scrapyardPresents", true);
+
+            if (CmdUtils.scrapyardCommands && CmdUtils.CommandList.indexOf(CmdUtils.scrapyardCommands[0]) < 0)
+                CmdUtils.CommandList = [...CmdUtils.CommandList, ...CmdUtils.scrapyardCommands];
+        }
+    })
+}
+
+chrome.runtime.onInstalled.addListener(checkForScrapyard);
+checkForScrapyard();
