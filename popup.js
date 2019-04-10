@@ -79,8 +79,13 @@ function ubiq_set_input(text) {
 }
 
 function ubiq_autocomplete() {
-    if (ubiq_selected_sent)
-        ubiq_set_input(ubiq_selected_sent.completionText);
+    if (ubiq_selected_sent) {
+        let completion = ubiq_selected_sent.completionText.trim();
+        let input = ubiq_get_input();
+        if (input && completion && input.trim() !== completion)
+            ubiq_set_input(ubiq_selected_sent.completionText.trim());
+    }
+
 }
 
 function ubiq_show_preview(sent, args) {

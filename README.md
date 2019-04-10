@@ -88,14 +88,10 @@ should be pretty easy to port one).
 #### Change Log
 [Full changelog](changelog.md)
 
-##### 15.03.2019 (v.0.2.6.3)
+##### xx.04.2019 (v.0.3.0.0)
 
-* Added middle-click button support to preview list on Firefox.
-
-##### 14.03.2019 (v.0.2.6.2)
-
-* Improved "History" command.
-* Remember last edited command category.
+* Added Scrapyard commands.
+* Improved HTML selection acquisition.
 
 #### TODO
 

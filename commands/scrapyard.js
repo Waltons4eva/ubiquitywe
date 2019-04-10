@@ -304,7 +304,6 @@
             }
 
             scrapyardSend("SCRAPYARD_LIST_NODES", payload).then(nodes => {
-                console.log(nodes)
                 if (!nodes || nodes.length === 0) {
                     pblock.innerHTML = "Bookmarks are empty."
                 }
@@ -341,13 +340,10 @@
                             if (nodes[i].type === NODE_TYPE_GROUP) {
                                 let path = payload.path? payload.path + "/": "";
 
-                                CmdUtils.setCommandLine("scrapyard from group at " + path + nodes[i].path)
-                            }
-                            else if (nodes[i].type === NODE_TYPE_ARCHIVE) {
-                                scrapyardSend("SCRAPYARD_BROWSE_ARCHIVE", {uuid: nodes[i].uuid});
+                                CmdUtils.setCommandLine("scrapyard from group at " + path + nodes[i].path);
                             }
                             else
-                                chrome.tabs.create({"url": nodes[i].uri, active: false});
+                                scrapyardSend("SCRAPYARD_BROWSE_NODE", {uuid: nodes[i].uuid});
                         },
                         `.preview-list-item {
                         white-space: nowrap;
@@ -543,7 +539,6 @@
                         let favicon = new URL(CmdUtils.active_tab.url).origin + "/favicon.ico";
                         fetch(favicon, {method: "HEAD"})
                             .then(response => {
-                                console.log(response.ok)
                                 if (response.ok)
                                     payload.icon = favicon.toString();
                                 send();

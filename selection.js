@@ -1,24 +1,32 @@
-// this will send message to background and set CmdUtils.selectedText
 function __ubiq_get_sel() {
-    var sel = window.getSelection();
-    var ran = sel.rangeCount? sel.getRangeAt(0): null;
-    var cc = ran? ran.cloneContents(): null;
-    if (cc) {
-        var div = document.createElement('div');
-        div.appendChild(cc);
+    let sel = window.getSelection();
+
+    if (sel && !sel.isCollapsed) {
+        let div = document.createElement('div');
+
+        try {
+            for (let i = 0; i < sel.rangeCount; ++i) {
+                let range = sel.getRangeAt(i);
+
+                if (range.isCollapsed)
+                    continue;
+
+                let parent = range.commonAncestorContainer.nodeType === 3
+                    ? range.commonAncestorContainer.parentNode
+                    : range.commonAncestorContainer;
+
+                parent = parent.cloneNode(false);
+
+                div.appendChild(parent);
+                div.appendChild(range.cloneContents());
+            }
+        }
+        catch (e) {
+            console.log(e);
+        }
+
+        return {text: sel.toString(), html: div.innerHTML};
     }
-    return {text: sel.toString(), html: cc? div.innerHTML: undefined};
 }
 
-var __ubiq_send_sel = function(event) {
-    if (chrome && chrome.runtime) {
-        chrome.runtime.sendMessage({
-            message: "selection",
-            data: __ubiq_get_sel(),
-            event: event.type
-        }, function (response) {
-        });
-    }
-};
-
-// document.addEventListener('selectionchange', __ubiq_send_sel); // works in chrome
+__ubiq_get_sel();

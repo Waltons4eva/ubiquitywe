@@ -497,6 +497,7 @@ CmdUtils.loadCSS = function(doc, id, file) {
 // updates selectedText variable
 CmdUtils.updateSelection = function (tab_id, callback) {
     try {
+        console.log("updating")
         chrome.webNavigation.getAllFrames({tabId: tab_id}, async (frames) => {
             CmdUtils.selectedText = "";
             CmdUtils.selectedHtml = "";
@@ -504,7 +505,7 @@ CmdUtils.updateSelection = function (tab_id, callback) {
             function getFrameSelection(frames) {
                 let frame = frames.shift();
                 try {
-                    chrome.tabs.executeScript(tab_id, {code: "__ubiq_get_sel()", frameId: frame.frameId},
+                    chrome.tabs.executeScript(tab_id, {file: "/selection.js", frameId: frame.frameId},
                         function (selection) {
                             if (selection && selection.length > 0 && selection[0]) {
                                 CmdUtils.selectedText = selection[0].text;
@@ -550,7 +551,7 @@ CmdUtils.updateActiveTab = function (callback) {
             chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
                 if (tabs.length > 0) {
                     var tab = tabs[0];
-                    if (tab.url.match('^https?://')) {
+                    if (tab.url.match('^https?://') || tab.url.match('^file://')) {
                         CmdUtils.active_tab = tab;
                         if (!CmdUtils.selectedContextMenuCommand)
                             CmdUtils.updateSelection(tab.id, callback);

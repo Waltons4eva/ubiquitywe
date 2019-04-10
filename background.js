@@ -118,21 +118,21 @@ chrome.management.onInstalled.addListener((info) => {
 });
 
 chrome.management.onUninstalled.addListener((info) => {
-    console.log(info.id)
     if (info.id === "scrapyard@firefox")
         Utils.setPref("scrapyardPresents", false, () => chrome.runtime.reload());
 });
 
 function checkForScrapyard() {
-    chrome.runtime.sendMessage("scrapyard@firefox", {type: "SCRAPYARD_GET_VERSION"}).then(version => {
+    chrome.runtime.sendMessage("scrapyard@firefox", {type: "SCRAPYARD_GET_VERSION"}, version => {
         if (version) {
             Utils.setPref("scrapyardPresents", true);
 
             if (CmdUtils.scrapyardCommands && CmdUtils.CommandList.indexOf(CmdUtils.scrapyardCommands[0]) < 0)
                 CmdUtils.CommandList = [...CmdUtils.CommandList, ...CmdUtils.scrapyardCommands];
         }
-    })
+    });
 }
 
 chrome.runtime.onInstalled.addListener(checkForScrapyard);
-checkForScrapyard();
+setTimeout(checkForScrapyard, 3000);
+

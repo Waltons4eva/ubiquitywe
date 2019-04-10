@@ -1,3 +1,8 @@
+##### xx.04.2019 (v.0.3.0.0)
+
+* Added Scrapyard commands.
+* Improved HTML selection acquisition.
+
 ##### 14.03.2019 (v.0.2.6.2)
 
 * Improved "History" command.
