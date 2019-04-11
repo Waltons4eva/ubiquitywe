@@ -106,7 +106,8 @@ function insertExampleStub() {
  // due: "YYYY-MM-DD",  // todo deadline
  // details: "bookmark details",  // arbitrary text
  // selector: ".article-body",  // capture only elements matching selector
- // filter: ".ads"  // remove elements matched by filter
+ // filter: ".ads",  // remove elements matched by filter
+ // style: "body {padding: 0;}"  // add custom style
 });`
     };
 

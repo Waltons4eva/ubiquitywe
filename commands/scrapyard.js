@@ -187,7 +187,8 @@
             todo_date:  (args.goal && args.goal.text? args.goal.text: null) || cmd.__scr_due,
             details:  (args.subject && args.subject.text? args.subject.text: null) || cmd.__scr_details,
             _selector: cmd.__scr_selector,
-            _filter: cmd.__scr_filter
+            _filter: cmd.__scr_filter,
+            _style: cmd.__scr_style
         };
 
         if (!result.limit)
@@ -507,6 +508,20 @@
                 return;
             }
 
+            let payload = unpackArgs(this, args);
+
+            payload.name = payload.search
+                ? payload.search
+                : (CmdUtils.active_tab
+                    ? CmdUtils.active_tab.title
+                    : null);
+            payload.uri = url;
+
+            let send = () =>
+                scrapyardSend(node_type == NODE_TYPE_BOOKMARK
+                    ? "SCRAPYARD_ADD_BOOKMARK"
+                    : "SCRAPYARD_ADD_ARCHIVE", payload);
+
             chrome.tabs.executeScript(CmdUtils.active_tab.id, {
                     code: `function extractIcon() {
                 let iconElt = document.querySelector("head link[rel*='icon'], head link[rel*='shortcut']");
@@ -517,26 +532,13 @@
             `
                 },
                 icon => {
-                    let payload = unpackArgs(this, args);
-
-                    payload.name = payload.search
-                        ? payload.search
-                        : (CmdUtils.active_tab
-                            ? CmdUtils.active_tab.title
-                            : null);
-                    payload.uri = url;
-
-                    let send = () =>
-                        scrapyardSend(node_type == NODE_TYPE_BOOKMARK
-                            ? "SCRAPYARD_ADD_BOOKMARK"
-                            : "SCRAPYARD_ADD_ARCHIVE", payload);
-
-
-                    if (icon && icon.length && icon[0]) {
-                        payload.icon = icon[0];
+                    if (chrome.runtime.lastError) {
                         send();
                     }
-                    else {
+                    else if (icon && icon.length && icon[0]) {
+                        payload.icon = icon[0];
+                        send();
+                    } else {
                         let favicon = new URL(CmdUtils.active_tab.url).origin + "/favicon.ico";
                         fetch(favicon, {method: "HEAD"})
                             .then(response => {
@@ -661,6 +663,11 @@
         if (options.tags) {
             options.__scr_tags = options.tags;
             delete options.tags;
+        }
+
+        if (options.style) {
+            options.__scr_style = options.style;
+            delete options.style;
         }
 
         options = Object.assign(options, {
