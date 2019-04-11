@@ -205,7 +205,7 @@
     let shelfCmd = CmdUtils.CreateCommand({
         name: "shelf",
         uuid: "C481A44B-071E-4100-8047-6B708498B3CF",
-        arguments: [{role: "object", nountype: noun_scrapyard_shelf, label: "name"}],
+        arguments: [{role: "object", nountype: noun_scrapyard_group, label: "name"}],
         description: "Switch to or create a shelf in Scrapyard.",
         icon: "/res/icons/scrapyard.svg",
         builtIn: true,

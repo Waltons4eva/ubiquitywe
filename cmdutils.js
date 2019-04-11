@@ -497,7 +497,6 @@ CmdUtils.loadCSS = function(doc, id, file) {
 // updates selectedText variable
 CmdUtils.updateSelection = function (tab_id, callback) {
     try {
-        console.log("updating")
         chrome.webNavigation.getAllFrames({tabId: tab_id}, async (frames) => {
             CmdUtils.selectedText = "";
             CmdUtils.selectedHtml = "";
@@ -519,7 +518,7 @@ CmdUtils.updateSelection = function (tab_id, callback) {
                         });
                 }
                 catch (e) {
-                    console.error(e);
+                    //console.error(e);
                     if (!CmdUtils.selectedText && frames.length > 0)
                         getFrameSelection(frames);
                     else if (callback)
