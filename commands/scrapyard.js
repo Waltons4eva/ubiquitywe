@@ -101,7 +101,9 @@
         noExternalCalls: true,
         cacheTime: -1,
         suggest: function (text, html, cb, selectionIndices) {
-            let matcher = new RegExp(text, "i");
+            if (text)
+                text = text.trim();
+
             let suggs;
 
             function addZero(text) {
@@ -110,16 +112,16 @@
 
             suggs = [];
 
-            if (/\d{4}-d{1,2}-d{1,2}/.test(text)) {
+            if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(text)) {
                 suggs.push(CmdUtils.makeSugg(text, text, null, CmdUtils.matchScore(p.match), selectionIndices));
             }
-            else if (/\d{1,2}-\d{1,2}/.test(text)) {
+            else if (/^\d{1,2}-\d{1,2}$/.test(text)) {
                 let now = new Date();
                 let [month, day] = text.split("-");
                 let date = now.getFullYear() + "-" + addZero(month) + "-" + addZero(day);
                 suggs.push(CmdUtils.makeSugg(date, date, null, 1, selectionIndices));
             }
-            else if (/\d{1,2}/.test(text)) {
+            else if (/^\d{1,2}$/.test(text)) {
                 let now = new Date();
                 let date = now.getFullYear() + "-" + addZero(now.getMonth() + 1) + "-" + addZero(text);
                 suggs.push(CmdUtils.makeSugg(date, date, null, 1, selectionIndices));
@@ -464,7 +466,7 @@
         return function(pblock, args, {Bin}) {
             let {search, path, tags, todo_state, todo_date, details} = unpackArgs(this, args);
 
-            let title = !CmdUtils.getSelection() && search
+            let title = search && CmdUtils.getSelection() !== search
                 ? search
                 : (CmdUtils.active_tab
                     ? CmdUtils.active_tab.title
@@ -489,9 +491,9 @@
                 html += "Deadline: <span style='" + _styleTODO(todo_state) + "'>&lt;"
                     + Utils.escapeHtml(todo_date) + "&gt;</span><br>";
 
-            if (details)
+            if (details && CmdUtils.getSelection() !== details) {
                 html += "Details: " + Utils.escapeHtml(details) + "<br>";
-
+            }
 
             if (html)
                 pblock.innerHTML = html;
@@ -510,17 +512,33 @@
 
             let payload = unpackArgs(this, args);
 
-            payload.name = payload.search
+            let title = payload.search && CmdUtils.getSelection() !== payload.search
                 ? payload.search
                 : (CmdUtils.active_tab
                     ? CmdUtils.active_tab.title
-                    : null);
+                    : "Bookmark");
+
+            payload.name = payload.search = title;
             payload.uri = url;
+
+            if (payload.details && CmdUtils.getSelection() === payload.details) {
+                delete payload.details;
+            }
 
             let send = () =>
                 scrapyardSend(node_type == NODE_TYPE_BOOKMARK
                     ? "SCRAPYARD_ADD_BOOKMARK"
                     : "SCRAPYARD_ADD_ARCHIVE", payload);
+
+            let test_default_favicon = () => {
+                let favicon = new URL(CmdUtils.active_tab.url).origin + "/favicon.ico";
+                fetch(favicon, {method: "HEAD"})
+                    .then(response => {
+                        if (response.ok)
+                            payload.icon = favicon.toString();
+                        send();
+                    });
+            };
 
             chrome.tabs.executeScript(CmdUtils.active_tab.id, {
                     code: `function extractIcon() {
@@ -539,13 +557,7 @@
                         payload.icon = icon[0];
                         send();
                     } else {
-                        let favicon = new URL(CmdUtils.active_tab.url).origin + "/favicon.ico";
-                        fetch(favicon, {method: "HEAD"})
-                            .then(response => {
-                                if (response.ok)
-                                    payload.icon = favicon.toString();
-                                send();
-                            })
+                        test_default_favicon();
                     }
                 });
         };
