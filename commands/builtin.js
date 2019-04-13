@@ -297,10 +297,11 @@ CmdUtils.CreateCommand({
 const noun_calc = {
     label: "expression",
     uuid: "F48E9D0A-06AA-499F-B724-7332529D1D8E",
+    _parser: new MathParser(),
     suggest: function (txt, htm, cb, si) {
         if (!this._mathlike.test(txt)) return []
         try {
-            var result = Parser.evaluate(txt)
+            var result = this._parser.evaluate(txt)
                 , score = result === txt ? .3 : 1
         }
         catch (e) {
@@ -325,7 +326,7 @@ CmdUtils.CreateCommand({
     builtIn: true,
     author: "satyr",
     license: "Public domain",
-    argument: noun_calc,
+    arguments: [{role: "object", nountype: noun_calc, label: "expression"}],
     preview: function (pb, {object: {data, score}}) {
         pb.innerHTML = data? (score < .3 ? "<em style='color: red'>" : "<strong>") + data: "";
     },

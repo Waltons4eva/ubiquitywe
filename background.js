@@ -134,5 +134,5 @@ function checkForScrapyard() {
 }
 
 chrome.runtime.onInstalled.addListener(checkForScrapyard);
-setTimeout(checkForScrapyard, 3000);
+setTimeout(checkForScrapyard, 5000);
 
