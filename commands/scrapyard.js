@@ -61,7 +61,7 @@
             .map(i => CmdUtils.makeSugg(i.path || i.name, i.path || i.name, null, CmdUtils.matchScore(i.match),
                 selectionIndices));
 
-        if (textSugg = CmdUtils.makeSugg(text, html, null, .3, selectionIndices))
+        if (textSugg = CmdUtils.makeSugg(text, html, null, .001, selectionIndices))
             suggs.push(textSugg);
 
         if (suggs.length > 0)
@@ -197,9 +197,11 @@
             result.limit = DEFAULT_OUTPUT_LIMIT;
 
         for (let k of Object.keys(result)) {
-            if (!result[k])
+            if (!result[k] || result[k] === CmdUtils.getSelection())
                 delete result[k];
         }
+
+        cmd.__scr__args = result;
 
         return result;
     }
@@ -346,8 +348,10 @@
 
                                 CmdUtils.setCommandLine("scrapyard from group at " + path + nodes[i].path);
                             }
-                            else
-                                scrapyardSend("SCRAPYARD_BROWSE_NODE", {uuid: nodes[i].uuid});
+                            else {
+                                ///if (typeof nodes[i].id === "string" && nodes[i].id.startsWith("firefox_"))
+                                scrapyardSend("SCRAPYARD_BROWSE_NODE", {node: nodes[i]});
+                            }
                         },
                         `.preview-list-item {
                         white-space: nowrap;
@@ -466,7 +470,7 @@
         return function(pblock, args, {Bin}) {
             let {search, path, tags, todo_state, todo_date, details} = unpackArgs(this, args);
 
-            let title = search && CmdUtils.getSelection() !== search
+            let title = search
                 ? search
                 : (CmdUtils.active_tab
                     ? CmdUtils.active_tab.title
@@ -480,7 +484,7 @@
             if (path)
                 html += "Path: <span style='color: #FD7221;'>" + Utils.escapeHtml(path) + "</span><br>";
 
-            if (tags)
+            if (tags && CmdUtils.getSelection() !== tags)
                 html += "Tags: <span style='color: #7DE22E;'>" + Utils.escapeHtml(tags) + "</span><br>";
 
             if (todo_state)
@@ -491,7 +495,7 @@
                 html += "Deadline: <span style='" + _styleTODO(todo_state) + "'>&lt;"
                     + Utils.escapeHtml(todo_date) + "&gt;</span><br>";
 
-            if (details && CmdUtils.getSelection() !== details) {
+            if (details) {
                 html += "Details: " + Utils.escapeHtml(details) + "<br>";
             }
 
@@ -510,9 +514,10 @@
                 return;
             }
 
-            let payload = unpackArgs(this, args);
+            let payload = this.__scr__args;
+            delete this.__scr__args;
 
-            let title = payload.search && CmdUtils.getSelection() !== payload.search
+            let title = payload.search
                 ? payload.search
                 : (CmdUtils.active_tab
                     ? CmdUtils.active_tab.title
@@ -520,10 +525,6 @@
 
             payload.name = payload.search = title;
             payload.uri = url;
-
-            if (payload.details && CmdUtils.getSelection() === payload.details) {
-                delete payload.details;
-            }
 
             let send = () =>
                 scrapyardSend(node_type == NODE_TYPE_BOOKMARK

@@ -513,8 +513,9 @@ CmdUtils.updateSelection = function (tab_id, callback) {
 
                             if (!CmdUtils.selectedText && frames.length > 0)
                                 getFrameSelection(frames);
-                            else if (callback)
+                            else if (callback) {
                                 callback();
+                            }
                         });
                 }
                 catch (e) {

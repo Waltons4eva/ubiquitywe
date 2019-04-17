@@ -82,8 +82,8 @@ function ubiq_autocomplete() {
     if (ubiq_selected_sent) {
         let completion = ubiq_selected_sent.completionText.trim();
         let input = ubiq_get_input();
-        if (input && completion && input.trim() !== completion)
-            ubiq_set_input(ubiq_selected_sent.completionText.trim());
+        if (input && completion && completion.length < 100 && input.trim() !== completion)
+            ubiq_set_input(completion);
     }
 
 }
