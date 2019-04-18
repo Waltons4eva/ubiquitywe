@@ -555,7 +555,8 @@
                         send();
                     }
                     else if (icon && icon.length && icon[0]) {
-                        payload.icon = icon[0];
+                        let icon_url = new URL(icon[0], new URL(tab.url).origin);
+                        payload.icon = icon_url.toString();
                         send();
                     } else {
                         test_default_favicon();
@@ -576,7 +577,7 @@
                 <li>Same as <b>archive</b>.</li>
             </ul>`,
         icon: "/res/icons/scrapyard.svg",
-        previewDelay: 1000,
+        //previewDelay: 1000,
         builtIn: true,
         _namespace: NAMESPACE,
         //init: function({Bin}) {},
@@ -623,7 +624,7 @@
                 <li><b>archive</b> <b>this</b> <b>at</b> <i>~/wiki</i> <b>as</b> <i>chem</i> <b>with</b> <i>todo</i> <b>to</b> <i>10</i> <b>for</b> <i>research</i></li>
             </ul>`,
         icon: "/res/icons/scrapyard.svg",
-        previewDelay: 1000,
+        //previewDelay: 1000,
         builtIn: true,
         _namespace: NAMESPACE,
         //init: function({Bin}) {},
