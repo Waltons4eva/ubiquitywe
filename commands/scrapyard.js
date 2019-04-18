@@ -555,7 +555,7 @@
                         send();
                     }
                     else if (icon && icon.length && icon[0]) {
-                        let icon_url = new URL(icon[0], new URL(tab.url).origin);
+                        let icon_url = new URL(icon[0], new URL(CmdUtils.active_tab.url).origin);
                         payload.icon = icon_url.toString();
                         send();
                     } else {
