@@ -261,6 +261,9 @@ function ubiq_show_matching_commands(text) {
         query.onResults = () => {
             ubiq_suggestions = query.suggestionList;
 
+            //console.log(text);
+            //console.log(ubiq_suggestions);
+
             ubiq_ensure_command_in_range();
 
             // We have matches, show a list

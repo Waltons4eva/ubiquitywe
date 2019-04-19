@@ -13,9 +13,9 @@
     const SEARCH_TYPE_FIREFOX = -2;
     const ENDPOINT_TYPES = [NODE_TYPE_ARCHIVE, NODE_TYPE_BOOKMARK, NODE_TYPE_NOTES];
     const TODO_STATE_TODO = 1;
-    const TODO_STATE_DONE = 2;
-    const TODO_STATE_WAITING = 3;
-    const TODO_STATE_POSTPONED = 4;
+    const TODO_STATE_DONE = 4;
+    const TODO_STATE_WAITING = 2;
+    const TODO_STATE_POSTPONED = 3;
     const TODO_STATE_CANCELLED = 5;
     const DEFAULT_SHELF_NAME = "default";
     const EVERYTHING = "everything";
