@@ -1,6 +1,8 @@
-##### xx.04.2019 (v.0.3.0.0)
+##### 30.05.2019 (v.0.3.0.0)
 
-* Added Scrapyard commands.
+* Added [Scrapyard](https://gchristensen.github.io/scrapyard/) commands.
+* Added Libgen command.
+* Added Scihub command.
 * Improved HTML selection acquisition.
 
 ##### 14.03.2019 (v.0.2.6.2)

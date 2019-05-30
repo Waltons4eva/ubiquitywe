@@ -40,7 +40,7 @@
     browser.runtime.onMessageExternal.addListener((message, sender, sendResponse) => {
         switch (message.type) {
             case "SCRAPYARD_INVALIDATE_COMPLETION":
-                noun_scrapyard_group._items.length = 0;
+                updateCompletion();
                 break;
         }
     });
@@ -57,11 +57,10 @@
         let suggs = this._items.filter(i => {
             i.match = matcher.exec(i.path || i.name);
             return !!i.match;
-        })
-            .map(i => CmdUtils.makeSugg(i.path || i.name, i.path || i.name, null, CmdUtils.matchScore(i.match),
-                selectionIndices));
+        }).map(i => CmdUtils.makeSugg(i.path || i.name, i.path || i.name, null,
+                CmdUtils.matchScore(i.match), selectionIndices));
 
-        if (textSugg = CmdUtils.makeSugg(text, html, null, .001, selectionIndices))
+        if (textSugg = CmdUtils.makeSugg(text, html, null, suggs.length? .001: 1, selectionIndices))
             suggs.push(textSugg);
 
         if (suggs.length > 0)
@@ -113,7 +112,7 @@
             suggs = [];
 
             if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(text)) {
-                suggs.push(CmdUtils.makeSugg(text, text, null, CmdUtils.matchScore(p.match), selectionIndices));
+                suggs.push(CmdUtils.makeSugg(text, text, null, 1, selectionIndices));
             }
             else if (/^\d{1,2}-\d{1,2}$/.test(text)) {
                 let now = new Date();

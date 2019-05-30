@@ -59,6 +59,11 @@
                             title.style.color = "#80ccff";
                             title.href = title.href;
 
+                            let dl_links = jrow.find("td:nth-child(2)").get(0);
+                            if (dl_links) {
+                                dl_links.style.whiteSpace = "nowrap";
+                            }
+
                             let link_t = jrow.find("td:nth-child(2) i.fa-download").get(0);
                             if (link_t) {
                                 link_t = link_t.parentNode;
@@ -81,6 +86,11 @@
                             if (size.innerHTML == "Unknown")
                                 size.innerHTML = "?";
 
+                            let seeds = jrow.find("td:nth-child(4)").get(0);
+                            seeds.style.color = "green";
+                            
+                            let peers = jrow.find("td:nth-child(5)").get(0);
+                            peers.style.color = "red";
 
                         });
 

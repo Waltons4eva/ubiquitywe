@@ -643,4 +643,281 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
         }
     });
 
+
+
+    const LIBGEN_HOST = "http://libgen.io/";
+
+    var libgenSearch = {
+// derived from https://github.com/toddpress/Looky_Booky
+        getBooks_: () => {},
+
+        getJSONResults: function(pblock, q, getBooks) {
+            this.getBooks_ = getBooks;
+            CmdUtils.previewGet(pblock, q, null, this.logResults_.bind(this), "html");
+        },
+
+        logResults_: function (tab) {
+            var //tab = e.target.responseText,
+                rHtml = $.parseHTML(tab);
+            var key, table;
+            for(key in rHtml) {
+                if(rHtml[key].nodeName == "TABLE") {
+                    if($(rHtml[key]).attr('class') == "c"){
+                        table = $(rHtml[key])[0];
+                    }
+                }
+            }
+            var bookObjs = this.tableToJSON_(table);
+            this.getBooks_(bookObjs);
+        },
+
+        tableToJSON_: function(table) {
+            let data = [];
+            let $rows = $(table).children("tbody").children("tr").not(":first");
+
+            for (i=0; i<$rows.length; i++){
+                let $row = $($rows)[i];
+                let $cols = $($row).children("td");
+                entry = new Object();
+                entry.mirrors = [];
+                for (j=0;j<$cols.length; j++){
+                    switch(j) {
+                        case 1:
+                            entry.authors = $cols[j].innerText;
+                            break;
+                        case 2:
+                            let greens = $($cols[j]).find("font[color='green']");
+                            greens.each(function () {
+                                let green = $(this);
+                                if (green.text().indexOf("[") < 0)
+                                    green.remove();
+                                else
+                                    green.attr("style", "font-size: 90%");
+                            });
+
+                            let fonts = $($cols[j]).find("font");
+                            fonts.each(function () {
+                                let font = $(this);
+                                font.attr("color", "#45BCFF");
+                            });
+
+                            let links = $($cols[j]).find("a");
+                            links.each(function () {
+                                let link = $(this);
+                                let href = link.attr("href");
+                                //this.href = LIBGEN_HOST + href;
+                                link.attr("style", "color: #45BCFF");
+                                link.attr("href", LIBGEN_HOST + link.attr("href"));
+                            });
+
+                            entry.title = $cols[j].innerHTML.replace("<br>", " ");
+                            entry.link = links.get(0).href;
+                            break;
+                        case 4:
+                            entry.year = $cols[j].innerText;
+                            break;
+                        case 8:
+                            entry.extension = $cols[j].innerText;
+                            break;
+                        case 9:
+                            entry.mirrors = $($cols[j]).find("a");
+                            break;
+                    }
+                }
+// 		let newMirrors = [];
+
+// 		for (let k = 0; k < entry.mirrors.length; k++){
+// 			let mir = entry.mirrors[k];
+// 			if (mir) {
+//     			mir = $(mir).attr("href");
+//     			mir = mir.replace("../", LIBGEN_HOST);
+//     			newMirrors.push(mir);
+// 			}
+// 		}
+// 		entry.mirrors = newMirrors;
+                data.push(entry);
+            }
+            return data;
+        }
+    };
+
+
+    CmdUtils.CreateCommand({
+        name: "libgen",
+        uuid: "25DB48B1-0FB6-49FC-8F38-728A1BAF7265",
+        arguments: [{role: "object",     nountype: noun_arb_text, label: "text"},
+                    {role: "instrument", nountype: ["asc", "desc"], label: "sort mode"}, // with
+                    {role: "modifier",   nountype: ["year", "title", "author"], label: "order"}, // of
+                    {role: "cause",      nountype: ["25", "50", "100"], label: "amount"}, // by
+        ],
+        description: "Search Library Genesis",
+        help:  `<span class="syntax">Syntax</span>
+            <ul class="syntax">
+                <li><b>libgen</b> [<i>filter</i>] [<b>of</b> <i>order</i>] [<b>with</b> <i>sort mode</i>] [<b>by</b> <i>amount</i>]</li>
+            </ul>
+            <span class="arguments">Arguments</span><br>
+            <ul class="syntax">
+                <li>- <i>filter</i> - arbitrary text, filters books by title or authors.</li>
+            </ul>
+            <ul class="syntax">
+                <li>- <i>order</i> - {<b>title</b> | <b>author</b> | <b>year</b> }, specifies the column to order by.</li>
+            </ul>
+            <ul class="syntax">
+                <li>- <i>sort mode</i> - {<b>asc</b> | <b>desc</b>}, specifies sort mode.</li>
+            </ul>
+            <ul class="syntax">
+                <li>- <i>amount</i> - {<b>25</b> | <b>50</b> | <b>100</b> }, specifies the maximum amount of listed items.</li>
+            </ul>
+            <span class="arguments">Examples</span>
+            <ul class="syntax">
+                <li><b>libgen</b> <i>philosophical investigations</i> <b>of</b> <i>year</i> <b>by</b> <i>50</i></li>
+            </ul>`,
+        author: "g/christensen",
+        icon: "/res/icons/libgen.ico",
+        previewDelay: 1000,
+        builtIn: true,
+        _namespace: "Search",
+        _genQuery: function(args) {
+            let sort_mode;
+            if (args.instrument && args.instrument.text)
+                sort_mode = args.instrument.text.toUpperCase();
+
+            let order;
+            if (args.modifier && args.modifier.text)
+                order = args.modifier.text;
+
+            let amount;
+            if (args.cause && args.cause.text)
+                amount = args.cause.text;
+
+            let query = `${LIBGEN_HOST}search.php?open=0&view=simple&column=def&req=${args.object.text}`;
+
+            if (order) {
+                query += "&sort=" + order;
+
+                if (sort_mode)
+                    query += "&sortmode=" + sort_mode;
+                else {
+                    if (order === "year")
+                        query += "&sortmode=DESC";
+                }
+
+            }
+
+            if (amount)
+                query += "&res=" + amount;
+
+            return query;
+        },
+        preview: function(pblock, args, {Bin}) {
+            pblock.innerHTML = "Searching...";
+
+            libgenSearch.getJSONResults(pblock, this._genQuery(args), books => {
+
+                if (!books || !books.length) {
+                    pblock.innerHTML = "Not found."
+                }
+                else {
+                    let html = "";
+                    let items = [];
+                    for (let b of books) {
+                        let text = "<div class='h-title'>" + b.title + "</div>"
+                            + "<div class='h-url'>";
+
+                        if (b.year)
+                            text += b.year + ", ";
+
+                        if (b.extension)
+                            text += b.extension + ", ";
+
+                        if (b.authors)
+                            text += b.authors;
+
+                        text += "</div>";
+
+                        items.push(text);
+                    }
+
+                    CmdUtils.previewList(pblock, items, (i, _) => {
+                            chrome.tabs.create({"url": books[i].link, active: false});
+                        },
+                        `.preview-list-item {white-space: nowrap;}
+                 .preview-list-item span {display: inline-block; vertical-align: middle;}
+                 .preview-item-text {
+                    color: #45BCFF;  
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    width: 490px;
+                 }
+                 .h-url {
+                    font-size: x-small;
+                    padding-left: 10px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    color: #f25800;
+                 }
+                 .h-title {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                 }`
+                    );
+                }
+
+            });
+
+        },
+        execute: function(args, {Bin}) {
+            chrome.tabs.create({"url": this._genQuery(args)});
+        }
+    });
+
+
+    CmdUtils.CreateCommand({
+        name: "scihub",
+        uuid: "DC18FEB8-882E-4030-B1B9-F50721877779",
+        arguments: [{role: "object", nountype: noun_arb_text, label: "title or doi"}],
+        description: "Search articles on SCI-HUB",
+        author: "g/christensen",
+        icon: "/res/icons/scihub.ico",
+        previewDelay: 1000,
+        _article: null,
+        builtIn: true,
+        _namespace: "Search",
+        preview: function(pblock, args, {Bin}) {
+            pblock.innerHTML = "Searching...";
+
+            if (args.object && args.object.text)
+                CmdUtils.previewPost(pblock, "https://sci-hub.se",
+                    {"sci-hub-plugin-check": "", "request": args.object.text},
+                    data => {
+                        if (data) {
+                            Utils.parseHtml(data, doc => {
+                                let article = doc.querySelector("#article iframe");
+
+                                if (article) {
+                                    this._article = article.src;
+                                    let citation = doc.querySelector("#citation");
+
+                                    pblock.innerHTML = `<a style="color: #45BCFF" 
+                                                       href="${article.src}">${citation.innerHTML}</a>`;
+                                }
+                                else
+                                    pblock.innerHTML = "Not found.";
+                            });
+                        }
+                        else
+                            pblock.innerHTML = "Error.";
+                    }, "html");
+            else
+                pblock.innerHTML = "";
+        },
+        execute: function(args, {Bin}) {
+            if (this._article) {
+                chrome.tabs.create({"url": this._article});
+                this._article = null;
+            }
+        }
+    });
+
 });

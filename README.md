@@ -21,7 +21,7 @@ After Mozilla had introduced breaking changes into Firefox APIs, Satoshi Murakam
 Ubiquity until the last days of Firefox as we knew it (i.e. with "legacy" addon support).   
  
 
-Unfortunately, almost all codebase of the original ubiquity is not functional in 
+Unfortunately, almost all codebase of the original ubiquity became not functional in 
 the new Firefox Quantum. The first attempts to resurrect Ubiquity came from the users 
 of Opera browser ([ubiquity-opera](https://github.com/cosimo/ubiquity-opera/blob/master/ubiquity.js))
  and continued on Google Chrome ([UbiChr](https://github.com/rostok/ubichr)).
@@ -88,9 +88,11 @@ should be pretty easy to port one).
 #### Change Log
 [Full changelog](changelog.md)
 
-##### xx.04.2019 (v.0.3.0.0)
+##### 30.05.2019 (v.0.3.0.0)
 
-* Added Scrapyard commands.
+* Added [Scrapyard](https://gchristensen.github.io/scrapyard/) commands.
+* Added Libgen command.
+* Added Scihub command.
 * Improved HTML selection acquisition.
 
 #### TODO
