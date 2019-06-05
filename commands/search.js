@@ -841,8 +841,6 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
                         items.push(text);
                     }
 
-                    $(pblock).on("click", ".h-title a", e => e.preventDefault());
-
                     CmdUtils.previewList(pblock, items, (i, _) => {
                             chrome.tabs.create({"url": books[i].link, active: false});
                         },
