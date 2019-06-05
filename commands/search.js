@@ -710,7 +710,10 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
                                 link.attr("href", LIBGEN_HOST + link.attr("href"));
                             });
 
-                            entry.title = $cols[j].innerHTML.replace("<br>", " ");
+                            entry.title = $cols[j].innerHTML
+                                .replace("<br>", " ")
+                                .replace("<a", "<span class='libgen'")
+                                .replace("</a>", "</span>");
                             entry.link = links.get(0).href;
                             break;
                         case 4:
@@ -837,6 +840,8 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
 
                         items.push(text);
                     }
+
+                    $(pblock).on("click", ".h-title a", e => e.preventDefault());
 
                     CmdUtils.previewList(pblock, items, (i, _) => {
                             chrome.tabs.create({"url": books[i].link, active: false});
