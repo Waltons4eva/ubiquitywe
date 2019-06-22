@@ -71,19 +71,21 @@
         }
     }
 
+    let reentry = false;
     function make_request(pblock, url) {
-        let reentry = false;
-
         let options = {
             url: url,
             dataType: "html",
             success: function (data) {
+                reentry = false;
                 get_data(pblock, data, this);
             },
             statusCode: {
                 503: function (xhr) {
                     if (reentry)
                         return;
+
+                    reentry = true;
 
                     pblock.innerHTML = "Waiting for Cloudflare...";
                     let seed = Math.floor(Math.random() * 100000);
@@ -99,7 +101,6 @@
                                         retries = 100;
                                         setTimeout(() => {
                                             chrome.tabs.remove(new_tab.id);
-                                            reentry = true;
                                             CmdUtils.previewAjax(pblock, options);
                                         }, 2000);
                                     }
@@ -118,7 +119,7 @@
                 }
             },
             error: function (xhr) {
-                pblock.innerHTML = "Error. Try to wipe javlibrary.com cookies.";
+                pblock.innerHTML = "Error. Wait for Cloudflare or try to wipe javlibrary.com cookies.";
             }
         };
 

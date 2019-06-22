@@ -645,7 +645,8 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
 
 
 
-    const LIBGEN_HOST = "http://libgen.io/";
+    const LIBGEN_HOST = "https://libgen.is/";
+    const LIBGEN_HOST2 = "http://libgen.io/";
 
     var libgenSearch = {
 // derived from https://github.com/toddpress/Looky_Booky
@@ -653,7 +654,12 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
 
         getJSONResults: function(pblock, q, getBooks) {
             this.getBooks_ = getBooks;
-            CmdUtils.previewGet(pblock, q, null, this.logResults_.bind(this), "html");
+            CmdUtils.previewAjax(pblock, {
+                url: q,
+                error: () => {pblock.innerHTML = "Search error."},
+                success: this.logResults_.bind(this),
+                dataType: "html"
+            });
         },
 
         logResults_: function (tab) {
@@ -672,6 +678,7 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
         },
 
         tableToJSON_: function(table) {
+            let self = this;
             let data = [];
             let $rows = $(table).children("tbody").children("tr").not(":first");
 
@@ -701,19 +708,19 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
                                 font.attr("color", "#45BCFF");
                             });
 
-                            let links = $($cols[j]).find("a");
+                            $($cols[j]).find("a:not([id])").remove();
+                            let links = $($cols[j]).find("a[id]");
                             links.each(function () {
                                 let link = $(this);
                                 let href = link.attr("href");
-                                //this.href = LIBGEN_HOST + href;
                                 link.attr("style", "color: #45BCFF");
-                                link.attr("href", LIBGEN_HOST + link.attr("href"));
+                                link.attr("href", self._libgen_host + link.attr("href"));
                             });
 
                             entry.title = $cols[j].innerHTML
                                 .replace("<br>", " ")
-                                .replace("<a", "<span class='libgen'")
-                                .replace("</a>", "</span>");
+                                .replace(/<a/ig, "<span class='libgen'")
+                                .replace(/<\/a>/ig, "</span>");
                             entry.link = links.get(0).href;
                             break;
                         case 4:
@@ -727,17 +734,6 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
                             break;
                     }
                 }
-// 		let newMirrors = [];
-
-// 		for (let k = 0; k < entry.mirrors.length; k++){
-// 			let mir = entry.mirrors[k];
-// 			if (mir) {
-//     			mir = $(mir).attr("href");
-//     			mir = mir.replace("../", LIBGEN_HOST);
-//     			newMirrors.push(mir);
-// 			}
-// 		}
-// 		entry.mirrors = newMirrors;
                 data.push(entry);
             }
             return data;
@@ -752,11 +748,12 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
                     {role: "instrument", nountype: ["asc", "desc"], label: "sort mode"}, // with
                     {role: "modifier",   nountype: ["year", "title", "author"], label: "order"}, // of
                     {role: "cause",      nountype: ["25", "50", "100"], label: "amount"}, // by
+                    {role: "time",       nountype: ["libgen.io", "libgen.is"], label: "server"}, // at
         ],
         description: "Search Library Genesis",
         help:  `<span class="syntax">Syntax</span>
             <ul class="syntax">
-                <li><b>libgen</b> [<i>filter</i>] [<b>of</b> <i>order</i>] [<b>with</b> <i>sort mode</i>] [<b>by</b> <i>amount</i>]</li>
+                <li><b>libgen</b> [<i>filter</i>] [<b>of</b> <i>order</i>] [<b>with</b> <i>sort mode</i>] [<b>at</b> <i>server</i>] [<b>by</b> <i>amount</i>]</li>
             </ul>
             <span class="arguments">Arguments</span><br>
             <ul class="syntax">
@@ -769,11 +766,14 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
                 <li>- <i>sort mode</i> - {<b>asc</b> | <b>desc</b>}, specifies sort mode.</li>
             </ul>
             <ul class="syntax">
+                <li>- <i>server</i> - {<b>libgen.is</b> | <b>libgen.io</b>}.</li>
+            </ul>
+            <ul class="syntax">
                 <li>- <i>amount</i> - {<b>25</b> | <b>50</b> | <b>100</b> }, specifies the maximum amount of listed items.</li>
             </ul>
             <span class="arguments">Examples</span>
             <ul class="syntax">
-                <li><b>libgen</b> <i>philosophical investigations</i> <b>of</b> <i>year</i> <b>by</b> <i>50</i></li>
+                <li><b>libgen</b> <i>philosophical investigations</i> <b>of</b> <i>year</i> <b>by</b> <i>50</i> <b>at</b> <i>.io</i></li>
             </ul>`,
         author: "g/christensen",
         icon: "/res/icons/libgen.ico",
@@ -793,7 +793,12 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
             if (args.cause && args.cause.text)
                 amount = args.cause.text;
 
-            let query = `${LIBGEN_HOST}search.php?open=0&view=simple&column=def&req=${args.object.text}`;
+            let libgen_host = (args.time && args.time.text && args.time.text === "libgen.is")
+                ? LIBGEN_HOST2
+                : LIBGEN_HOST;
+
+            let query = `${libgen_host}search.php?open=0&view=simple&column=def&req=${args.object.text}`;
+            libgenSearch._libgen_host = libgen_host;
 
             if (order) {
                 query += "&sort=" + order;
@@ -814,8 +819,9 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
         },
         preview: function(pblock, args, {Bin}) {
             pblock.innerHTML = "Searching...";
+            let a = this._genQuery(args);
 
-            libgenSearch.getJSONResults(pblock, this._genQuery(args), books => {
+            libgenSearch.getJSONResults(pblock, a, books => {
 
                 if (!books || !books.length) {
                     pblock.innerHTML = "Not found."
@@ -891,9 +897,12 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
             pblock.innerHTML = "Searching...";
 
             if (args.object && args.object.text)
-                CmdUtils.previewPost(pblock, "https://sci-hub.se",
-                    {"sci-hub-plugin-check": "", "request": args.object.text},
-                    data => {
+                CmdUtils.previewAjax(pblock, {
+                    method: "POST",
+                    url: "https://sci-hub.se",
+                    data: {"sci-hub-plugin-check": "", "request": args.object.text},
+                    error: () => {pblock.innerHTML = "Search error."},
+                    success: data => {
                         if (data) {
                             Utils.parseHtml(data, doc => {
                                 let article = doc.querySelector("#article iframe");
@@ -911,7 +920,9 @@ Utils.getPref("maxSearchResults", maxSearchResults => {
                         }
                         else
                             pblock.innerHTML = "Error.";
-                    }, "html");
+                    },
+                    dataType: "html"
+                });
             else
                 pblock.innerHTML = "";
         },
